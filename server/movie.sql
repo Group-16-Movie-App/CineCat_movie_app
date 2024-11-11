@@ -107,7 +107,7 @@ create table likes (
     constraint fk_reviews foreign key (review) references reviews(id),
     comment int,
     constraint fk_comments foreign key (comment) references comments(id),
-    save timestamp default current_timestamp,
+    saved timestamp default current_timestamp,
     check (
         (review is not null and comment is null) or
         (review is null and comment is not null)
