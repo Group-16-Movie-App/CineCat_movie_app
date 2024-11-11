@@ -1,131 +1,68 @@
-drop table if exists likes;
+drop table if exists shared_urls;
 drop table if exists favorites;
-drop table if exists comments;
 drop table if exists reviews;
-drop table if exists ratings;
-drop table if exists genres;
-drop table if exists tags;
 drop table if exists members;
 drop table if exists groups;
-drop table if exists showtimes;
-drop table if exists theatres;
-drop table if exists users;
-drop table if exists movies;
+drop table if exists accounts;
 
-create table users (
+-- Account table to manage accounts and authentication
+create table accounts (
     id serial primary key,
     name varchar(100) unique not null,
     email varchar(100) unique not null,
     password varchar(255) not null
 );
 
-create table movies (
-    id serial primary key,
-    title varchar(255) unique not null,
-    description text,
-    duration int,
-    published timestamp,
-    director varchar(255),
-    writer varchar(255),
-    language varchar(100)    
-);
-
-create table theatres (
-    id serial primary key,
-    theatre varchar(255) not null
-);
-
-create table showtimes (
-    id serial primary key,
-    movie int not null,
-    constraint fk_movies foreign key (movie) references movies(id),
-    showtime timestamp not null,
-    theatre int not null,
-    constraint fk_theatre foreign key (theatre) references theatres(id)
-);
-
+-- Group table for group functionality. 
+-- When the owner deletes their account, transfer the ownership to another group member, if available.
+-- If no other members exist, delete the group.
 create table groups (
     id serial primary key,
     name varchar(255) unique not null,
     description text,
-    created timestamp default current_timestamp
+    owner int not null,
+    created timestamp default current_timestamp,
+    constraint fk_owner foreign key (owner) references accounts(id) on delete cascade
 );
 
+-- Members table to track membership in groups. 
+-- The Owner can assign who becomes an admin.
+-- Admins and Owners can add or remove members, delete members'reviews.
 create table members (
     id serial primary key,
     group_id int not null,
-    constraint fk_groups foreign key (group_id) references groups(id),
-    account int not null,
-    constraint fk_users foreign key (account) references users(id),
-    role varchar(50) check (role in ('member', 'creator', 'admin')),
-    saved timestamp default current_timestamp
+    account_id int not null,
+    role varchar(50) check (role in ('member', 'admin')) default 'member',
+    constraint fk_group foreign key (group_id) references groups(id),
+    constraint fk_account foreign key (account_id) references accounts(id)
 );
 
-create table tags (
-    id serial primary key,
-    tag varchar(100)
-);
-
-create table genres (
-    id serial primary key,
-    movie int not null,
-    constraint fk_movies foreign key (movie) references movies(id),
-    tag int not null,
-    constraint fk_tags foreign key (tag) references tags(id)
-);
-
-create table ratings (
-    id serial primary key,
-    movie int not null,
-    constraint fk_movies foreign key (movie) references movies(id),
-    account int not null,
-    constraint fk_users foreign key (account) references users(id),
-    rating smallint check (rating between 1 and 5),
-    saved timestamp default current_timestamp
-);
-
+-- Reviews table to store account-created movie reviews. Movie_id is ID retrieved form IMDB API
 create table reviews (
     id serial primary key,
-    movie int not null,
-    constraint fk_movies foreign key (movie) references movies(id),
-    account int not null,
-    constraint fk_users foreign key (account) references users(id),
-    group_id int not null,
-    constraint fk_groups foreign key (group_id) references groups(id),
+    movie_id int not null,
+    account_id int not null,
     review text not null,
-    saved timestamp default current_timestamp
+    rating smallint check (rating between 1 and 5),
+    created timestamp default current_timestamp,
+    constraint fk_account foreign key (account_id) references accounts(id)
 );
 
-create table comments (
-    id serial primary key,
-    review int not null,
-    constraint fk_reviews foreign key (review) references reviews(id),
-    account int not null,
-    constraint fk_users foreign key (account) references users(id),
-    comment text not null,
-    saved timestamp default current_timestamp
-);
-
+-- Favorites table to manage account’s favorite movies or series
 create table favorites (
     id serial primary key,
-    account int not null,
-    constraint fk_users foreign key (account) references users(id),
-    movie int not null,
-    constraint fk_movies foreign key (movie) references movies(id),
-    saved timestamp default current_timestamp
+    account_id int not null,
+    movie_id int not null,
+    created timestamp default current_timestamp,
+    constraint fk_favorite_account foreign key (account_id) references accounts(id),
+    constraint unique_favorite_movie_per_account unique (account_id, movie_id)
 );
 
-create table likes (
+-- Table to track shared URLs for favorite lists
+create table shared_urls (
     id serial primary key,
-    account int not null,
-    constraint fk_users foreign key (account) references users(id),
-    review int,
-    constraint fk_reviews foreign key (review) references reviews(id),
-    comment int,
-    constraint fk_comments foreign key (comment) references comments(id),
-    saved timestamp default current_timestamp,
-    check (
-        (review is not null and comment is null) or
-        (review is null and comment is not null)
-    )
+    account_id int not null,
+    url text unique not null,
+    created timestamp default current_timestamp,
+    constraint fk_shared_account foreign key (account_id) references accounts(id)
 );
