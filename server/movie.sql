@@ -8,6 +8,7 @@ drop table if exists tags;
 drop table if exists members;
 drop table if exists groups;
 drop table if exists showtimes;
+drop table if exists theatres;
 drop table if exists users;
 drop table if exists movies;
 
@@ -29,13 +30,19 @@ create table movies (
     language varchar(100)    
 );
 
+create table theatres (
+    id serial primary key,
+    theatre varchar(255) not null
+);
+
 create table showtimes (
     id serial primary key,
     movie int not null,
     constraint fk_movies foreign key (movie) references movies(id),
     showtime timestamp not null,
-    theatre varchar(100)
-)
+    theatre int not null,
+    constraint fk_theatre foreign key (theatre) references theatres(id)
+);
 
 create table groups (
     id serial primary key,
