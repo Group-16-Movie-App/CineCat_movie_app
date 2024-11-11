@@ -3,7 +3,7 @@ drop table if exists favorites;
 drop table if exists comments;
 drop table if exists reviews;
 drop table if exists ratings;
-drop table if exists classify;
+drop table if exists genres;
 drop table if exists tags;
 drop table if exists members;
 drop table if exists groups;
@@ -50,7 +50,7 @@ create table tags (
     tag varchar(100)
 );
 
-create table classify (
+create table genres (
     id serial primary key,
     movie int not null,
     constraint fk_movies foreign key (movie) references movies(id),
