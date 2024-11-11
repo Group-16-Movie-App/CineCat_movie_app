@@ -129,6 +129,3 @@ create table likes (
         (review is null and comment is not null)
     )
 );
-
-insert into movies (title) values ('The Sound of Music');
-insert into movies (title) values ('Dead Poets Society');
