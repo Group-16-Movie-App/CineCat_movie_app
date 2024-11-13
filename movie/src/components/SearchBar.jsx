@@ -1,19 +1,3 @@
-// import React, {useState} from 'react';
-// import {FaSearch} from 'react-icons/fa';
-
-
-// export const SearchBar = () => {
-//     const [input, setInput] = useState('');
-//     const fetchData =  (value) => {
-//         fetch()
-//     }
-//     return (
-//         <div className='Input-wrapper'>
-//             <FaSearch id="search-icon" />
-//             <input type='text' placeholder='Search for a movie...' value={input}  onChange={(e)=>setInput(e.target.value)}/>
-//         </div>
-//     );
-// };
 import React, { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import './SearchBar.css';
