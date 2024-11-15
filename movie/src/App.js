@@ -1,9 +1,11 @@
+import React from 'react';
 import './App.css';
+import Schedules from './components/Schedules';
 
 function App() {
   return (
     <div className="App">
-      <h3>Movie app</h3>
+      <Schedules />
     </div>
   );
 }
