@@ -6,10 +6,20 @@
 
 .theatre-select-container {
   margin: 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.theatre-select-label {
+  white-space: nowrap;
+  font-weight: 700;
+  color: #007bff;
+  font-size: 18px;
 }
 
 .theatre-select {
-  width: 100%;
+  flex: 1;
   max-width: 300px;
   padding: 10px;
   border: 1px solid #ddd;
