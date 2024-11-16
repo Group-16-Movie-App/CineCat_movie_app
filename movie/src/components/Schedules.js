@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Schedules.css';
 
+
 const Schedules = () => {
   // State management for component
   const [theatres, setTheatres] = useState([]); // Stores the list of theatres
@@ -89,17 +90,20 @@ const Schedules = () => {
   return (
     <div className="schedules-container">
       <h2>Movie Schedules</h2>
-      {/* Theatre selection buttons */}
-      <div className="theatre-list">
-        {theatres.map(theatre => (
-          <button
-            key={theatre.id}
-            className={`theatre-button ${selectedTheatre === theatre.id ? 'selected' : ''}`}
-            onClick={() => handleTheatreSelect(theatre.id)}
-          >
-            {theatre.name}
-          </button>
-        ))}
+      {/* Replace theatre buttons with dropdown */}
+      <div className="theatre-select-container">
+        <select 
+          className="theatre-select"
+          value={selectedTheatre || ''}
+          onChange={(e) => handleTheatreSelect(e.target.value)}
+        >
+          <option value="">Select a theatre</option>
+          {theatres.map(theatre => (
+            <option key={theatre.id} value={theatre.id}>
+              {theatre.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Movie schedules display */}
