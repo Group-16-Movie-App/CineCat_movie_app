@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Schedules.css';
+import { searchMovie, getImageUrl } from '../services/tmdbService';
 
 
 const Schedules = () => {
@@ -10,6 +11,7 @@ const Schedules = () => {
   const [selectedTheatre, setSelectedTheatre] = useState(null); // Tracks which theatre is selected
   const [loading, setLoading] = useState(false); // Loading state for API calls
   const [error, setError] = useState(null); // Error handling state
+  const [moviePosters, setMoviePosters] = useState({}); // New state for posters
 
   // Direct URLs to Finnkino's XML API endpoints
   const THEATRE_AREAS_URL = 'https://www.finnkino.fi/xml/TheatreAreas/';
@@ -72,6 +74,23 @@ const Schedules = () => {
         return schedule;
       });
       
+      // Fetch movie posters for each unique movie
+      const uniqueMovies = [...new Set(scheduleList.map(s => s.title))];
+      const posterPromises = uniqueMovies.map(async (title) => {
+        const movieData = await searchMovie(title);
+        return {
+          title,
+          posterPath: movieData?.poster_path || null
+        };
+      });
+      
+      const posters = await Promise.all(posterPromises);
+      const posterMap = posters.reduce((acc, curr) => {
+        acc[curr.title] = getImageUrl(curr.posterPath);
+        return acc;
+      }, {});
+      
+      setMoviePosters(posterMap);
       setSchedules(scheduleList);
       setError(null);
     } catch (err) {
@@ -133,6 +152,7 @@ const Schedules = () => {
           value={selectedTheatre || ''}
           onChange={(e) => handleTheatreSelect(e.target.value)}
         >
+          <option value="">Select a theatre</option>
           {theatres.map(theatre => (
             <option key={theatre.id} value={theatre.id}>
               {theatre.name}
@@ -152,9 +172,21 @@ const Schedules = () => {
               role="button"
               tabIndex={0}
             >
-              <h3>{schedule.title}</h3>
-              <p>{schedule.theatre} - {schedule.auditorium}</p>
-              <p>Starts: {new Date(schedule.startTime).toLocaleString('fi-FI')}</p>
+              <div className="movie-image-container">
+                <img 
+                  src={moviePosters[schedule.title] || `https://via.placeholder.com/300x450?text=${schedule.title}`}
+                  alt={schedule.title}
+                  className="movie-image"
+                />
+              </div>
+              <div className="movie-info">
+                <h3>{schedule.title}</h3>
+                <p>{schedule.theatre} - {schedule.auditorium}</p>
+                <p>{new Date(schedule.startTime).toLocaleTimeString('fi-FI', {
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}</p>
+              </div>
             </div>
           ))}
         </div>
