@@ -93,7 +93,7 @@ const Schedules = () => {
       {/* Replace theatre buttons with dropdown */}
       <div className="theatre-select-container">
         <label htmlFor="theatre-select" className="theatre-select-label">
-          Select a Theatre:
+          Choose a Theatre:
         </label>
         <select 
           id="theatre-select"
@@ -101,7 +101,6 @@ const Schedules = () => {
           value={selectedTheatre || ''}
           onChange={(e) => handleTheatreSelect(e.target.value)}
         >
-          <option value="">Choose a theatre</option>
           {theatres.map(theatre => (
             <option key={theatre.id} value={theatre.id}>
               {theatre.name}
