@@ -92,12 +92,16 @@ const Schedules = () => {
       <h2>Movie Schedules</h2>
       {/* Replace theatre buttons with dropdown */}
       <div className="theatre-select-container">
+        <label htmlFor="theatre-select" className="theatre-select-label">
+          Select a Theatre:
+        </label>
         <select 
+          id="theatre-select"
           className="theatre-select"
           value={selectedTheatre || ''}
           onChange={(e) => handleTheatreSelect(e.target.value)}
         >
-          <option value="">Select a theatre</option>
+          <option value="">Choose a theatre</option>
           {theatres.map(theatre => (
             <option key={theatre.id} value={theatre.id}>
               {theatre.name}
