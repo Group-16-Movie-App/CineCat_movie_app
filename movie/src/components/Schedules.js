@@ -53,19 +53,24 @@ const Schedules = () => {
       setLoading(true);
       const response = await axios.get(`${SCHEDULE_URL}?area=${theatreId}`);
       
-      // Parse XML response to DOM structure
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(response.data, "text/xml");
       const showElements = xmlDoc.getElementsByTagName("Show");
       
-      // Convert XML data to more usable array of schedule objects
-      const scheduleList = Array.from(showElements).map(show => ({
-        id: show.getElementsByTagName("EventID")[0]?.textContent,
-        title: show.getElementsByTagName("Title")[0]?.textContent,
-        theatre: show.getElementsByTagName("Theatre")[0]?.textContent,
-        startTime: show.getElementsByTagName("dttmShowStart")[0]?.textContent,
-        auditorium: show.getElementsByTagName("TheatreAuditorium")[0]?.textContent
-      }));
+      // Add debug log
+      console.log('Raw XML data:', xmlDoc);
+      
+      const scheduleList = Array.from(showElements).map(show => {
+        const schedule = {
+          id: show.getElementsByTagName("EventID")[0]?.textContent,
+          title: show.getElementsByTagName("Title")[0]?.textContent,
+          theatre: show.getElementsByTagName("Theatre")[0]?.textContent,
+          startTime: show.getElementsByTagName("dttmShowStart")[0]?.textContent,
+          auditorium: show.getElementsByTagName("TheatreAuditorium")[0]?.textContent
+        };
+        console.log('Processed schedule item:', schedule);
+        return schedule;
+      });
       
       setSchedules(scheduleList);
       setError(null);
@@ -85,12 +90,29 @@ const Schedules = () => {
 
   // Add click handler function
   const handleScheduleClick = (schedule) => {
-    // Extract the Event ID from the schedule
-    const eventId = schedule.id;
-    // Construct the URL for the movie details page on Finnkino's website
-    const movieUrl = `https://www.finnkino.fi/websales/show/${eventId}`;
-    // Open in a new tab
-    window.open(movieUrl, '_blank');
+    // Debug log to see the schedule object
+    console.log('Schedule object:', schedule);
+    
+    try {
+      // Extract the Event ID from the schedule
+      const eventId = schedule.id;
+      const movieTitle = schedule.title.toLowerCase()
+        .replace(/\s+/g, '-')     // Replace spaces with hyphens
+        .replace(/[^a-z0-9-]/g, ''); // Remove special characters
+      
+      // Debug log for the processed values
+      console.log('Event ID:', eventId);
+      console.log('Movie Title:', movieTitle);
+      
+      // Construct the URL
+      const movieUrl = `https://www.finnkino.fi/en/event/${eventId}/title/${movieTitle}`;
+      console.log('Final URL:', movieUrl);
+      
+      // Open in a new tab
+      window.open(movieUrl, '_blank');
+    } catch (error) {
+      console.error('Error processing movie click:', error);
+    }
   };
 
   // Loading and error states
