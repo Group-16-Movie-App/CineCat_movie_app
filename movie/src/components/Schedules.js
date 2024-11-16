@@ -60,7 +60,7 @@ const Schedules = () => {
       
       // Convert XML data to more usable array of schedule objects
       const scheduleList = Array.from(showElements).map(show => ({
-        id: show.getElementsByTagName("ID")[0]?.textContent,
+        id: show.getElementsByTagName("EventID")[0]?.textContent,
         title: show.getElementsByTagName("Title")[0]?.textContent,
         theatre: show.getElementsByTagName("Theatre")[0]?.textContent,
         startTime: show.getElementsByTagName("dttmShowStart")[0]?.textContent,
@@ -81,6 +81,16 @@ const Schedules = () => {
   const handleTheatreSelect = (theatreId) => {
     setSelectedTheatre(theatreId);
     fetchSchedules(theatreId);
+  };
+
+  // Add click handler function
+  const handleScheduleClick = (schedule) => {
+    // Extract the Event ID from the schedule
+    const eventId = schedule.id;
+    // Construct the URL for the movie details page on Finnkino's website
+    const movieUrl = `https://www.finnkino.fi/websales/show/${eventId}`;
+    // Open in a new tab
+    window.open(movieUrl, '_blank');
   };
 
   // Loading and error states
@@ -113,7 +123,13 @@ const Schedules = () => {
       {selectedTheatre && schedules.length > 0 && (
         <div className="schedules-list">
           {schedules.map(schedule => (
-            <div key={schedule.id} className="schedule-item">
+            <div 
+              key={schedule.id} 
+              className="schedule-item"
+              onClick={() => handleScheduleClick(schedule)}
+              role="button"
+              tabIndex={0}
+            >
               <h3>{schedule.title}</h3>
               <p>{schedule.theatre} - {schedule.auditorium}</p>
               <p>Starts: {new Date(schedule.startTime).toLocaleString('fi-FI')}</p>

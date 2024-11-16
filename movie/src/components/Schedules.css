@@ -48,6 +48,18 @@
   padding: 15px;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.schedule-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.schedule-item:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
 }
 
 .schedule-item h3 {
