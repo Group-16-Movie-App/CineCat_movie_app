@@ -4,30 +4,25 @@
   margin: 0 auto;
 }
 
-.theatre-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+.theatre-select-container {
   margin: 20px 0;
 }
 
-.theatre-button {
-  padding: 10px 20px;
+.theatre-select {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 16px;
   background-color: white;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
-.theatre-button:hover {
-  background-color: #f0f0f0;
-}
-
-.theatre-button.selected {
-  background-color: #007bff;
-  color: white;
-  border-color: #0056b3;
+.theatre-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
 }
 
 .schedules-list {
