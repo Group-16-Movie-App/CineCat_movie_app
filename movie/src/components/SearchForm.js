@@ -11,24 +11,26 @@ const SearchForm = ({ onSearch }) => {
     };
 
     return (
-        <div>
-            <h2>Search for Movies</h2>
-            <input
-                type="text"
-                placeholder="Search movies..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-            />
-            <input
-                type="number"
-                placeholder="Year"
-                value={year}
-                onChange={(e) => setYear(e.target.value)}
-            />
-            <button onClick={handleSearch}>Search</button>
-
+        <div style={{width:'fit-content', margin:'auto', padding: 8, display:'flex', flexDirection:'column'}}>
+            <div style={{display:'flex', justifyContent:'space-around'}}>
+                <input
+                    type="text"
+                    placeholder="Search movies..."
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                />
+                <input
+                    type="number"
+                    min="1900"
+                    max={new Date().getFullYear() + 5}
+                    placeholder="Year"
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                />
+                <button onClick={handleSearch}>Search</button>
+            </div>
             <div>
-                <button onClick={() => navigate('/filter')}>Go to Filters</button>
+                <button onClick={() => navigate('/filter')}>Go to Movies Discovery</button>
             </div>
         </div>
     );
