@@ -55,8 +55,8 @@ const FilterPage = () => {
     }, []);
 
     return (
-        <div>
-            <h1>Filter Movies</h1>
+        <div style={{width:'100%', textAlign:'center'}}>
+            <h1>Discovery Movies</h1>
             <FilterForm onFilter={handleFilter} />
             <MovieList movies={movies} genreNames={genreNames} />
         </div>

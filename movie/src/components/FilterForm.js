@@ -30,9 +30,7 @@ const FilterForm = ({ onFilter }) => {
     };
 
     return (
-        <div>
-            <h2>Filters</h2>
-
+        <div >
             <div style={{ position: 'relative', display: 'inline-block' }}>
                 <button onClick={() => setShowGenreDropdown(!showGenreDropdown)}>
                     {selectedGenre ? genres.find(genre => genre.id === parseInt(selectedGenre))?.name : 'Select Genre'}
@@ -58,18 +56,23 @@ const FilterForm = ({ onFilter }) => {
 
             <input
                 type="number"
+                min="1900"
+                max={new Date().getFullYear() + 5}
                 placeholder="Year"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
             />
             <input
                 type="number"
+                min="0"
+                max="10"
+                step="0.1"
                 placeholder="Minimum Rating"
                 value={rating}
                 onChange={(e) => setRating(e.target.value)}
             />
             
-            <button onClick={handleFilter}>Apply Filters</button>
+            <button onClick={handleFilter}>Apply</button>
 
             <div>
                 <button onClick={() => navigate('/search')}>Back to Search</button>

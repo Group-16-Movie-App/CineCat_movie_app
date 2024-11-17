@@ -22,7 +22,7 @@ const SearchPage = () => {
                     params: { query, year: year || undefined },
                 });
                 setMovies(response.data.results || []);
-                console.log('movie Data form search',response.data.results)
+                console.log('movie Data from search',response.data.results)
             } catch (error) {
                 console.error('Error fetching search results:', error);
             }
@@ -30,27 +30,27 @@ const SearchPage = () => {
         fetchMovies();
     }, [query, year]);
 
-        // Fetch genre data
-        useEffect(() => {
-            const fetchGenres = async () => {
-                try {
-                    const response = await axios.get('http://localhost:5000/api/genre');
-                    const genreMap = response.data.genres.reduce((map, genre) => {
-                        map[genre.id] = genre.name; // Map genre ID to name
-                        return map;
-                    }, {});
-                    setGenreNames(genreMap);
-                    console.log('genreMap',genreMap);
-                } catch (error) {
-                    console.error('Error fetching genres:', error);
-                }
-            };
-            fetchGenres();
-        }, []);
+    // Fetch genre data
+    useEffect(() => {
+        const fetchGenres = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/api/genre');
+                const genreMap = response.data.genres.reduce((map, genre) => {
+                    map[genre.id] = genre.name; // Map genre ID to name
+                    return map;
+                }, {});
+                setGenreNames(genreMap);
+                console.log('genreMap',genreMap);
+            } catch (error) {
+                console.error('Error fetching genres:', error);
+            }
+        };
+        fetchGenres();
+    }, []);
 
     return (
-        <div>
-            <h1>Search Movies</h1>
+        <div style={{width:'100%', textAlign:'center'}}>
+            <h1 >Search Movies</h1>
             <SearchForm onSearch={handleSearch} />
             <MovieList movies={movies} genreNames={genreNames} />
         </div>
