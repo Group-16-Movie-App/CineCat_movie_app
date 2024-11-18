@@ -1,4 +1,3 @@
-//sever/index.js
 import express from 'express';
 import cors from 'cors';
 import axios from 'axios';
@@ -58,7 +57,7 @@ app.get('/api/search/movies', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch movies' });
     }
 });
-
+      
 // Endpoint to filter movies. year is release year int, genre is genre_id, rating is vote_average.gte int.
 app.get('/api/filter/movies', async (req, res) => {
     try {
@@ -100,7 +99,6 @@ app.get('/api/movies/:id', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch movie details' });
     }
 });
-
 // Endpoint to get genre list
 app.get('/api/genre', async (req, res) => {
     try {
@@ -113,7 +111,6 @@ app.get('/api/genre', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch movie genres' });
     }
 })
-
 app.listen(PORT, () => {
     console.log("Server running on port " + PORT);
 });
