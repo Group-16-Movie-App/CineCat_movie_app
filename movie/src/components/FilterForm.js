@@ -75,7 +75,7 @@ const FilterForm = ({ onFilter }) => {
             <button onClick={handleFilter}>Apply</button>
 
             <div>
-                <button onClick={() => navigate('/search')}>Back to Search</button>
+                <button onClick={() => navigate('/')}>Back to Search</button>
             </div>
         </div>
     );
