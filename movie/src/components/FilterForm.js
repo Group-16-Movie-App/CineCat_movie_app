@@ -44,7 +44,7 @@ const FilterForm = ({ onFilter }) => {
                                 key={genre.id}
                                 onClick={() => handleGenreSelect(genre.id)}
                                 style={{
-                                    padding: '8px', cursor: 'pointer', backgroundColor: selectedGenre === genre.id ? '#ddd' : '#fff'
+                                    padding: '8px', cursor: 'pointer', backgroundColor: selectedGenre === genre.id ? '#ddd' : '#fff', color: 'black'
                                 }}
                             >
                                 {genre.name}
@@ -75,7 +75,7 @@ const FilterForm = ({ onFilter }) => {
             <button onClick={handleFilter}>Apply</button>
 
             <div>
-                <button onClick={() => navigate('/')}>Back to Search</button>
+                <button onClick={() => navigate('/search')}>Back to Search</button>
             </div>
         </div>
     );
