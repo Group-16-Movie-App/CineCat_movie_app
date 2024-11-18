@@ -1,0 +1,93 @@
+.schedules-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #1a1a1a;
+  color: white;
+  min-height: 100vh;
+}
+
+.theatre-select-container {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.theatre-select {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  margin-left: 1rem;
+  width: 200px;
+}
+
+.theatre-select option {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 8px;
+}
+
+/* Style for the dropdown when opened */
+.theatre-select:focus {
+  outline: none;
+  border-color: #61dafb;
+}
+
+.schedules-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.schedule-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.schedule-item:hover {
+  transform: translateY(-5px);
+}
+
+.movie-image-container {
+  position: relative;
+  padding-top: 150%;
+  overflow: hidden;
+}
+
+.movie-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.movie-info {
+  padding: 1rem;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.7) 70%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.movie-info h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.movie-info p {
+  margin: 0.3rem 0;
+  font-size: 0.9rem;
+  color: #ccc;
+}
