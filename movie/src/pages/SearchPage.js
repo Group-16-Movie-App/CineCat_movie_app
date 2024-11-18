@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import MovieList from '../components/MovieList';
 import SearchForm from '../components/SearchForm';
 
@@ -8,6 +9,7 @@ const SearchPage = () => {
     const [query, setQuery] = useState('');
     const [year, setYear] = useState('');
     const [genreNames, setGenreNames] = useState({});
+    const navigate = useNavigate();
 
     const handleSearch = ({ query, year }) => {
         setQuery(query);
@@ -49,11 +51,14 @@ const SearchPage = () => {
     }, []);
 
     return (
-        <div style={{width:'100%', textAlign:'center'}}>
-            <h1 >Search Movies</h1>
-            <SearchForm onSearch={handleSearch} />
-            <MovieList movies={movies} genreNames={genreNames} />
-        </div>
+        <>
+            <button onClick={() => navigate('/')}>Back to Home</button>
+            <div style={{width:'100%', textAlign:'center'}}>
+                <h1 >Search Movies</h1>
+                <SearchForm onSearch={handleSearch} />
+                <MovieList movies={movies} genreNames={genreNames} />
+            </div>
+        </>
     );
 };
 

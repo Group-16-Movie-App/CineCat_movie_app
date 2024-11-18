@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import MovieList from '../components/MovieList';
 import FilterForm from '../components/FilterForm';
 
@@ -12,6 +13,7 @@ const FilterPage = () => {
         year: '',
         page: 1,
     });
+    const navigate = useNavigate();
 
     const handleFilter = (filterData) => {
         setFilters((prev) => ({ ...prev, ...filterData }));
@@ -54,12 +56,15 @@ const FilterPage = () => {
         fetchGenres();
     }, []);
 
-    return (
-        <div style={{width:'100%', textAlign:'center'}}>
-            <h1>Discovery Movies</h1>
-            <FilterForm onFilter={handleFilter} />
-            <MovieList movies={movies} genreNames={genreNames} />
-        </div>
+    return (  
+        <>
+            <button onClick={() => navigate('/')}>Back to Home</button>
+            <div style={{width:'100%', textAlign:'center'}}>
+                <h1>Discovery Movies</h1>
+                <FilterForm onFilter={handleFilter} />
+                <MovieList movies={movies} genreNames={genreNames} />
+            </div>
+        </>         
     );
 };
 

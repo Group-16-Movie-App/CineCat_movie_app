@@ -20,9 +20,11 @@ const MovieDetail = () => {
     const genreNames = movie.genres.map(genre => genre.name || "Unknown");
 
     return (
-        <div style={{width:'100%', textAlign:'center'}}>
+        <>
+            <button onClick={() => navigate('/')}>Back to Home</button>
+            <div style={{width:'100%', textAlign:'center'}}>
             <div>
-                <button onClick={() => navigate('/')}>To Movies Search</button>
+                <button onClick={() => navigate('/search')}>To Movies Search</button>
                 <button onClick={() => navigate('/filter')}>To Movies Discovery</button>  
             </div>
             <h2>{movie.title}</h2>
@@ -32,6 +34,7 @@ const MovieDetail = () => {
             <p>Rating: {movie.vote_average}</p>
             <p>Release Date: {movie.release_date}</p>
         </div>
+        </>
     );
 };
 
