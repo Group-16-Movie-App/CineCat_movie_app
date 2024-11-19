@@ -210,15 +210,42 @@ app.post('/api/register', async (req, res) => {
     try {
       const { name, email, password } = req.body;
       
-
+      // check if all fields are provided
       if (!name || !email || !password) {
         return res.status(400).json({ 
-          error: 'All fields are required',
-          received: { name, email, password: password ? 'yes' : 'no' }
+          error: 'All fields are required'
         });
       }
-  
-      console.log('Registering user:', { name, email }); 
+
+      // if email already exists
+      const emailExists = await pool.query(
+        'SELECT * FROM accounts WHERE email = $1',
+        [email]
+      );
+
+      if (emailExists.rows.length > 0) {
+        return res.status(400).json({ 
+          error: 'Email already exists'
+        });
+      }
+
+      if (password.length < 6) {
+        return res.status(400).json({ 
+          error: 'Password must be at least 6 characters long'
+        });
+      }
+
+      if (!/[A-Z]/.test(password)) {
+        return res.status(400).json({ 
+          error: 'Password must contain at least one uppercase letter'
+        });
+      }
+
+      if (!/[0-9]/.test(password)) {
+        return res.status(400).json({ 
+          error: 'Password must contain at least one number'
+        });
+      }
       
       const hashedPassword = await bcrypt.hash(password, 10);
       
@@ -229,17 +256,22 @@ app.post('/api/register', async (req, res) => {
       
       res.json({ 
         id: result.rows[0].id, 
-        message: 'Registration successful',
-        user: { name, email }
+        message: 'Registration successful'
       });
     } catch (error) {
       console.error('Registration error details:', error);
+
+      if (error.code === '23505' && error.constraint === 'accounts_email_key') {
+        return res.status(400).json({ 
+          error: 'Email already exists'
+        });
+      }
+
       res.status(500).json({ 
-        error: 'Registration failed',
-        details: error.message 
+        error: 'Registration failed. Please try again.'
       });
     }
-  });
+});
 
 
 // Login user
@@ -247,20 +279,31 @@ app.post('/api/login', async (req, res) => {
     try {
       const { email, password } = req.body;
       
+      //check if all fields are provided
+      if (!email || !password) {
+        return res.status(400).json({ 
+          error: 'Email and password are required'
+        });
+      }
+
       const result = await pool.query(
         'SELECT * FROM accounts WHERE email = $1',
         [email]
       );
       
       if (result.rows.length === 0) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+        return res.status(401).json({ 
+          error: 'Invalid email or password'
+        });
       }
       
       const user = result.rows[0];
       const validPassword = await bcrypt.compare(password, user.password);
       
       if (!validPassword) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+        return res.status(401).json({ 
+          error: 'Invalid email or password'
+        });
       }
       
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
@@ -273,9 +316,11 @@ app.post('/api/login', async (req, res) => {
       });
     } catch (error) {
       console.error('Login error:', error);
-      res.status(500).json({ error: 'Login failed' });
+      res.status(500).json({ 
+        error: 'Login failed. Please try again.'
+      });
     }
-  });
+});
 
 // Logout user
 app.post('/api/logout', (req, res) => {
