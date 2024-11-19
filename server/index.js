@@ -3,11 +3,39 @@ import cors from 'cors';
 import axios from 'axios';
 import dotenv from 'dotenv';
 import xml2js from 'xml2js';
+import pg from 'pg';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
+const { Pool } = pg;
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+//middleware
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token) return res.status(401).json({ error: 'Access denied' });
+  
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+      if (err) return res.status(403).json({ error: 'Invalid token' });
+      req.user = user;
+      next();
+    });
+  };
+  
+
+// Database configuration
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+});
 
 app.use(cors());
 app.use(express.json());
@@ -42,10 +70,10 @@ app.get('/api/theatres', async (req, res) => {
       console.error('Error fetching theatres:', error.message);
       res.status(500).json({ error: 'Failed to fetch theatre areas' });
     }
-  });
+});
   
-  // Get schedules for a specific theatre
-  app.get('/api/schedules/:theatreId', async (req, res) => {
+// Get schedules for a specific theatre
+app.get('/api/schedules/:theatreId', async (req, res) => {
     try {
       const response = await axios.get(`${SCHEDULES_URL}?area=${req.params.theatreId}`, {
         headers: {
@@ -65,10 +93,10 @@ app.get('/api/theatres', async (req, res) => {
       console.error('Error fetching schedules:', error.message);
       res.status(500).json({ error: 'Failed to fetch schedules' });
     }
-  });
+});
   
-  // Add a new route for movie details
-  app.get('/api/events/:eventId', async (req, res) => {
+// Add a new route for movie details
+app.get('/api/events/:eventId', async (req, res) => {
     try {
       const response = await axios.get(`${EVENTS_URL}?eventID=${req.params.eventId}&includeVideos=true&includeGallery=true&includePictures=true`, {
         headers: {
@@ -87,9 +115,9 @@ app.get('/api/theatres', async (req, res) => {
       console.error('Error fetching event details:', error.message);
       res.status(500).json({ error: 'Failed to fetch event details' });
     }
-  });
+});
 
-/******* TMDB ENPOINTS **************/
+/******* TMDB ENDPOINTS **************/
 
 // Endpoint to search for movies
 app.get('/api/search/movies', async (req, res) => {
@@ -120,7 +148,7 @@ app.get('/api/search/movies', async (req, res) => {
     }
 });
       
-// Endpoint to filter movies. year is release year int, genre is genre_id, rating is vote_average.gte int.
+// Endpoint to filter movies
 app.get('/api/filter/movies', async (req, res) => {
     try {
         const { genre, rating, year, page = 1, sort_by = 'popularity.desc' } = req.query;
@@ -161,6 +189,7 @@ app.get('/api/movies/:id', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch movie details' });
     }
 });
+
 // Endpoint to get genre list
 app.get('/api/genre', async (req, res) => {
     try {
@@ -172,7 +201,88 @@ app.get('/api/genre', async (req, res) => {
         console.error('Error:', error.message);
         res.status(500).json({ error: 'Failed to fetch movie genres' });
     }
-})
+});
+
+/******* AUTHENTICATION ENDPOINTS **************/
+
+// Register new user
+app.post('/api/register', async (req, res) => {
+    try {
+      const { name, email, password } = req.body;
+      
+
+      if (!name || !email || !password) {
+        return res.status(400).json({ 
+          error: 'All fields are required',
+          received: { name, email, password: password ? 'yes' : 'no' }
+        });
+      }
+  
+      console.log('Registering user:', { name, email }); 
+      
+      const hashedPassword = await bcrypt.hash(password, 10);
+      
+      const result = await pool.query(
+        'INSERT INTO accounts (name, email, password) VALUES ($1, $2, $3) RETURNING id',
+        [name, email, hashedPassword]
+      );
+      
+      res.json({ 
+        id: result.rows[0].id, 
+        message: 'Registration successful',
+        user: { name, email }
+      });
+    } catch (error) {
+      console.error('Registration error details:', error);
+      res.status(500).json({ 
+        error: 'Registration failed',
+        details: error.message 
+      });
+    }
+  });
+
+
+// Login user
+app.post('/api/login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      const result = await pool.query(
+        'SELECT * FROM accounts WHERE email = $1',
+        [email]
+      );
+      
+      if (result.rows.length === 0) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+      
+      const user = result.rows[0];
+      const validPassword = await bcrypt.compare(password, user.password);
+      
+      if (!validPassword) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+      
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+      
+      res.json({ 
+        token,
+        id: user.id, 
+        name: user.name, 
+        email: user.email 
+      });
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({ error: 'Login failed' });
+    }
+  });
+
+// Logout user
+app.post('/api/logout', (req, res) => {
+  res.json({ message: 'Logged out successfully' });
+});
+
+// Start server
 app.listen(PORT, () => {
     console.log("Server running on port " + PORT);
 });
