@@ -322,6 +322,86 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+/******* ENDPOINTS FOR USERS FAVORITE MOVIES**************/  
+
+// Get user's favorites
+app.get('/api/favorites', authenticateToken, async (req, res) => {
+    try {
+        // Get favorites for the authenticated user
+        const result = await pool.query(
+            'SELECT movie_id FROM favorites WHERE account_id = $1',
+            [req.user.id]
+        );
+        
+        // Get full movie details for each favorite
+        const favorites = await Promise.all(
+            result.rows.map(async (row) => {
+                const response = await axios.get(
+                    `https://api.themoviedb.org/3/movie/${row.movie_id}`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${process.env.TMDB_Token}`
+                        }
+                    }
+                );
+                return response.data;
+            })
+        );
+        
+        res.json(favorites);
+    } catch (error) {
+        console.error('Error fetching favorites:', error);
+        res.status(500).json({ error: 'Failed to fetch favorites' });
+    }
+});
+
+// Add movie to favorites
+app.post('/api/favorites', authenticateToken, async (req, res) => {
+    try {
+        const { movie_id } = req.body;
+        
+        // Check if already in favorites
+        const existing = await pool.query(
+            'SELECT * FROM favorites WHERE account_id = $1 AND movie_id = $2',
+            [req.user.id, movie_id]
+        );
+        
+        if (existing.rows.length > 0) {
+            return res.status(400).json({ error: 'Movie already in favorites' });
+        }
+        
+        // Add to favorites
+        await pool.query(
+            'INSERT INTO favorites (account_id, movie_id) VALUES ($1, $2)',
+            [req.user.id, movie_id]
+        );
+        
+        res.json({ message: 'Added to favorites' });
+    } catch (error) {
+        console.error('Error adding favorite:', error);
+        res.status(500).json({ error: 'Failed to add favorite' });
+    }
+});
+
+// Remove from favorites
+app.delete('/api/favorites/:movieId', authenticateToken, async (req, res) => {
+    try {
+        await pool.query(
+            'DELETE FROM favorites WHERE account_id = $1 AND movie_id = $2',
+            [req.user.id, req.params.movieId]
+        );
+        
+        res.json({ message: 'Removed from favorites' });
+    } catch (error) {
+        console.error('Error removing favorite:', error);
+        res.status(500).json({ error: 'Failed to remove favorite' });
+    }
+});
+
+
+
+
+
 // Logout user
 app.post('/api/logout', (req, res) => {
   res.json({ message: 'Logged out successfully' });
