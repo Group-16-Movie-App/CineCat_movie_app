@@ -322,18 +322,20 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-/******* ENDPOINTS FOR USERS FAVORITE MOVIES**************/  
+/******* ENDPOINTS FOR USERS FAVORITE MOVIE LISTS **************/
 
-// Get user's favorites
+// This endpoint gets all favorite movies for a logged-in user
+// It requires a valid JWT token in the request header
 app.get('/api/favorites', authenticateToken, async (req, res) => {
     try {
-        // Get favorites for the authenticated user
+        // First, get all movie IDs that this user has favorited from our database
         const result = await pool.query(
             'SELECT movie_id FROM favorites WHERE account_id = $1',
             [req.user.id]
         );
         
-        // Get full movie details for each favorite
+        // For each favorited movie ID, fetch the full movie details from TMDB API
+        // We use Promise.all to fetch all movies in parallel for better performance
         const favorites = await Promise.all(
             result.rows.map(async (row) => {
                 const response = await axios.get(
@@ -348,6 +350,7 @@ app.get('/api/favorites', authenticateToken, async (req, res) => {
             })
         );
         
+        // Send the complete movie details back to the client
         res.json(favorites);
     } catch (error) {
         console.error('Error fetching favorites:', error);
@@ -355,12 +358,13 @@ app.get('/api/favorites', authenticateToken, async (req, res) => {
     }
 });
 
-// Add movie to favorites
+// This endpoint adds a new movie to user's favorites
+// It requires a valid JWT token and movie_id in the request body
 app.post('/api/favorites', authenticateToken, async (req, res) => {
     try {
         const { movie_id } = req.body;
         
-        // Check if already in favorites
+        // Check if this movie is already in user's favorites to prevent duplicates
         const existing = await pool.query(
             'SELECT * FROM favorites WHERE account_id = $1 AND movie_id = $2',
             [req.user.id, movie_id]
@@ -370,7 +374,7 @@ app.post('/api/favorites', authenticateToken, async (req, res) => {
             return res.status(400).json({ error: 'Movie already in favorites' });
         }
         
-        // Add to favorites
+        // If not already favorited, add it to the database
         await pool.query(
             'INSERT INTO favorites (account_id, movie_id) VALUES ($1, $2)',
             [req.user.id, movie_id]
@@ -383,9 +387,11 @@ app.post('/api/favorites', authenticateToken, async (req, res) => {
     }
 });
 
-// Remove from favorites
+// This endpoint removes a movie from user's favorites
+// It requires a valid JWT token and the movie ID as a URL parameter
 app.delete('/api/favorites/:movieId', authenticateToken, async (req, res) => {
     try {
+        // Delete the favorite record for this user and movie
         await pool.query(
             'DELETE FROM favorites WHERE account_id = $1 AND movie_id = $2',
             [req.user.id, req.params.movieId]
