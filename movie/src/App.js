@@ -1,11 +1,11 @@
 import React from 'react';
-
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import SearchPage from './pages/SearchPage';
 import FilterPage from './pages/FilterPage';
 import MovieDetail from './pages/MovieDetail';
 import Schedules from './components/Schedules';
+import ProfilePage from './pages/ProfilePage';
 
 const App = () => {
     return (
@@ -16,25 +16,16 @@ const App = () => {
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/filter" element={<FilterPage />} />
                 <Route path="/movie/:id" element={<MovieDetail />} />
+                <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
             </Routes>
         </div>
     );
 };
 
-// branch story8/search
-// import './App.css';
-// import {SearchBar} from './components/SearchBar.jsx';
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <div className="search-bar-container">
-//         <SearchBar />
-//       {/* <h3>Movie app</h3> */}
-//         </div>
-//     </div>
-//   );
-// }
-
+// Create a PrivateRoute component to protect the profile page
+const PrivateRoute = ({ children }) => {
+    const token = localStorage.getItem('token');
+    return token ? children : <Navigate to="/login" />;
+};
 
 export default App;
