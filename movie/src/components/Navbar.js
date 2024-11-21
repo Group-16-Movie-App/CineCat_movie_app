@@ -64,11 +64,13 @@ const Navbar = () => {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('token', data.token);
-        localStorage.setItem('userName', data.name);
+        if (data.name) {
+          localStorage.setItem('userName', data.name);
+        }
         localStorage.setItem('userEmail', data.email);
         setIsLoggedIn(true);
         setIsLoginOpen(false);
-        setRegisteredEmail(''); 
+        setRegisteredEmail('');
       }
     } catch (error) {
       console.error('Login error:', error);
