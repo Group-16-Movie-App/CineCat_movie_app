@@ -1,18 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import FavoritesList from '../components/FavoritesList';
 import './ProfilePage.css';
+import axios from 'axios';
 
 /**
  * ProfilePage Component
  * 
  * This component serves as the main profile page for logged-in users.It displays user information, statistics, and their favorite movies.*/
 const ProfilePage = () => {
-    // Retrieve user information from localStorage
+    const [favoritesCount, setFavoritesCount] = useState(0);
     const userEmail = localStorage.getItem('userEmail');
-    const userName = localStorage.getItem('userName') || 'User';
-    
-    // Extract first letter of username for use in avatar display
+    const storedUserName = localStorage.getItem('userName');
+    const userName = storedUserName && storedUserName !== 'null' ? storedUserName : 'User';
     const avatarLetter = userName.charAt(0).toUpperCase();
+
+    // Add useEffect to fetch favorites count
+    useEffect(() => {
+        const fetchFavoritesCount = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+
+                const response = await axios.get('http://localhost:5000/api/favorites', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                
+                setFavoritesCount(response.data.length);
+            } catch (error) {
+                console.error('Error fetching favorites count:', error);
+            }
+        };
+
+        fetchFavoritesCount();
+
+        // Set up event listener for favorites updates
+        window.addEventListener('favoritesUpdated', fetchFavoritesCount);
+        
+        return () => {
+            window.removeEventListener('favoritesUpdated', fetchFavoritesCount);
+        };
+    }, []);
 
     return (
         <div className="profile-container">
@@ -33,23 +60,22 @@ const ProfilePage = () => {
                 
                 {/* This is the user Statistics Section on ther profile page */}
                 <div className="profile-stats">
-                    {/* Favorites Count Card */}
+                    {/* Favorites Count */}
                     <div className="stat-card">
                         <div className="stat-number">
-                            {/* This is to be made dynamic based on actual favorites, reviews and groups, but its actually hard codded at the moment till those aspects of the application are implemented  */}
-                            12
+                            {favoritesCount}
                         </div>
                         <div className="stat-label">Favorite Movies</div>
                     </div>
-                    {/* Reviews Count Card */}
+                    {/* Reviews Count */}
                     <div className="stat-card">
                         <div className="stat-number">5</div>
                         <div className="stat-label">Reviews Written</div>
                     </div>
-                    {/* Lists Count Card */}
+                    {/* Groups Count */}
                     <div className="stat-card">
                         <div className="stat-number">3</div>
-                        <div className="stat-label">Lists Created</div>
+                        <div className="stat-label">Groups Created</div>
                     </div>
                 </div>
             </div>
