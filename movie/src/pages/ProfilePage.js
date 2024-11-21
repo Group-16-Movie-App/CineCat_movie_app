@@ -3,13 +3,10 @@ import FavoritesList from '../components/FavoritesList';
 import './ProfilePage.css';
 import axios from 'axios';
 
-/**
- * ProfilePage Component
- * 
- * This component serves as the main profile page for logged-in users.It displays user information, statistics, and their favorite movies.*/
+
+/* This component serves as the main profile page for logged-in users.It displays user information, statistics, and their favorite movies.*/
 const ProfilePage = () => {
     const [favoritesCount, setFavoritesCount] = useState(0);
-    const userEmail = localStorage.getItem('userEmail');
     const storedUserName = localStorage.getItem('userName');
     const userName = storedUserName && storedUserName !== 'null' ? storedUserName : 'User';
     const avatarLetter = userName.charAt(0).toUpperCase();
@@ -54,7 +51,6 @@ const ProfilePage = () => {
                     {/* User Details Section */}
                     <div className="user-details">
                         <h1>Welcome, {userName}!</h1>
-                        <p>{userEmail}</p>
                     </div>
                 </div>
                 
@@ -70,12 +66,12 @@ const ProfilePage = () => {
                     {/* Reviews Count */}
                     <div className="stat-card">
                         <div className="stat-number">5</div>
-                        <div className="stat-label">Reviews Written</div>
+                        <div className="stat-label">Reviews</div>
                     </div>
                     {/* Groups Count */}
                     <div className="stat-card">
                         <div className="stat-number">3</div>
-                        <div className="stat-label">Groups Created</div>
+                        <div className="stat-label">Groups</div>
                     </div>
                 </div>
             </div>
@@ -84,6 +80,24 @@ const ProfilePage = () => {
             <div className="favorites-section">
                 <h2>My Favorites</h2>
                 <FavoritesList />
+            </div>
+
+            {/* Reviews Section */}
+            <div className="favorites-section">
+                <h2>My Reviews</h2>
+                <div className="reviews-content">
+                    {/* Hard-coded reviews for now */}
+                    <p>Reviews...</p>
+                </div>
+            </div>
+
+            {/* Groups Section */}
+            <div className="favorites-section">
+                <h2>My Groups</h2>
+                <div className="groups-content">
+                    {/* Hard-coded groups for now */}
+                    <p>Groups...</p>
+                </div>
             </div>
         </div>
     );
