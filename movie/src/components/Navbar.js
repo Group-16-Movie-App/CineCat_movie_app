@@ -1,14 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ModalWindow from './ModalWindow';
 import { SignUpForm, LoginForm } from './AuthForms';
 import './Navbar.css';
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
+
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem('token');
+      setIsLoggedIn(!!token);
+    };
+
+    checkLoginStatus();
+
+    window.addEventListener('storage', checkLoginStatus);
+
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+    };
+  }, []);
 
   const handleSignUp = async (formData) => {
     try {
@@ -49,6 +64,8 @@ const Navbar = () => {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('token', data.token);
+        localStorage.setItem('userName', data.name);
+        localStorage.setItem('userEmail', data.email);
         setIsLoggedIn(true);
         setIsLoginOpen(false);
         setRegisteredEmail(''); 
@@ -56,6 +73,13 @@ const Navbar = () => {
     } catch (error) {
       console.error('Login error:', error);
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userEmail');
+    setIsLoggedIn(false);
   };
 
   return (
@@ -66,9 +90,7 @@ const Navbar = () => {
           <Link to="/search" className="nav-link">Search</Link>
           <Link to="/filter" className="nav-link">Filter</Link>
           {isLoggedIn && (
-            <Link to="/profile" className="nav-link">
-                My Profile
-            </Link>
+            <Link to="/profile" className="nav-link"> My Profile </Link>
           )}
         </div>
         
@@ -90,10 +112,7 @@ const Navbar = () => {
             </div>
           ) : (
             <button 
-              onClick={() => {
-                localStorage.removeItem('token');
-                setIsLoggedIn(false);
-              }}
+              onClick={handleLogout}
               className="auth-button"
             >
               Sign Out
