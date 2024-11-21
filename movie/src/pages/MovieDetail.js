@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const MovieDetail = () => {
     const { id } = useParams();
     const [movie, setMovie] = useState(null);
-    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get(`http://localhost:5000/api/movies/${id}`)
@@ -21,12 +20,7 @@ const MovieDetail = () => {
 
     return (
         <>
-            <button onClick={() => navigate('/')}>Back to Home</button>
             <div style={{width:'100%', textAlign:'center'}}>
-            <div>
-                <button onClick={() => navigate('/search')}>To Movies Search</button>
-                <button onClick={() => navigate('/filter')}>To Movies Discovery</button>  
-            </div>
             <h2>{movie.title}</h2>
             <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
             <p>{movie.overview}</p>

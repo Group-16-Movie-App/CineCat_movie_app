@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import ReactPaginate from 'react-paginate';
-import './Pagination.css';
 import MovieList from '../components/MovieList';
 import SearchForm from '../components/SearchForm';
 
@@ -15,9 +12,12 @@ const SearchPage = () => {
     // Paginate
     const [page, setPage] = useState(1);
     const [pageCount, setPageCount] = useState(0)
-    const navigate = useNavigate();
 
     const handleSearch = ({ query, year }) => {
+        if (!query.trim()) {
+            alert('Please enter a title');
+            return;
+        }
         setQuery(query);
         setYear(year);
     };
@@ -57,27 +57,30 @@ const SearchPage = () => {
         fetchGenres();
     }, []);
 
-    return (
-        <>
-            <button onClick={() => navigate('/')}>Back to Home</button>
-            <div style={{width:'100%', textAlign:'center'}}>
-                <h1 >Search Movies</h1>
-                <SearchForm onSearch={handleSearch} />
-                <div className="pagination-container">
-                    <ReactPaginate
-                        breakLabel="..."
-                        nextLabel=">"
-                        onPageChange={(page) => setPage(page.selected + 1)}
-                        pageRangeDisplayed={5}
+    if (!query.trim()) {
+        return <div style={{width:'100%', textAlign:'center'}}>
+                    <h1 >Search Movies</h1>
+                    <SearchForm onSearch={handleSearch} />
+                    <div>
+                        Please type a title movie
+                    </div>
+                </div>
+    } else {
+        return (
+            <>
+                <div style={{width:'100%', textAlign:'center'}}>
+                    <h1 >Search Movies</h1>
+                    <SearchForm onSearch={handleSearch} />
+                    <MovieList 
+                        movies={movies} 
+                        genreNames={genreNames}
                         pageCount={pageCount}
-                        previousLabel="<"
-                        renderOnZeroPageCount={null}
+                        setPage={setPage}
                     />
                 </div>
-                <MovieList movies={movies} genreNames={genreNames} />
-            </div>
-        </>
-    );
+            </>
+        );
+    }
 };
 
 export default SearchPage;
