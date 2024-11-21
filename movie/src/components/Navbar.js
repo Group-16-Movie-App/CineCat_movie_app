@@ -20,11 +20,14 @@ const Navbar = () => {
         body: JSON.stringify(formData)
       });
       
+      const data = await response.json();
+
       if (response.ok) {
         setRegisteredEmail(formData.email);
-        return true; 
+        return true;
+      } else {
+        throw new Error(data.error || 'Registration failed');
       }
-      return false;
     } catch (error) {
       console.error('Registration error:', error);
       return false;
@@ -51,11 +54,19 @@ const Navbar = () => {
         localStorage.setItem('token', data.token);
         setIsLoggedIn(true);
         setIsLoginOpen(false);
-        setRegisteredEmail(''); 
+        setRegisteredEmail('');
+        return true;
       }
+      return false;
     } catch (error) {
       console.error('Login error:', error);
+      return false;
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
   };
 
   return (
@@ -70,27 +81,15 @@ const Navbar = () => {
         <div className="auth-buttons">
           {!isLoggedIn ? (
             <div className="auth-buttons-container">
-              <button 
-                onClick={() => setIsSignUpOpen(true)} 
-                className="auth-button"
-              >
+              <button onClick={() => setIsSignUpOpen(true)} className="auth-button">
                 Sign Up
               </button>
-              <button 
-                onClick={() => setIsLoginOpen(true)}
-                className="auth-button primary"
-              >
+              <button onClick={() => setIsLoginOpen(true)} className="auth-button primary">
                 Sign In
               </button>
             </div>
           ) : (
-            <button 
-              onClick={() => {
-                localStorage.removeItem('token');
-                setIsLoggedIn(false);
-              }}
-              className="auth-button"
-            >
+            <button onClick={handleLogout} className="auth-button">
               Sign Out
             </button>
           )}
