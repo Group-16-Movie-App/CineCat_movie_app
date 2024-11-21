@@ -53,6 +53,9 @@ const MovieDetail = () => {
             }
 
             setIsFavorite(!isFavorite);
+            
+            // dispatchEvent:this is a custom event to communicate between components
+           window.dispatchEvent(new Event('favoritesUpdated'));
         } catch (error) {
             console.error('Error toggling favorite:', error);
             alert('Failed to update favorites');

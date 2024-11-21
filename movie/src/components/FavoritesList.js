@@ -55,6 +55,9 @@ const FavoritesList = () => {
             
             // Update state to remove the movie from the UI
             setFavorites(favorites.filter(movie => movie.id !== movieId));
+            
+            //   // dispatchEvent: this is a custom event to communicate between components
+            window.dispatchEvent(new Event('favoritesUpdated'));
         } catch (err) {
             console.error('Error removing favorite:', err);
             setError('Failed to remove favorite');
