@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../components/AuthForm.css';
 
 export const SignUpForm = ({ onSubmit, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ export const SignUpForm = ({ onSubmit, onSuccess }) => {
     e.preventDefault();
     setError('');
     
+  
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters long');
       return;
@@ -27,45 +29,24 @@ export const SignUpForm = ({ onSubmit, onSuccess }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-      
-      const data = await response.json();
-
-      if (response.ok) {
+      const success = await onSubmit(formData);
+      if (success) {
         setIsSuccess(true);
-        onSubmit(formData);
-      } else {
-        setError(data.error || 'Email already exists');
+        setTimeout(() => {
+          onSuccess();
+        }, 1500);
       }
     } catch (error) {
-      console.error('Sign up error:', error);
       setError('Registration failed. Please try again.');
     }
   };
 
   if (isSuccess) {
     return (
-      <div style={{ textAlign: 'center' }}>
-        <h2 style={{ color: '#4CAF50' }}>Successfully Registered!</h2>
+      <div className="success-message">
+        <h2>Successfully Registered!</h2>
         <p>Your account has been created successfully.</p>
-        <button 
-          onClick={onSuccess} 
-          style={{ 
-            padding: '0.5rem 2rem', 
-            backgroundColor: '#333',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            marginTop: '1rem'
-          }}
-        >
+        <button onClick={onSuccess} className="success-button">
           Sign In
         </button>
       </div>
@@ -73,68 +54,50 @@ export const SignUpForm = ({ onSubmit, onSuccess }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="auth-form" onSubmit={handleSubmit}>
       <h2>Sign Up</h2>
-      {error && (
-        <div style={{ 
-          color: '#f44336', 
-          padding: '0.5rem', 
-          marginBottom: '1rem',
-          backgroundColor: '#ffebee',
-          borderRadius: '4px'
-        }}>
-          {error}
-        </div>
-      )}
-      <div style={{ marginBottom: '1rem' }}>
+      {error && <div className="auth-form-error">{error}</div>}
+      
+      <div className="form-group">
         <input
           type="text"
           placeholder="Name"
           value={formData.name}
           onChange={(e) => setFormData({...formData, name: e.target.value})}
-          style={{ width: '100%', padding: '0.5rem' }}
+          className="form-input"
           required
         />
       </div>
-      <div style={{ marginBottom: '1rem' }}>
+
+      <div className="form-group">
         <input
           type="email"
           placeholder="Email"
           value={formData.email}
           onChange={(e) => setFormData({...formData, email: e.target.value})}
-          style={{ width: '100%', padding: '0.5rem' }}
+          className="form-input"
           required
         />
       </div>
-      <div style={{ marginBottom: '1rem' }}>
+
+      <div className="form-group">
         <input
           type="password"
           placeholder="Password"
           value={formData.password}
           onChange={(e) => {
             setFormData({...formData, password: e.target.value});
-            setError(''); 
+            setError('');
           }}
-          style={{ width: '100%', padding: '0.5rem' }}
+          className="form-input"
           required
         />
-        <small style={{ 
-          color: '#666', 
-          fontSize: '0.8rem', 
-          display: 'block', 
-          marginTop: '0.5rem' 
-        }}>
+        <small className="password-hint">
           Password must be at least 6 characters long, contain one uppercase letter and one number
         </small>
       </div>
-      <button type="submit" style={{ 
-        width: '100%', 
-        padding: '0.5rem', 
-        backgroundColor: '#333',
-        color: 'white',
-        border: 'none',
-        cursor: 'pointer'
-      }}>
+
+      <button type="submit" className="submit-button">
         Sign Up
       </button>
     </form>
@@ -153,42 +116,21 @@ export const LoginForm = ({ onSubmit, initialEmail = '' }) => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-      
-      const data = await response.json();
-
-      if (response.ok) {
-        onSubmit(formData);
-      } else {
-        setError(data.error || 'Invalid email or password');
+      const success = await onSubmit(formData);
+      if (!success) {
+        setError('Invalid email or password');
       }
     } catch (error) {
-      console.error('Login error:', error);
       setError('Login failed. Please try again.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="auth-form" onSubmit={handleSubmit}>
       <h2>Sign In</h2>
-      {error && (
-        <div style={{ 
-          color: '#f44336', 
-          padding: '0.5rem', 
-          marginBottom: '1rem',
-          backgroundColor: '#ffebee',
-          borderRadius: '4px'
-        }}>
-          {error}
-        </div>
-      )}
-      <div style={{ marginBottom: '1rem' }}>
+      {error && <div className="auth-form-error">{error}</div>}
+
+      <div className="form-group">
         <input
           type="email"
           placeholder="Email"
@@ -197,11 +139,12 @@ export const LoginForm = ({ onSubmit, initialEmail = '' }) => {
             setFormData({...formData, email: e.target.value});
             setError('');
           }}
-          style={{ width: '100%', padding: '0.5rem' }}
+          className="form-input"
           required
         />
       </div>
-      <div style={{ marginBottom: '1rem' }}>
+
+      <div className="form-group">
         <input
           type="password"
           placeholder="Password"
@@ -210,18 +153,12 @@ export const LoginForm = ({ onSubmit, initialEmail = '' }) => {
             setFormData({...formData, password: e.target.value});
             setError('');
           }}
-          style={{ width: '100%', padding: '0.5rem' }}
+          className="form-input"
           required
         />
       </div>
-      <button type="submit" style={{ 
-        width: '100%', 
-        padding: '0.5rem', 
-        backgroundColor: '#333',
-        color: 'white',
-        border: 'none',
-        cursor: 'pointer'
-      }}>
+
+      <button type="submit" className="submit-button">
         Sign In
       </button>
     </form>
