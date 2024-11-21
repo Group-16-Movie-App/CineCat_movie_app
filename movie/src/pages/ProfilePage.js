@@ -2,41 +2,73 @@ import React, { useState, useEffect } from 'react';
 import FavoritesList from '../components/FavoritesList';
 import './ProfilePage.css';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 
 /* This component serves as the main profile page for logged-in users.It displays user information, statistics, and their favorite movies.*/
 const ProfilePage = () => {
+    const { userId } = useParams();
     const [favoritesCount, setFavoritesCount] = useState(0);
+    const [profileData, setProfileData] = useState(null);
     const storedUserName = localStorage.getItem('userName');
-    const userName = storedUserName && storedUserName !== 'null' ? storedUserName : 'User';
+    const isOwnProfile = !userId;
+    
+    // Update userName logic to handle shared profiles
+    const userName = isOwnProfile 
+        ? (storedUserName && storedUserName !== 'null' ? storedUserName : 'User')
+        : (profileData?.userName || 'User');
     const avatarLetter = userName.charAt(0).toUpperCase();
 
-    // Add useEffect to fetch favorites count
+    // Modified useEffect to fetch profile data
     useEffect(() => {
-        const fetchFavoritesCount = async () => {
+        const fetchProfileData = async () => {
             try {
                 const token = localStorage.getItem('token');
-                if (!token) return;
-
-                const response = await axios.get('http://localhost:5000/api/favorites', {
-                    headers: { Authorization: `Bearer ${token}` }
+                const endpoint = userId 
+                    ? `http://localhost:5000/api/profile/${userId}`
+                    : 'http://localhost:5000/api/favorites';
+                
+                const response = await axios.get(endpoint, {
+                    headers: token ? { Authorization: `Bearer ${token}` } : {}
                 });
                 
-                setFavoritesCount(response.data.length);
+                if (userId) {
+                    setProfileData(response.data);
+                    setFavoritesCount(response.data.favorites.length);
+                } else {
+                    setFavoritesCount(response.data.length);
+                }
             } catch (error) {
-                console.error('Error fetching favorites count:', error);
+                console.error('Error fetching profile data:', error);
             }
         };
 
-        fetchFavoritesCount();
+        fetchProfileData();
 
-        // Set up event listener for favorites updates
-        window.addEventListener('favoritesUpdated', fetchFavoritesCount);
-        
-        return () => {
-            window.removeEventListener('favoritesUpdated', fetchFavoritesCount);
+        // Only add event listener for own profile
+        if (isOwnProfile) {
+            window.addEventListener('favoritesUpdated', fetchProfileData);
+            return () => {
+                window.removeEventListener('favoritesUpdated', fetchProfileData);
+            };
+        }
+    }, [userId, isOwnProfile]);
+
+    // Add share button component (only show on own profile)
+    const ShareButton = () => {
+        const handleShare = () => {
+            const userId = localStorage.getItem('userId');
+            const shareUrl = `${window.location.origin}/profile/${userId}`;
+            navigator.clipboard.writeText(shareUrl);
+            alert('Profile URL copied to clipboard!');
         };
-    }, []);
+
+        return isOwnProfile ? (
+            <button className="share-button" onClick={handleShare}>
+                Share Profile
+            </button>
+        ) : null;
+    };
 
     return (
         <div className="profile-container">
@@ -51,6 +83,7 @@ const ProfilePage = () => {
                     {/* User Details Section */}
                     <div className="user-details">
                         <h1>Welcome, {userName}!</h1>
+                        <ShareButton />
                     </div>
                 </div>
                 
@@ -86,7 +119,7 @@ const ProfilePage = () => {
             <div className="favorites-section">
                 <h2>My Reviews</h2>
                 <div className="reviews-content">
-                    {/* Hard-coded reviews for now */}
+                    {/* I have hard-coded reviews for now */}
                     <p>Reviews...</p>
                 </div>
             </div>
@@ -95,7 +128,7 @@ const ProfilePage = () => {
             <div className="favorites-section">
                 <h2>My Groups</h2>
                 <div className="groups-content">
-                    {/* Hard-coded groups for now */}
+                    {/* I have hard-coded groups for now */}
                     <p>Groups...</p>
                 </div>
             </div>
