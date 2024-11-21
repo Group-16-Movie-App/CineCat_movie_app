@@ -6,6 +6,7 @@ import FilterPage from './pages/FilterPage';
 import MovieDetail from './pages/MovieDetail';
 import Schedules from './components/Schedules';
 import ProfilePage from './pages/ProfilePage';
+import FavoritesList from './components/FavoritesList';
 
 // PrivateRoute is a wrapper component that protects routes from unauthorized access, you have to be logged in to access the profile page   
 const PrivateRoute = ({ children }) => {
@@ -19,13 +20,25 @@ const PrivateRoute = ({ children }) => {
 
 function App() {
     return (
-        <Routes>
-            <Route path="/" element={<Schedules />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/filter" element={<FilterPage />} />
-            <Route path="/movie/:id" element={<MovieDetail />} />
-            <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
-        </Routes>
+        <>
+            <Navbar />
+            <Routes>
+                <Route path="/" element={<Schedules />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/filter" element={<FilterPage />} />
+                <Route path="/movie/:id" element={<MovieDetail />} />
+                <Route path="/profile" element={
+                    <PrivateRoute>
+                        <ProfilePage />
+                    </PrivateRoute>
+                } />
+                <Route path="/favorites" element={
+                    <PrivateRoute>
+                        <FavoritesList />
+                    </PrivateRoute>
+                } />
+            </Routes>
+        </>
     );
 }
 
