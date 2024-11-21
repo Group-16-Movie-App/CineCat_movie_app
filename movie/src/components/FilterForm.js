@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const FilterForm = ({ onFilter }) => {
     const [year, setYear] = useState('');
@@ -8,7 +7,6 @@ const FilterForm = ({ onFilter }) => {
     const [genres, setGenres] = useState([]);
     const [selectedGenre, setSelectedGenre] = useState('');
     const [showGenreDropdown, setShowGenreDropdown] = useState(false);
-    const navigate = useNavigate();
 
     useEffect(() => {
         // Fetch genres from backend API
@@ -77,10 +75,6 @@ const FilterForm = ({ onFilter }) => {
             />
             
             <button onClick={handleFilter}>Apply</button>
-
-            <div>
-                <button onClick={() => navigate('/search')}>Back to Search</button>
-            </div>
         </div>
     );
 };
