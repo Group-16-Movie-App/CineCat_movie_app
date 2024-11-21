@@ -13,13 +13,17 @@ const FilterForm = ({ onFilter }) => {
     useEffect(() => {
         // Fetch genres from backend API
         axios.get('http://localhost:5000/api/genre')
-            .then(response => setGenres(response.data.genres))
+            .then(response => {
+                // Add "All Genres" option at the beginning of the genres list
+                const allGenresOption = { id: 0, name: 'All Genres' };
+                setGenres([allGenresOption, ...response.data.genres]);
+            })
             .catch(error => console.error('Error fetching genres:', error));
     }, []);
 
     const handleGenreSelect = (genreId) => {
         console.log('Selected Genre ID: ' + genreId);
-        setSelectedGenre(genreId.toString()); // genreId is required to be a string
+        setSelectedGenre(genreId === 0 ? '' : genreId.toString()); // Set to '' for "All Genres"// genreId is required to be a string
         setShowGenreDropdown(false); // Close the dropdown after selection
     };
 
@@ -33,7 +37,7 @@ const FilterForm = ({ onFilter }) => {
         <div >
             <div style={{ position: 'relative', display: 'inline-block' }}>
                 <button onClick={() => setShowGenreDropdown(!showGenreDropdown)}>
-                    {selectedGenre ? genres.find(genre => genre.id === parseInt(selectedGenre))?.name : 'Select Genre'}
+                    {selectedGenre ? genres.find(genre => genre.id === parseInt(selectedGenre))?.name : 'All Genres'}
                 </button>
                 {showGenreDropdown && (
                     <div style={{
