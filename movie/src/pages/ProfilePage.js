@@ -3,6 +3,7 @@ import FavoritesList from '../components/FavoritesList';
 import './ProfilePage.css';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import './ProfilePage.css';
 
 
 /* This component serves as the main profile page for logged-in users.It displays user information, statistics, and their favorite movies.*/
