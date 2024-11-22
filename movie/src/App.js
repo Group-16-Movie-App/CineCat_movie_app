@@ -8,6 +8,7 @@ import Schedules from './components/Schedules';
 import ProfilePage from './pages/ProfilePage';
 import FavoritesList from './components/FavoritesList';
 
+
 // PrivateRoute is a wrapper component that protects routes from unauthorized access, you have to be logged in to access the profile page   
 const PrivateRoute = ({ children }) => {
     // Check if user is authenticated by looking for token
@@ -27,11 +28,8 @@ function App() {
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/filter" element={<FilterPage />} />
                 <Route path="/movie/:id" element={<MovieDetail />} />
-                <Route path="/profile" element={
-                    <PrivateRoute>
-                        <ProfilePage />
-                    </PrivateRoute>
-                } />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/profile/:userId" element={<ProfilePage />} />
                 <Route path="/favorites" element={
                     <PrivateRoute>
                         <FavoritesList />
