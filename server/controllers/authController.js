@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import pool from '../config/database.js';
+
 export const register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -11,27 +12,32 @@ export const register = async (req, res) => {
                 error: 'All fields are required'
             });
         }
+
         // if email already exists
         const emailExists = await pool.query(
             'SELECT * FROM accounts WHERE email = $1',
             [email]
         );
+
         if (emailExists.rows.length > 0) {
             return res.status(400).json({ 
                 error: 'Email already exists'
             });
         }
+
         // Password validation
         if (password.length < 6) {
             return res.status(400).json({ 
                 error: 'Password must be at least 6 characters long'
             });
         }
+
         if (!/[A-Z]/.test(password)) {
             return res.status(400).json({ 
                 error: 'Password must contain at least one uppercase letter'
             });
         }
+
         if (!/[0-9]/.test(password)) {
             return res.status(400).json({ 
                 error: 'Password must contain at least one number'
@@ -55,18 +61,22 @@ export const register = async (req, res) => {
             email,
             message: 'Registration successful'
         });
+
     } catch (error) {
         console.error('Registration error details:', error);
+
         if (error.code === '23505' && error.constraint === 'accounts_email_key') {
             return res.status(400).json({ 
                 error: 'Email already exists'
             });
         }
+
         res.status(500).json({ 
             error: 'Registration failed. Please try again.'
         });
     }
 };
+
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -76,6 +86,7 @@ export const login = async (req, res) => {
                 error: 'Email and password are required'
             });
         }
+
         const result = await pool.query(
             'SELECT * FROM accounts WHERE email = $1',
             [email]
@@ -111,6 +122,7 @@ export const login = async (req, res) => {
         });
     }
 };
+
 export const logout = (req, res) => {
     res.json({ message: 'Logged out successfully' });
 };

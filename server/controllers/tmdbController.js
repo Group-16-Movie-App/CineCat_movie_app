@@ -1,10 +1,13 @@
 import axios from 'axios';
+
 export const searchMovies = async (req, res) => {
     try {
         const { query, year, page = 1 } = req.query;
+
         if (!query) {
             return res.status(400).json({ error: 'Query parameter is required.' });
         }
+
         let searchEndpoint = "https://api.themoviedb.org/3/search/movie";
         const config = {
             headers: {
@@ -24,9 +27,11 @@ export const searchMovies = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch movies' });
     }
 };
+
 export const filterMovies = async (req, res) => {
     try {
         const { genre, rating, year, page = 1, sort_by = 'popularity.desc' } = req.query;
+
         let searchEndpoint = "https://api.themoviedb.org/3/discover/movie";
         const config = {
             headers: {
@@ -48,6 +53,7 @@ export const filterMovies = async (req, res) => {
         res.status(500).json({ error: 'Failed to filter movies' });
     }
 };
+
 export const getMovieDetails = async (req, res) => {
     try {
         const { id } = req.params;
@@ -60,6 +66,7 @@ export const getMovieDetails = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch movie details' });
     }
 };
+
 export const getGenres = async (req, res) => {
     try {
         const response = await axios.get(
