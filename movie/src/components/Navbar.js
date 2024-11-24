@@ -89,12 +89,6 @@ const Navbar = () => {
     localStorage.removeItem('userEmail');
     setIsLoggedIn(false);
   };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setIsLoggedIn(false);
-  };
-
   return (
     <div>
       <nav className="navbar">
@@ -118,10 +112,6 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            <button 
-              onClick={handleLogout}
-              className="auth-button"
-            >
             <button onClick={handleLogout} className="auth-button">
               Sign Out
             </button>
@@ -147,3 +137,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
