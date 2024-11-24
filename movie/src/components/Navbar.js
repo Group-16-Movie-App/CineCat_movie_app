@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ModalWindow from './ModalWindow';
 import { SignUpForm, LoginForm } from './AuthForms';
 import './Navbar.css';
+
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -89,6 +92,56 @@ const Navbar = () => {
     localStorage.removeItem('userEmail');
     setIsLoggedIn(false);
   };
+
+  const handleDeleteAccount = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('You must be logged in');
+            navigate('/login');  
+            return;
+        }
+
+        const response = await fetch('http://localhost:5000/api/auth/account', {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.status === 401) {
+            localStorage.removeItem('token');
+            alert('Session expired. Please login again.');
+            navigate('/login');  
+            return;
+        }
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to delete account');
+        }
+
+        localStorage.clear();
+        setShowDeleteConfirm(false);
+        alert('Account successfully deleted');
+        navigate('/');  
+        window.location.reload(); 
+
+    } catch (error) {
+        console.error('Error deleting account:', error);
+        
+        if (error.message.includes('Not authenticated')) {
+            alert('Please login first');
+            navigate('/login');  
+            return;
+        }
+        
+        alert(error.message || 'Failed to delete account. Please try again.');
+    }
+};
+
   return (
     <div>
       <nav className="navbar">
@@ -112,9 +165,14 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            <button onClick={handleLogout} className="auth-button">
-              Sign Out
-            </button>
+            <div className="auth-buttons-container">
+              <button onClick={() => setShowDeleteConfirm(true)} className="auth-button danger">
+                Delete Account
+              </button>
+              <button onClick={handleLogout} className="auth-button">
+                Sign Out
+              </button>
+            </div>
           )}
         </div>
       </nav>
@@ -132,6 +190,27 @@ const Navbar = () => {
           initialEmail={registeredEmail}
         />
       </ModalWindow>
+
+      <ModalWindow isOpen={showDeleteConfirm} onClose={() => setShowDeleteConfirm(false)}>
+    <div className="delete-confirmation">
+        <h2>Delete Account</h2>
+        <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+        <div className="delete-confirmation-buttons">
+            <button 
+                onClick={() => setShowDeleteConfirm(false)} 
+                className="cancel-button"
+            >
+                Cancel
+            </button>
+            <button 
+                onClick={handleDeleteAccount} 
+                className="delete-button"
+            >
+                Delete Account
+            </button>
+        </div>
+    </div>
+</ModalWindow>
     </div>
   );
 };

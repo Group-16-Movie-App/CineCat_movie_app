@@ -61,3 +61,52 @@
 .auth-button.primary:hover {
   background-color: #e6e6e6;
 }
+
+.auth-button.danger {
+  background-color: #dc3545;
+  border: none;
+  color: white;
+}
+
+.auth-button.danger:hover {
+  background-color: #c82333;
+}
+
+.delete-confirmation {
+  padding: 20px;
+  text-align: center;
+}
+
+.delete-confirmation h2 {
+  color: #dc3545;
+  margin-bottom: 15px;
+}
+
+.delete-confirmation p {
+  margin-bottom: 20px;
+  color: #666;
+}
+
+.delete-confirmation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.delete-confirmation .cancel-button {
+  padding: 8px 16px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-confirmation .delete-button {
+  padding: 8px 16px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
