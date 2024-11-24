@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import finnkinoRoutes from './routes/finnkino.js';
 import tmdbRoutes from './routes/tmdb.js';
+import reviewRoutes from './routes/reviewRoutes.js';        
 
 dotenv.config();
 
@@ -17,6 +18,8 @@ app.use(express.json());
 app.use('/api', authRoutes);
 app.use('/api', finnkinoRoutes);
 app.use('/api', tmdbRoutes);
+app.use("/api/reviews", reviewRoutes);
+
 
 app.listen(PORT, () => {
     console.log("Server running on port " + PORT);
