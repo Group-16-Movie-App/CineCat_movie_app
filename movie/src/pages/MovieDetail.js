@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Reviews from '../components/Reviews';
+
 
 const MovieDetail = () => {
     const { id } = useParams();
@@ -86,6 +88,7 @@ const MovieDetail = () => {
                 {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
             </button>
         </div>
+        <Reviews movieId={id} />
         </>
     );
 };

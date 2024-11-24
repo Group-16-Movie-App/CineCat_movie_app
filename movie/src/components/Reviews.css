@@ -1,0 +1,333 @@
+.reviews-container {
+    margin: 20px auto;
+    padding: 30px;
+    background-color: #1a1a1a;
+    border-radius: 12px;
+    max-width: 600px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.reviews-title {
+    color: #fff;
+    margin-bottom: 25px;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.error-message {
+    color: #ff4444;
+    margin: 10px 0;
+    padding: 12px;
+    background-color: rgba(255, 68, 68, 0.1);
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.login-prompt {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.login-prompt p {
+    color: #fff;
+    margin: 0;
+    font-size: 0.95em;
+}
+
+.login-link {
+    display: inline-block;
+    padding: 8px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.login-link:hover {
+    background-color: #45a049;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.review-form {
+    text-align: left;
+}
+
+.review-textarea {
+    width: 100%;
+    min-height: 100px;
+    margin: 10px 0;
+    padding: 12px;
+    background-color: #242424;
+    color: #fff;
+    border: 1px solid #333;
+    border-radius: 8px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.95em;
+    transition: border-color 0.3s ease;
+}
+
+.review-textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.form-footer {
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.rating-label {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+}
+
+.rating-select {
+    margin-left: 10px;
+    padding: 6px 10px;
+    background-color: #242424;
+    color: #fff;
+    border: 1px solid #333;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.rating-select:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.submit-button {
+    padding: 8px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.submit-button:hover {
+    background-color: #45a049;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.submit-button:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.reviews-list {
+    margin-top: 20px;
+}
+
+.no-reviews {
+    color: #888;
+    text-align: center;
+    padding: 25px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    font-size: 0.9em;
+}
+
+.review-card {
+    border: 1px solid #333;
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 8px;
+    background-color: #242424;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #333;
+}
+
+.reviewer-name {
+    color: #4CAF50;
+    font-size: 0.9em;
+    background-color: rgba(76, 175, 80, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.review-rating {
+    color: #ffd700;
+    background-color: rgba(255, 215, 0, 0.1);
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.review-content {
+    color: #e0e0e0;
+    margin: 12px 0;
+    line-height: 1.6;
+    font-size: 0.95em;
+    text-align: left;
+}
+
+.review-date {
+    color: #666;
+    display: block;
+    margin-top: 12px;
+    font-size: 0.8em;
+    text-align: right;
+}
+
+@media (max-width: 480px) {
+    .reviews-container {
+        padding: 20px;
+        margin: 10px;
+    }
+
+    .form-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .rating-label {
+        justify-content: space-between;
+    }
+
+    .submit-button {
+        width: 100%;
+    }
+}
+
+/* ... previous styles ... */
+
+.login-button {
+    display: inline-block;
+    padding: 8px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #45a049;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.login-button:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.login-message {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    text-align: center;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.login-message p {
+    margin: 0;
+    font-size: 0.95em;
+    color: #e0e0e0;
+}
+/* Add these styles to your existing CSS */
+
+.error-message {
+    background-color: rgba(255, 68, 68, 0.1);
+    color: #ff4444;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 10px 0;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.login-message {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.login-message p {
+    margin: 0;
+    color: red;
+    font-size: 0.95em;
+}
+
+.review-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.delete-button {
+    background: none;  /* Убираем фон */
+    border: none;
+    cursor: pointer;
+    color: #ff4444;  /* Сразу делаем красным */
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.delete-button:hover {
+    transform: scale(1.1); 
+    color: #ff0000; 
+}
+
+.delete-button svg {
+    width: 20px;
+    height: 20px;
+}
