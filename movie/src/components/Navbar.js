@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ModalWindow from './ModalWindow';
 import { SignUpForm, LoginForm } from './AuthForms';
 import './Navbar.css';
+import DeleteAccount from './DeleteAccount';
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -89,6 +92,32 @@ const Navbar = () => {
     localStorage.removeItem('userEmail');
     setIsLoggedIn(false);
   };
+
+  const handleDeleteAccount = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5000/api/auth/account', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        localStorage.clear();
+        handleLogout();
+        navigate('/');
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete account');
+      }
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      alert('Failed to delete account. Please try again.');
+    }
+  };
+
   return (
     <div>
       <nav className="navbar">
@@ -112,9 +141,14 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            <button onClick={handleLogout} className="auth-button">
-              Sign Out
-            </button>
+            <div className="auth-buttons-container">
+              <button onClick={() => setShowDeleteConfirm(true)} className="auth-button danger">
+                Delete Account
+              </button>
+              <button onClick={handleLogout} className="auth-button">
+                Sign Out
+              </button>
+            </div>
           )}
         </div>
       </nav>
@@ -131,6 +165,21 @@ const Navbar = () => {
           onSubmit={handleLogin}
           initialEmail={registeredEmail}
         />
+      </ModalWindow>
+
+      <ModalWindow isOpen={showDeleteConfirm} onClose={() => setShowDeleteConfirm(false)}>
+        <div className="delete-confirmation">
+          <h2>Delete Account</h2>
+          <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+          <div className="delete-confirmation-buttons">
+            <button onClick={() => setShowDeleteConfirm(false)} className="cancel-button">
+              Cancel
+            </button>
+            <button onClick={handleDeleteAccount} className="delete-button">
+              Delete Account
+            </button>
+          </div>
+        </div>
       </ModalWindow>
     </div>
   );

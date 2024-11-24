@@ -126,3 +126,13 @@ export const login = async (req, res) => {
 export const logout = (req, res) => {
     res.json({ message: 'Logged out successfully' });
 };
+
+export const deleteAccount = async (req, res) => {
+    try {
+        await pool.query('DELETE FROM accounts WHERE id = $1', [req.user.id]);
+        res.json({ message: 'Account deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting account:', error);
+        res.status(500).json({ error: 'Failed to delete account' });
+    }
+};
