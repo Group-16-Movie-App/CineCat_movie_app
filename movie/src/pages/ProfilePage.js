@@ -8,11 +8,15 @@ import './ProfilePage.css';
 
 /* This component serves as the main profile page for logged-in users.It displays user information, statistics, and their favorite movies.*/
 const ProfilePage = () => {
-    const { userId } = useParams();
+    // to get user id from the localstorage
     const [favoritesCount, setFavoritesCount] = useState(0);
     const [profileData, setProfileData] = useState(null);
     const storedUserName = localStorage.getItem('userName');
+    // to get user id from the localstorage
+    const { userId } = localStorage.getItem('userId');
     const isOwnProfile = !userId;
+
+    console.log('User ID:', userId);
     
     // Update userName logic to handle shared profiles
     const userName = isOwnProfile 
@@ -25,6 +29,7 @@ const ProfilePage = () => {
         const fetchProfileData = async () => {
             try {
                 const token = localStorage.getItem('token');
+
                 const endpoint = userId 
                     ? `http://localhost:5000/api/profile/${userId}`
                     : 'http://localhost:5000/api/favorites';
@@ -32,10 +37,11 @@ const ProfilePage = () => {
                 const response = await axios.get(endpoint, {
                     headers: token ? { Authorization: `Bearer ${token}` } : {}
                 });
-                
+                console.log('Profile data:', response.data);
                 if (userId) {
                     setProfileData(response.data);
                     setFavoritesCount(response.data.favorites.length);
+                    localStorage.setItem('userId', userId);
                 } else {
                     setFavoritesCount(response.data.length);
                 }
