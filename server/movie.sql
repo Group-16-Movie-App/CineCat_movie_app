@@ -1,7 +1,8 @@
+drop table if exists posts;
 drop table if exists shared_urls;
 drop table if exists favorites;
-drop table if exists ratings;
 drop table if exists reviews;
+-- drop table if exists ratings;
 drop table if exists members;
 drop table if exists groups;
 drop table if exists accounts;
@@ -44,20 +45,21 @@ create table reviews (
     movie_id int not null,
     account_id int not null,
     review text not null,
+    rating smallint check (rating between 1 and 5) not null,
     created timestamp default current_timestamp,
     constraint fk_account foreign key (account_id) references accounts(id) on delete cascade
 );
 
 -- Ratings table to store account-created movie ratings. Movie ID is from TMDB
--- If the accoounts is deleted, its ratings are kept, and account_id field is null.
-create table ratings (
-    id serial primary key,
-    movie_id int not null,
-    account_id int,
-    rating smallint check (rating between 1 and 5),
-    created timestamp default current_timestamp,
-    constraint fk_account foreign key (account_id) references accounts(id) on delete set null
-);
+-- If the accounts is deleted, its ratings are kept, and account_id field is null.
+-- create table ratings (
+   -- id serial primary key,
+   -- movie_id int not null,
+   -- account_id int,
+   -- rating smallint check (rating between 1 and 5) not null,
+   -- created timestamp default current_timestamp,
+   -- constraint fk_account foreign key (account_id) references accounts(id) on delete set null
+--);
 
 -- Favorites table to manage account’s favorite movies or series
 create table favorites (
@@ -76,4 +78,23 @@ create table shared_urls (
     url text unique not null,
     created timestamp default current_timestamp,
     constraint fk_shared_account foreign key (account_id) references accounts(id)
+);
+
+-- Table to manage group's post:
+create table posts (
+    id serial primary key,
+    account_id int not null,
+    group_id int not null,
+    tilte text not null,
+    description text not null,
+    movie_id int,
+    showtime_id int,
+    created timestamp default current_timestamp,
+    constraint fk_group foreign key (group_id) references groups(id) on delete cascade,
+    constraint fk_account foreign key (account_id) references accounts(id) on delete cascade
+    -- Ensure movie_id and showtime_id cannot be NON-NULL at a time
+    -- constraint chk_movie_or_showtime 
+        -- check (
+           -- (movie_id is distinct from showtime_id)
+        --)
 );
