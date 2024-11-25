@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import MovieList from '../components/MovieList';
 import SearchForm from '../components/SearchForm';
+
 
 const SearchPage = () => {
     const [movies, setMovies] = useState([]);
     const [query, setQuery] = useState('');
     const [year, setYear] = useState('');
     const [genreNames, setGenreNames] = useState({});
-    const navigate = useNavigate();
+    // Paginate
+    const [page, setPage] = useState(1);
+    const [pageCount, setPageCount] = useState(0)
 
     const handleSearch = ({ query, year }) => {
+        if (!query.trim()) {
+            alert('Please enter a title');
+            return;
+        }
         setQuery(query);
         setYear(year);
     };
@@ -21,16 +27,17 @@ const SearchPage = () => {
             if (!query) return;
             try {
                 const response = await axios.get('http://localhost:5000/api/search/movies', {
-                    params: { query, year: year || undefined },
+                    params: { query, year: year || undefined, page },
                 });
                 setMovies(response.data.results || []);
+                setPageCount(response.data.total_pages)
                 console.log('movie Data from search',response.data.results)
             } catch (error) {
                 console.error('Error fetching search results:', error);
             }
         };
         fetchMovies();
-    }, [query, year]);
+    }, [query, year, page]);
 
     // Fetch genre data
     useEffect(() => {
@@ -50,16 +57,30 @@ const SearchPage = () => {
         fetchGenres();
     }, []);
 
-    return (
-        <>
-            <button onClick={() => navigate('/')}>Back to Home</button>
-            <div style={{width:'100%', textAlign:'center'}}>
-                <h1 >Search Movies</h1>
-                <SearchForm onSearch={handleSearch} />
-                <MovieList movies={movies} genreNames={genreNames} />
-            </div>
-        </>
-    );
+    if (!query.trim()) {
+        return <div style={{width:'100%', textAlign:'center'}}>
+                    <h1 >Search Movies</h1>
+                    <SearchForm onSearch={handleSearch} />
+                    <div>
+                        Please type a title movie
+                    </div>
+                </div>
+    } else {
+        return (
+            <>
+                <div style={{width:'100%', textAlign:'center'}}>
+                    <h1 >Search Movies</h1>
+                    <SearchForm onSearch={handleSearch} />
+                    <MovieList 
+                        movies={movies} 
+                        genreNames={genreNames}
+                        pageCount={pageCount}
+                        setPage={setPage}
+                    />
+                </div>
+            </>
+        );
+    }
 };
 
 export default SearchPage;

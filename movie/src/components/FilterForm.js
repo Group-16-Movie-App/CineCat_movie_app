@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const FilterForm = ({ onFilter }) => {
     const [year, setYear] = useState('');
@@ -8,18 +7,21 @@ const FilterForm = ({ onFilter }) => {
     const [genres, setGenres] = useState([]);
     const [selectedGenre, setSelectedGenre] = useState('');
     const [showGenreDropdown, setShowGenreDropdown] = useState(false);
-    const navigate = useNavigate();
 
     useEffect(() => {
         // Fetch genres from backend API
         axios.get('http://localhost:5000/api/genre')
-            .then(response => setGenres(response.data.genres))
+            .then(response => {
+                // Add "All Genres" option at the beginning of the genres list
+                const allGenresOption = { id: 0, name: 'All Genres' };
+                setGenres([allGenresOption, ...response.data.genres]);
+            })
             .catch(error => console.error('Error fetching genres:', error));
     }, []);
 
     const handleGenreSelect = (genreId) => {
         console.log('Selected Genre ID: ' + genreId);
-        setSelectedGenre(genreId.toString()); // genreId is required to be a string
+        setSelectedGenre(genreId === 0 ? '' : genreId.toString()); // Set to '' for "All Genres"// genreId is required to be a string
         setShowGenreDropdown(false); // Close the dropdown after selection
     };
 
@@ -33,7 +35,7 @@ const FilterForm = ({ onFilter }) => {
         <div >
             <div style={{ position: 'relative', display: 'inline-block' }}>
                 <button onClick={() => setShowGenreDropdown(!showGenreDropdown)}>
-                    {selectedGenre ? genres.find(genre => genre.id === parseInt(selectedGenre))?.name : 'Select Genre'}
+                    {selectedGenre ? genres.find(genre => genre.id === parseInt(selectedGenre))?.name : 'All Genres'}
                 </button>
                 {showGenreDropdown && (
                     <div style={{
@@ -73,10 +75,6 @@ const FilterForm = ({ onFilter }) => {
             />
             
             <button onClick={handleFilter}>Apply</button>
-
-            <div>
-                <button onClick={() => navigate('/search')}>Back to Search</button>
-            </div>
         </div>
     );
 };
