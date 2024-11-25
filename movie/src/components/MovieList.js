@@ -15,7 +15,7 @@ const MovieList = ({ movies, genreNames, pageCount, setPage }) => {
         return <div>No movies found.</div>;
     }
     return (
-        <div>
+        <div className="movie-list-container">
             <div className="pagination-container">
                 <ReactPaginate
                     breakLabel="..."
@@ -28,19 +28,19 @@ const MovieList = ({ movies, genreNames, pageCount, setPage }) => {
                     renderOnZeroPageCount={null}
                 />
             </div>
-            <div style={{display:'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))'}}>
+            <div className="movie-list-grid">
                 {movies.map((movie) => {
                     // Extract the release year from release_date
                     const releaseYear = movie.release_date ? movie.release_date.substring(0, 4) : "N/A";
 
                     return (
-                            <div key={movie.id} style={{ margin: '16px' }}>
+                            <div key={movie.id} className="movie-card">
                                 <Link to={`/movie/${movie.id}`}>
                                     <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} alt={movie.title} />
                                     <h3>{movie.title} ({releaseYear})</h3>
                                 </Link>
-                                <p>Rating: {movie.vote_average}</p>
-                                <p>
+                                <p className="rating">TMDB Rating: {movie.vote_average.toFixed(2)}</p>
+                                <p className="genres">
                                     Genres:{" "}
                                     {movie.genre_ids
                                         .map(id => genreNames[id] || "Unknown")
