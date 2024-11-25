@@ -1,7 +1,72 @@
+/* General container for movie list */
+.movie-list-container {
+    padding: 20px;
+    background-color: #121212; 
+    color: #f5f5f5;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Grid for movies */
+.movie-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* Movie card styles */
+.movie-card {
+    background-color: #1e1e1e; 
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Subtle shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    padding: 10px;
+}
+
+.movie-card:hover {
+    transform: scale(1.05); /* Slight zoom effect */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
+}
+
+/* Movie poster */
+.movie-card img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+/* Movie title */
+.movie-card h3 {
+    font-size: 1.2rem;
+    color: #ffcc00;
+    margin-bottom: 5px;
+}
+
+/* Movie genres */
+.movie-card p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 5px 0;
+}
+
+.movie-card .genres {
+    font-weight: bold;
+    color: #a0a0a0; 
+}
+
+/* TMDB rating */
+.movie-card .rating {
+    color: #a0a0a0; 
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Pagination styles */
 .pagination-container {
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center;    /* Center vertically */
+    justify-content: center;
+    margin: 20px 0;
 }
 
 .pagination-container ul {
@@ -15,34 +80,33 @@
 .pagination-container ul li {
     width: 2.5em;
     text-align: center;
-    margin: 0 0.2em; /* Add some space between items */
-    cursor: pointer; /* Change cursor to pointer */
+    margin: 0 0.2em;
+    cursor: pointer;
 }
 
 .pagination-container ul li a {
     display: block;
-    width: 2.5em;               /* Width of each button */
-    height: 2.5em;              /* Height of each button */
-    line-height: 2.5em;         /* Vertically center text */
-    text-align: center;         /* Horizontally center text */
-    border: 1px solid #ccc;     /* Add a border */
-    border-radius: 5px;        /* Rounded square corners */
-    background-color: #f9f9f9; /* Light gray background */
-    color: #000;               /* Text color */
-    text-decoration: none;     /* Remove underline */
-    transition: all 0.3s ease; /* Smooth hover effects */
+    width: 2.5em;
+    height: 2.5em;
+    line-height: 2.5em;
+    text-align: center;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #2b2b2b;
+    color: #f5f5f5;
+    text-decoration: none;
+    transition: all 0.3s ease;
 }
 
 .pagination-container ul li a:hover {
-    color: #007bff; /* Hover color */
-    color: #9338e8;              /* Hover text color */
-    border-color: #0056b3;    /* Darker border on hover */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Dark shadow around corners */
+    color: #ffffff;
+    border-color: #ffcc00;
+    background-color: #383838;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .pagination-container ul li.selected a {
-    background-color: #007bff; /* Active page background color */
-    color: #ffffff;              /* Active page text color */
-    border-color: #0056b3;    /* Active page border color */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow */
+    background-color: #ffcc00;
+    color: #121212;
+    border-color: #ffcc00;
 }

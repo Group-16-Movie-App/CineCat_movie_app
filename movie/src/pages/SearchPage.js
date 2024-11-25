@@ -62,7 +62,7 @@ const SearchPage = () => {
                     <h1 >Search Movies</h1>
                     <SearchForm onSearch={handleSearch} />
                     <div>
-                        Please type a title movie
+                        What movie are you lookin for? Please enter a title movie
                     </div>
                 </div>
     } else {
