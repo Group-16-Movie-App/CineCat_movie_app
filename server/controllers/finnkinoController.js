@@ -16,7 +16,6 @@ export const getTheatres = async (req, res) => {
                 'User-Agent': 'Mozilla/5.0'
             }
         });
-
         parser.parseString(response.data, (err, result) => {
             if (err) {
                 throw new Error('Failed to parse XML data');
@@ -28,7 +27,6 @@ export const getTheatres = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch theatre areas' });
     }
 };
-
 export const getSchedules = async (req, res) => {
     try {
         const response = await axios.get(`${SCHEDULES_URL}?area=${req.params.theatreId}`, {
@@ -37,7 +35,6 @@ export const getSchedules = async (req, res) => {
                 'User-Agent': 'Mozilla/5.0'
             }
         });
-
         parser.parseString(response.data, (err, result) => {
             if (err) {
                 throw new Error('Failed to parse XML data');
@@ -49,7 +46,6 @@ export const getSchedules = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch schedules' });
     }
 };
-
 export const getEventDetails = async (req, res) => {
     try {
         const response = await axios.get(`${EVENTS_URL}?eventID=${req.params.eventId}&includeVideos=true&includeGallery=true&includePictures=true`, {
@@ -58,7 +54,6 @@ export const getEventDetails = async (req, res) => {
                 'User-Agent': 'Mozilla/5.0'
             }
         });
-
         parser.parseString(response.data, (err, result) => {
             if (err) {
                 throw new Error('Failed to parse XML data');
