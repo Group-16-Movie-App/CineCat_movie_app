@@ -66,10 +66,14 @@ const Navbar = () => {
       
       if (response.ok) {
         const data = await response.json();
+        console.log('Login successful:', data);
         localStorage.setItem('token', data.token);
         if (data.name) {
           localStorage.setItem('userName', data.name);
         }
+        //set id 
+        localStorage.setItem('userId', data.id);
+        //set email
         localStorage.setItem('userEmail', data.email);
         setIsLoggedIn(true);
         setIsLoginOpen(false);
