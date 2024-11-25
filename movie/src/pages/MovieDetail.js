@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Reviews from '../components/Reviews';
 
@@ -72,12 +72,7 @@ const MovieDetail = () => {
 
     return (
         <>
-            <button onClick={() => navigate('/')}>Back to Home</button>
             <div style={{width:'100%', textAlign:'center'}}>
-            <div>
-                <button onClick={() => navigate('/search')}>To Movies Search</button>
-                <button onClick={() => navigate('/filter')}>To Movies Discovery</button>  
-            </div>
             <h2>{movie.title}</h2>
             <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
             <p>{movie.overview}</p>

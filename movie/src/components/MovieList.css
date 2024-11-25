@@ -1,0 +1,48 @@
+.pagination-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;    /* Center vertically */
+}
+
+.pagination-container ul {
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pagination-container ul li {
+    width: 2.5em;
+    text-align: center;
+    margin: 0 0.2em; /* Add some space between items */
+    cursor: pointer; /* Change cursor to pointer */
+}
+
+.pagination-container ul li a {
+    display: block;
+    width: 2.5em;               /* Width of each button */
+    height: 2.5em;              /* Height of each button */
+    line-height: 2.5em;         /* Vertically center text */
+    text-align: center;         /* Horizontally center text */
+    border: 1px solid #ccc;     /* Add a border */
+    border-radius: 5px;        /* Rounded square corners */
+    background-color: #f9f9f9; /* Light gray background */
+    color: #000;               /* Text color */
+    text-decoration: none;     /* Remove underline */
+    transition: all 0.3s ease; /* Smooth hover effects */
+}
+
+.pagination-container ul li a:hover {
+    color: #007bff; /* Hover color */
+    color: #9338e8;              /* Hover text color */
+    border-color: #0056b3;    /* Darker border on hover */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Dark shadow around corners */
+}
+
+.pagination-container ul li.selected a {
+    background-color: #007bff; /* Active page background color */
+    color: #ffffff;              /* Active page text color */
+    border-color: #0056b3;    /* Active page border color */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow */
+}
