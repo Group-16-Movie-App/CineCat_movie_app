@@ -1,14 +1,32 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import ModalWindow from './ModalWindow';
 import { SignUpForm, LoginForm } from './AuthForms';
 import './Navbar.css';
 
+
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem('token');
+      setIsLoggedIn(!!token);
+    };
+
+    checkLoginStatus();
+
+    window.addEventListener('storage', checkLoginStatus);
+
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+    };
+  }, []);
 
   const handleSignUp = async (formData) => {
     try {
@@ -52,6 +70,10 @@ const Navbar = () => {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('token', data.token);
+        if (data.name) {
+          localStorage.setItem('userName', data.name);
+        }
+        localStorage.setItem('userEmail', data.email);
         setIsLoggedIn(true);
         setIsLoginOpen(false);
         setRegisteredEmail('');
@@ -66,8 +88,59 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userEmail');
     setIsLoggedIn(false);
   };
+
+  const handleDeleteAccount = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('You must be logged in');
+            navigate('/login');  
+            return;
+        }
+
+        const response = await fetch('http://localhost:5000/api/auth/account', {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.status === 401) {
+            localStorage.removeItem('token');
+            alert('Session expired. Please login again.');
+            navigate('/login');  
+            return;
+        }
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to delete account');
+        }
+
+        localStorage.clear();
+        setShowDeleteConfirm(false);
+        alert('Account successfully deleted');
+        navigate('/');  
+        window.location.reload(); 
+
+    } catch (error) {
+        console.error('Error deleting account:', error);
+        
+        if (error.message.includes('Not authenticated')) {
+            alert('Please login first');
+            navigate('/login');  
+            return;
+        }
+        
+        alert(error.message || 'Failed to delete account. Please try again.');
+    }
+};
 
   return (
     <div>
@@ -76,6 +149,9 @@ const Navbar = () => {
           <Link to="/" className="nav-link">Home</Link>
           <Link to="/search" className="nav-link">Search</Link>
           <Link to="/filter" className="nav-link">Filter</Link>
+          {isLoggedIn && (
+            <Link to="/profile" className="nav-link"> My Profile </Link>
+          )}
         </div>
         
         <div className="auth-buttons">
@@ -89,9 +165,14 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            <button onClick={handleLogout} className="auth-button">
-              Sign Out
-            </button>
+            <div className="auth-buttons-container">
+              <button onClick={() => setShowDeleteConfirm(true)} className="auth-button danger">
+                Delete Account
+              </button>
+              <button onClick={handleLogout} className="auth-button">
+                Sign Out
+              </button>
+            </div>
           )}
         </div>
       </nav>
@@ -109,8 +190,30 @@ const Navbar = () => {
           initialEmail={registeredEmail}
         />
       </ModalWindow>
+
+      <ModalWindow isOpen={showDeleteConfirm} onClose={() => setShowDeleteConfirm(false)}>
+    <div className="delete-confirmation">
+        <h2>Delete Account</h2>
+        <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+        <div className="delete-confirmation-buttons">
+            <button 
+                onClick={() => setShowDeleteConfirm(false)} 
+                className="cancel-button"
+            >
+                Cancel
+            </button>
+            <button 
+                onClick={handleDeleteAccount} 
+                className="delete-button"
+            >
+                Delete Account
+            </button>
+        </div>
+    </div>
+</ModalWindow>
     </div>
   );
 };
 
 export default Navbar;
+

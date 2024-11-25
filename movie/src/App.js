@@ -1,40 +1,43 @@
 import React from 'react';
-
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import SearchPage from './pages/SearchPage';
 import FilterPage from './pages/FilterPage';
 import MovieDetail from './pages/MovieDetail';
 import Schedules from './components/Schedules';
+import ProfilePage from './pages/ProfilePage';
+import FavoritesList from './components/FavoritesList';
 
-const App = () => {
+
+// PrivateRoute is a wrapper component that protects routes from unauthorized access, you have to be logged in to access the profile page   
+const PrivateRoute = ({ children }) => {
+    // Check if user is authenticated by looking for token
+    const token = localStorage.getItem('token');
+    
+    // If authenticated, render the protected component
+    // If not, redirect to login page
+    return token ? children : <Navigate to="/login" />;
+};
+
+function App() {
     return (
-        <div>
-            <Navbar/>
+        <>
+            <Navbar />
             <Routes>
                 <Route path="/" element={<Schedules />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/filter" element={<FilterPage />} />
                 <Route path="/movie/:id" element={<MovieDetail />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/profile/:userId" element={<ProfilePage />} />
+                <Route path="/favorites" element={
+                    <PrivateRoute>
+                        <FavoritesList />
+                    </PrivateRoute>
+                } />
             </Routes>
-        </div>
+        </>
     );
-};
-
-// branch story8/search
-// import './App.css';
-// import {SearchBar} from './components/SearchBar.jsx';
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <div className="search-bar-container">
-//         <SearchBar />
-//       {/* <h3>Movie app</h3> */}
-//         </div>
-//     </div>
-//   );
-// }
-
+}
 
 export default App;

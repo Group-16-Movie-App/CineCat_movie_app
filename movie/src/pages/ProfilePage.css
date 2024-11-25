@@ -1,0 +1,153 @@
+/* Container for the profile section */
+.profile-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 20px;
+}
+
+/* Header section of the profile */
+.profile-header {
+    background: linear-gradient(to right, #502c46, #892082);
+    color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Main title in the profile header */
+.profile-header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+/* User information layout */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Avatar styling */
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: #666;
+    border: 3px solid white;
+}
+
+/* User details section */
+.user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Paragraph styling in user details */
+.user-details p {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+/* Section for user's favorite movies */
+.favorites-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Title in the favorites section */
+.favorites-section h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+/* Stats section layout */
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+/* Individual stat card styling */
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+/* Hover effect for stat cards */
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Styling for the number in stat cards */
+.stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #3498db;
+    margin-bottom: 0.5rem;
+}
+
+/* Label styling in stat cards */
+.stat-label {
+    color: #666;
+    font-size: 1rem;
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+    /* Adjusts user info layout */
+    .user-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    /* Adjusts stats section layout */
+    .profile-stats {
+        grid-template-columns: 1fr;
+    }
+
+    /* Adjusts font size of header */
+    .profile-header h1 {
+        font-size: 2rem;
+    }
+}
+
+.share-button {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    background-color: #5f0a33;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.share-button:hover {
+    background-color: #45a049;
+}
