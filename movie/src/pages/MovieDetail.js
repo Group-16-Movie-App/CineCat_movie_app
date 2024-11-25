@@ -7,7 +7,6 @@ import Reviews from '../components/Reviews';
 const MovieDetail = () => {
     const { id } = useParams();
     const [movie, setMovie] = useState(null);
-    const navigate = useNavigate();
     const [isFavorite, setIsFavorite] = useState(false);
 
     useEffect(() => {
