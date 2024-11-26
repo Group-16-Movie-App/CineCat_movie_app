@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import FavoritesList from '../components/FavoritesList';
+import Reviews from '../components/Reviews';
 import './ProfilePage.css';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -8,13 +9,13 @@ import './ProfilePage.css';
 
 /* This component serves as the main profile page for logged-in users.It displays user information, statistics, and their favorite movies.*/
 const ProfilePage = () => {
-    // to get user id from the localstorage
     const [favoritesCount, setFavoritesCount] = useState(0);
     const [profileData, setProfileData] = useState(null);
+    const [userReviews, setUserReviews] = useState([]);
+    const [reviewsCount, setReviewsCount] = useState(0);
     const storedUserName = localStorage.getItem('userName');
-    // to get user id from the localstorage
-    const { userId } = localStorage.getItem('userId');
-    const isOwnProfile = !userId;
+    const userId = localStorage.getItem('userId');
+    const isOwnProfile = !!userId;
 
     console.log('User ID:', userId);
     
@@ -24,42 +25,104 @@ const ProfilePage = () => {
         : (profileData?.userName || 'User');
     const avatarLetter = userName.charAt(0).toUpperCase();
 
-    // Modified useEffect to fetch profile data
+    // Modified useEffect to fetch both profile and review data
     useEffect(() => {
-        const fetchProfileData = async () => {
+        const fetchData = async () => {
             try {
                 const token = localStorage.getItem('token');
+                const headers = { Authorization: `Bearer ${token}` };
 
+                // Test the API connection
+                console.log('Attempting to connect to:', `http://localhost:5000/api/profile/${userId}`);
+
+                // Fetch profile data
                 const endpoint = userId 
                     ? `http://localhost:5000/api/profile/${userId}`
                     : 'http://localhost:5000/api/favorites';
                 
-                const response = await axios.get(endpoint, {
-                    headers: token ? { Authorization: `Bearer ${token}` } : {}
+                const profileResponse = await axios.get(endpoint, { 
+                    headers,
+                    timeout: 5000 // Add timeout
                 });
-                console.log('Profile data:', response.data);
+                
+                console.log('Profile Response:', profileResponse.data);
+
                 if (userId) {
-                    setProfileData(response.data);
-                    setFavoritesCount(response.data.favorites.length);
-                    localStorage.setItem('userId', userId);
+                    setProfileData(profileResponse.data);
+                    setFavoritesCount(profileResponse.data.favorites?.length || 0);
                 } else {
-                    setFavoritesCount(response.data.length);
+                    setFavoritesCount(profileResponse.data.length);
                 }
+
+                // Fetch user reviews
+                console.log('Attempting to fetch reviews for user:', userId);
+                
+                const reviewsResponse = await axios.get(
+                    `http://localhost:5000/api/reviews/user/${userId}`,
+                    { 
+                        headers,
+                        timeout: 5000 // Add timeout
+                    }
+                );
+                
+                console.log('Reviews Response:', reviewsResponse.data);
+                
+                setUserReviews(reviewsResponse.data);
+                setReviewsCount(reviewsResponse.data.length);
+
             } catch (error) {
-                console.error('Error fetching profile data:', error);
+                console.error('Error fetching data:', error);
+                if (error.response) {
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                    console.error('Error response:', error.response.data);
+                    console.error('Error status:', error.response.status);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.error('No response received:', error.request);
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.error('Error message:', error.message);
+                }
             }
         };
 
-        fetchProfileData();
-
-        // Only add event listener for own profile
+        if (userId) {
+            fetchData();
+        }
+        
         if (isOwnProfile) {
-            window.addEventListener('favoritesUpdated', fetchProfileData);
+            window.addEventListener('favoritesUpdated', fetchData);
             return () => {
-                window.removeEventListener('favoritesUpdated', fetchProfileData);
+                window.removeEventListener('favoritesUpdated', fetchData);
             };
         }
     }, [userId, isOwnProfile]);
+
+    // Reviews Section Component
+    const ReviewsSection = () => (
+        <div className="favorites-section">
+            <h2>My Reviews</h2>
+            <div className="reviews-content">
+                {userReviews.length === 0 ? (
+                    <p>No reviews yet</p>
+                ) : (
+                    <div className="reviews-grid">
+                        {userReviews.map((review) => (
+                            <div key={review.id} className="review-card">
+                                <h3>{review.movie_title}</h3>
+                                <p className="review-rating">Rating: {review.rating}/5</p>
+                                <p className="review-text">{review.review}</p>
+                                <p className="review-date">
+                                    {new Date(review.created_at).toLocaleDateString()}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 
     // Add share button component (only show on own profile)
     const ShareButton = () => {
@@ -105,7 +168,7 @@ const ProfilePage = () => {
                     </div>
                     {/* Reviews Count */}
                     <div className="stat-card">
-                        <div className="stat-number">5</div>
+                        <div className="stat-number">{reviewsCount}</div>
                         <div className="stat-label">Reviews</div>
                     </div>
                     {/* Groups Count */}
@@ -123,13 +186,7 @@ const ProfilePage = () => {
             </div>
 
             {/* Reviews Section */}
-            <div className="favorites-section">
-                <h2>My Reviews</h2>
-                <div className="reviews-content">
-                    {/* I have hard-coded reviews for now */}
-                    <p>Reviews...</p>
-                </div>
-            </div>
+            <ReviewsSection />
 
             {/* Groups Section */}
             <div className="favorites-section">
