@@ -4,6 +4,7 @@ import {
   getMovieReviews,
 } from "../models/reviewModel.js";
 import pool from '../config/database.js'; 
+import axios from 'axios';
 
 export const createReview = async (req, res) => {
   try {
@@ -92,14 +93,39 @@ export const getReviewsByUser = async (req, res) => {
     try {
         const { userId } = req.params;
         const result = await pool.query(
-            'SELECT r.*, m.title as movie_title FROM reviews r ' +
-            'JOIN movies m ON r.movie_id = m.id ' +
+            'SELECT r.*, r.created as created_at FROM reviews r ' +
             'WHERE r.account_id = $1 ' +
-            'ORDER BY r.created_at DESC',
+            'ORDER BY r.created DESC',
             [userId]
         );
         
-        res.json(result.rows);
+        // Get movie details for each review from TMDB
+        const reviewsWithMovieDetails = await Promise.all(
+            result.rows.map(async (review) => {
+                try {
+                    const movieResponse = await axios.get(
+                        `https://api.themoviedb.org/3/movie/${review.movie_id}`,
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${process.env.TMDB_Token}`
+                            }
+                        }
+                    );
+                    return {
+                        ...review,
+                        movie_title: movieResponse.data.title
+                    };
+                } catch (error) {
+                    console.error(`Error fetching movie details for movie ${review.movie_id}:`, error);
+                    return {
+                        ...review,
+                        movie_title: 'Unknown Movie'
+                    };
+                }
+            })
+        );
+        
+        res.json(reviewsWithMovieDetails);
     } catch (error) {
         console.error("Error fetching user reviews:", error);
         res.status(500).json({
