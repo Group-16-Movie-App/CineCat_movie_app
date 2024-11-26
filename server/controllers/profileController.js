@@ -42,21 +42,26 @@ export const getProfile = async (req, res) => {
         const user = userResult.rows[0];
 
         // Get user's favorites
-        const favoritesResult = await Promise.all([
-            pool.query('SELECT movie_id FROM favorites WHERE account_id = $1', [req.params.userId]),
-            ...userResult.rows[0].movie_id.map(id => 
-                axios.get(`https://api.themoviedb.org/3/movie/${id}`, {
+        const favoritesResult = await pool.query(
+            'SELECT movie_id FROM favorites WHERE account_id = $1',
+            [req.params.userId]
+        );
+
+        // Fetch movie details from TMDB for each favorite
+        const favorites = await Promise.all(
+            favoritesResult.rows.map(row => 
+                axios.get(`https://api.themoviedb.org/3/movie/${row.movie_id}`, {
                     headers: {
                         'Authorization': `Bearer ${process.env.TMDB_Token}`
                     }
-                })
+                }).then(response => response.data)
             )
-        ]);
+        );
         
         // Combine user data with favorites
         const profileData = {
             userName: user.name,
-            favorites: favoritesResult.map(response => response.data)
+            favorites: favorites
         };
 
         res.json(profileData);
