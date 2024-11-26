@@ -58,17 +58,17 @@ const SearchPage = () => {
     }, []);
 
     if (!query.trim()) {
-        return <div style={{width:'100%', textAlign:'center'}}>
+        return <div style={{width:'100%', textAlign:'center', minHeight: '100vh'}}>
                     <h1 >Search Movies</h1>
                     <SearchForm onSearch={handleSearch} />
-                    <div>
+                    <div style={{marginTop: '20px'}}>
                         What movie are you lookin for? Please enter a title movie
                     </div>
                 </div>
     } else {
         return (
             <>
-                <div style={{width:'100%', textAlign:'center'}}>
+                <div style={{width:'100%', textAlign:'center', minHeight: '100vh'}}>
                     <h1 >Search Movies</h1>
                     <SearchForm onSearch={handleSearch} />
                     <MovieList 

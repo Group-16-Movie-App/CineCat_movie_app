@@ -7,6 +7,9 @@ import MovieDetail from './pages/MovieDetail';
 import Schedules from './components/Schedules';
 import ProfilePage from './pages/ProfilePage';
 import FavoritesList from './components/FavoritesList';
+import Footer from './components/Footer';
+import ReviewsPage from './pages/ReviewsPage';
+import TrendingMovies from './components/TrendingMovies';
 
 
 // PrivateRoute is a wrapper component that protects routes from unauthorized access, you have to be logged in to access the profile page   
@@ -24,7 +27,11 @@ function App() {
         <>
             <Navbar />
             <Routes>
-                <Route path="/" element={<Schedules />} />
+                <Route path="/" element={<>
+                                            <TrendingMovies/>
+                                            <ReviewsPage />
+                                        </>} />
+                <Route path="/showtime" element={<Schedules />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/filter" element={<FilterPage />} />
                 <Route path="/movie/:id" element={<MovieDetail />} />
@@ -36,6 +43,7 @@ function App() {
                     </PrivateRoute>
                 } />
             </Routes>
+            <Footer />
         </>
     );
 }

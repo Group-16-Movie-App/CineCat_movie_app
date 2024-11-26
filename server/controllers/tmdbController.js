@@ -28,6 +28,25 @@ export const searchMovies = async (req, res) => {
     }
 };
 
+export const getTrendingMovies = async (req, res) => {
+    try {
+        const { time } = req.params;
+
+        let searchEndpoint = `https://api.themoviedb.org/3/trending/movie/${time}`;
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${process.env.TMDB_Token}`,
+                'Content-Type': 'application/json'
+            }
+        };
+        const response = await axios.get(searchEndpoint, config);
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error:', error.message);
+        res.status(500).json({ error: 'Failed to fetch movies' });
+    }
+};
+
 export const filterMovies = async (req, res) => {
     try {
         const { genre, rating, year, page = 1, sort_by = 'popularity.desc' } = req.query;
