@@ -40,10 +40,7 @@ const ProfilePage = () => {
                     ? `http://localhost:5000/api/profile/${userId}`
                     : 'http://localhost:5000/api/favorites';
                 
-                const profileResponse = await axios.get(endpoint, { 
-                    headers,
-                    timeout: 5000 // Add timeout
-                });
+                const profileResponse = await axios.get(endpoint, { headers });
                 
                 console.log('Profile Response:', profileResponse.data);
 
@@ -91,13 +88,16 @@ const ProfilePage = () => {
             fetchData();
         }
         
-        if (isOwnProfile) {
-            window.addEventListener('favoritesUpdated', fetchData);
-            return () => {
-                window.removeEventListener('favoritesUpdated', fetchData);
-            };
-        }
-    }, [userId, isOwnProfile]);
+        // Add event listener for favorites updates
+        const handleFavoritesUpdate = () => {
+            fetchData();
+        };
+
+        window.addEventListener('favoritesUpdated', handleFavoritesUpdate);
+        return () => {
+            window.removeEventListener('favoritesUpdated', handleFavoritesUpdate);
+        };
+    }, [userId]);
 
     // Reviews Section Component
     const ReviewsSection = () => (
