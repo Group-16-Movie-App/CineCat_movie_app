@@ -32,9 +32,6 @@ const ProfilePage = () => {
                 const token = localStorage.getItem('token');
                 const headers = { Authorization: `Bearer ${token}` };
 
-                // Test the API connection
-                console.log('Attempting to connect to:', `http://localhost:5000/api/profile/${userId}`);
-
                 // Fetch profile data
                 const endpoint = userId 
                     ? `http://localhost:5000/api/profile/${userId}`
@@ -42,8 +39,6 @@ const ProfilePage = () => {
                 
                 const profileResponse = await axios.get(endpoint, { headers });
                 
-                console.log('Profile Response:', profileResponse.data);
-
                 if (userId) {
                     setProfileData(profileResponse.data);
                     setFavoritesCount(profileResponse.data.favorites?.length || 0);
@@ -52,33 +47,30 @@ const ProfilePage = () => {
                 }
 
                 // Fetch user reviews
-                console.log('Attempting to fetch reviews for user:', userId);
-                
-                const reviewsResponse = await axios.get(
-                    `http://localhost:5000/api/reviews/user/${userId}`,
-                    { 
-                        headers,
-                        timeout: 5000 // Add timeout
+                if (userId) {
+                    try {
+                        console.log('Fetching reviews for user:', userId);
+                        const reviewsResponse = await axios.get(
+                            `http://localhost:5000/api/reviews/user/${userId}`
+                        );
+                        
+                        console.log('Reviews Response:', reviewsResponse.data);
+                        
+                        setUserReviews(reviewsResponse.data);
+                        setReviewsCount(reviewsResponse.data.length);
+                    } catch (reviewError) {
+                        console.error('Error fetching reviews:', reviewError);
                     }
-                );
-                
-                console.log('Reviews Response:', reviewsResponse.data);
-                
-                setUserReviews(reviewsResponse.data);
-                setReviewsCount(reviewsResponse.data.length);
+                }
 
             } catch (error) {
                 console.error('Error fetching data:', error);
                 if (error.response) {
-                    // The request was made and the server responded with a status code
-                    // that falls out of the range of 2xx
                     console.error('Error response:', error.response.data);
                     console.error('Error status:', error.response.status);
                 } else if (error.request) {
-                    // The request was made but no response was received
                     console.error('No response received:', error.request);
                 } else {
-                    // Something happened in setting up the request that triggered an Error
                     console.error('Error message:', error.message);
                 }
             }
@@ -93,9 +85,17 @@ const ProfilePage = () => {
             fetchData();
         };
 
+        // Add event listener for review updates
+        const handleReviewsUpdate = () => {
+            fetchData();
+        };
+
         window.addEventListener('favoritesUpdated', handleFavoritesUpdate);
+        window.addEventListener('reviewsUpdated', handleReviewsUpdate);
+        
         return () => {
             window.removeEventListener('favoritesUpdated', handleFavoritesUpdate);
+            window.removeEventListener('reviewsUpdated', handleReviewsUpdate);
         };
     }, [userId]);
 
