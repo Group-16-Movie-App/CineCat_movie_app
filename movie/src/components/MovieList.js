@@ -36,7 +36,10 @@ const MovieList = ({ movies, genreNames, pageCount, setPage }) => {
                     return (
                             <div key={movie.id} className="movie-card">
                                 <Link to={`/movie/${movie.id}`}>
-                                    <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} alt={movie.title} />
+                                    <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} 
+                                        alt={movie.title}
+                                        //onError={(e) => { e.target.src = '../public/logo512.png'; }}
+                                    />
                                     <h3>{movie.title} ({releaseYear})</h3>
                                 </Link>
                                 <p className="rating">TMDB Rating: {movie.vote_average.toFixed(2)}</p>
@@ -47,6 +50,7 @@ const MovieList = ({ movies, genreNames, pageCount, setPage }) => {
                                         .join(', ')}
                                 </p>
                             </div>
+
                     );
                 })}
             </div>
