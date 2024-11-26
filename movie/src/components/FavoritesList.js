@@ -84,7 +84,7 @@ const FavoritesList = () => {
         <div className="empty-favorites">
             <p>You haven't added any favorites yet!</p>
             <Link to="/search" className="search-movies-btn">
-                Discover Movies
+                Search movies
             </Link>
         </div>
     );

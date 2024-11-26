@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { MdDelete } from 'react-icons/md';
 import "./Reviews.css";
+import { format } from 'date-fns';
 
 const Reviews = ({ movieId }) => {
     const [reviews, setReviews] = useState([]);
     const [newReview, setNewReview] = useState("");
-    const [rating, setRating] = useState(5);
+    const [rating, setRating] = useState("");
     const [error, setError] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userEmail, setUserEmail] = useState("");
@@ -66,7 +67,7 @@ const Reviews = ({ movieId }) => {
 
             await fetchReviews();
             setNewReview("");
-            setRating(5);
+            setRating("");
             setError("");
         } catch (error) {
             if (error.response?.status === 401) {
@@ -183,7 +184,7 @@ const Reviews = ({ movieId }) => {
                           </div>
                           <p className="review-content">{review.review}</p>
                           <small className="review-date">
-                              {new Date(review.created).toLocaleDateString()}
+                                {format(new Date(review.created), 'MMMM dd, yyyy, hh:mm a')}
                           </small>
                       </div>
                   ))

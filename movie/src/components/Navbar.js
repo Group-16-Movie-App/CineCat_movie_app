@@ -147,6 +147,7 @@ const Navbar = () => {
       <nav className="navbar">
         <div className="nav-links">
           <Link to="/" className="nav-link">Home</Link>
+          <Link to="/showtime" className="nav-link">Showtime</Link>
           <Link to="/search" className="nav-link">Search</Link>
           <Link to="/filter" className="nav-link">Discovery</Link>
           {isLoggedIn && (
