@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Schedules.css';
 import { searchMovie, getImageUrl } from '../services/tmdbService';
 
 
 const Schedules = () => {
-  const navigate = useNavigate();
   // State management for component
   const [theatres, setTheatres] = useState([]); // Stores the list of theatres
   const [schedules, setSchedules] = useState([]); // Stores movie schedules for selected theatre
@@ -142,10 +140,6 @@ const Schedules = () => {
 
   return (
     <div className="schedules-container">
-      <div style={{width:'100%', textAlign:'center'}}>
-        <button onClick={() => navigate('/search')}>To Movies Search</button>
-        <button onClick={() => navigate('/filter')}>To Movies Discovery</button>  
-      </div>
       <h2>Movie Schedules</h2>
       {/* Replace theatre buttons with dropdown */}
       <div className="theatre-select-container">
