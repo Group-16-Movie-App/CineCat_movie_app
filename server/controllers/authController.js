@@ -126,3 +126,35 @@ export const login = async (req, res) => {
 export const logout = (req, res) => {
     res.json({ message: 'Logged out successfully' });
 };
+
+export const deleteAccount = async (req, res) => {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN'); 
+        
+      
+        await client.query('DELETE FROM favorites WHERE account_id = $1', [req.user.id]);
+        await client.query('DELETE FROM shared_urls WHERE account_id = $1', [req.user.id]);
+        await client.query('DELETE FROM reviews WHERE account_id = $1', [req.user.id]);
+        await client.query('DELETE FROM members WHERE account_id = $1', [req.user.id]);
+        await client.query('UPDATE ratings SET account_id = NULL WHERE account_id = $1', [req.user.id]);
+        
+      
+        const result = await client.query('DELETE FROM accounts WHERE id = $1', [req.user.id]);
+        
+        if (result.rowCount === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Account not found' });
+        }
+        
+        await client.query('COMMIT'); 
+        res.json({ message: 'Account deleted successfully' });
+        
+    } catch (error) {
+        await client.query('ROLLBACK');  
+        console.error('Error deleting account:', error);
+        res.status(500).json({ error: 'Failed to delete account' });
+    } finally {
+        client.release();  
+    }
+};

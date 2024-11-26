@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import Reviews from '../components/Reviews';
+import './MovieDetail.css';
 
 const MovieDetail = () => {
     const { id } = useParams();
     const [movie, setMovie] = useState(null);
-    const navigate = useNavigate();
     const [isFavorite, setIsFavorite] = useState(false);
 
     useEffect(() => {
@@ -70,22 +71,24 @@ const MovieDetail = () => {
 
     return (
         <>
-            <button onClick={() => navigate('/')}>Back to Home</button>
-            <div style={{width:'100%', textAlign:'center'}}>
-            <div>
-                <button onClick={() => navigate('/search')}>To Movies Search</button>
-                <button onClick={() => navigate('/filter')}>To Movies Discovery</button>  
-            </div>
+            <div className='movie-detail-container'>
             <h2>{movie.title}</h2>
             <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
             <p>{movie.overview}</p>
-            <p>Genre: {genreNames.join(', ')}</p>
-            <p>Rating: {movie.vote_average}</p>
-            <p>Release Date: {movie.release_date}</p>
+            <p>
+                <span className="detail-label">Genre:</span> {genreNames.join(', ')}
+            </p>
+            <p>
+                <span className="detail-label">TMDB Rating:</span> {movie.vote_average.toFixed(2)}
+            </p>
+            <p>
+                <span className="detail-label">Release Date:</span> {movie.release_date}
+            </p>
             <button onClick={toggleFavorite}>
                 {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
             </button>
         </div>
+        <Reviews movieId={id} />
         </>
     );
 };

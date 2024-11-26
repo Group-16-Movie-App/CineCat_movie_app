@@ -1,0 +1,98 @@
+/* General styles for the page */
+body {
+    background-color: #121212;
+    color: #f5f5f5;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container for the movie details */
+.movie-detail-container {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    text-align: center;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Title styling */
+.movie-detail-container h2 {
+    font-size: 2rem;
+    color: #ffcc00;
+    margin-bottom: 20px;
+}
+
+/* Poster image */
+.movie-detail-container img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
+}
+
+/* Overview and text details */
+.movie-detail-container p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* Highlight the genres and rating */
+.detail-label {
+    font-weight: bold;
+    color: #ffcc00;
+}
+
+
+/* Button styling */
+.movie-detail-container button {
+    background-color: #ffcc00;
+    color: #1e1e1e;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.movie-detail-container button:hover {
+    background-color: #ffc107;
+    transform: scale(1.05);
+}
+
+.movie-detail-container button:active {
+    background-color: #ffb300;
+}
+
+/* Reviews section styling */
+.reviews-section {
+    margin-top: 30px;
+}
+
+.reviews-section h3 {
+    font-size: 1.5rem;
+    color: #ffcc00;
+    margin-bottom: 10px;
+}
+
+.reviews-section textarea {
+    width: 100%;
+    min-height: 100px;
+    background-color: #2b2b2b;
+    color: #f5f5f5;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.reviews-section button {
+    margin-top: 10px;
+}
