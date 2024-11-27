@@ -151,3 +151,82 @@
 .share-button:hover {
     background-color: #45a049;
 }
+
+/* Reviews section styling to match profile page */
+.profile-reviews-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+}
+
+.profile-reviews-section h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+.profile-reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.profile-review-card {
+    background: rgb(188, 78, 78);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    border: 1px solid #eee;
+}
+
+.profile-review-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Add text wrapping styles */
+.profile-review-text {
+    color: #080a0c;
+    word-wrap: break-word;      /* Ensures long words break */
+    overflow-wrap: break-word;  /* Modern browsers */
+    white-space: pre-wrap;      /* Preserves whitespace and line breaks */
+    max-height: 150px;          /* Maximum height before truncation */
+    overflow-y: auto;           /* Adds scroll if content exceeds max-height */
+    line-height: 1.5;          /* Comfortable line spacing */
+    margin: 0.5rem 0;
+}
+
+/* Style the scrollbar for webkit browsers */
+.profile-review-text::-webkit-scrollbar {
+    width: 6px;
+}
+
+.profile-review-text::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.profile-review-text::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.profile-review-text::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Responsive adjustment */
+@media (max-width: 768px) {
+    .profile-reviews-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.share-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
