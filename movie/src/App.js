@@ -7,6 +7,7 @@ import MovieDetail from './pages/MovieDetail';
 import Schedules from './components/Schedules';
 import ProfilePage from './pages/ProfilePage';
 import FavoritesList from './components/FavoritesList';
+import SharedFavorites from './components/SharedFavorites';
 
 
 // PrivateRoute is a wrapper component that protects routes from unauthorized access, you have to be logged in to access the profile page   
@@ -35,6 +36,7 @@ function App() {
                         <FavoritesList />
                     </PrivateRoute>
                 } />
+                <Route path="/favorites/:userId" element={<SharedFavorites />} />
             </Routes>
         </>
     );
