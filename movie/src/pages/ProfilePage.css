@@ -175,7 +175,7 @@
 }
 
 .profile-review-card {
-    background: rgb(129, 36, 36);
+    background: rgb(188, 78, 78);
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -185,6 +185,37 @@
 
 .profile-review-card:hover {
     transform: translateY(-5px);
+}
+
+/* Add text wrapping styles */
+.profile-review-text {
+    color: #080a0c;
+    word-wrap: break-word;      /* Ensures long words break */
+    overflow-wrap: break-word;  /* Modern browsers */
+    white-space: pre-wrap;      /* Preserves whitespace and line breaks */
+    max-height: 150px;          /* Maximum height before truncation */
+    overflow-y: auto;           /* Adds scroll if content exceeds max-height */
+    line-height: 1.5;          /* Comfortable line spacing */
+    margin: 0.5rem 0;
+}
+
+/* Style the scrollbar for webkit browsers */
+.profile-review-text::-webkit-scrollbar {
+    width: 6px;
+}
+
+.profile-review-text::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.profile-review-text::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.profile-review-text::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 /* Responsive adjustment */
