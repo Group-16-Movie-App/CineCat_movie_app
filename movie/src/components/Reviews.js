@@ -27,6 +27,7 @@ const Reviews = ({ movieId }) => {
                 `http://localhost:5000/api/reviews/movie/${movieId}`
             );
             setReviews(response.data);
+            window.dispatchEvent(new Event('reviewsUpdated'));
         } catch (error) {
             console.error("Error fetching reviews:", error);
             setError("Failed to load reviews");
