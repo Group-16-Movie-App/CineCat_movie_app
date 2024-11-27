@@ -261,48 +261,6 @@
     box-shadow: none;
 }
 
-.login-message {
-    background-color: rgba(255, 255, 255, 0.05);
-    padding: 20px;
-    border-radius: 8px;
-    margin: 20px 0;
-    text-align: center;
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.login-message p {
-    margin: 0;
-    font-size: 0.95em;
-    color: #e0e0e0;
-}
-/* Add these styles to your existing CSS */
-
-.error-message {
-    background-color: rgba(255, 68, 68, 0.1);
-    color: #ff4444;
-    padding: 12px;
-    border-radius: 8px;
-    margin: 10px 0;
-    text-align: center;
-    font-size: 0.9em;
-}
-
-.login-message {
-    background-color: rgba(255, 255, 255, 0.05);
-    padding: 20px;
-    border-radius: 8px;
-    margin: 20px 0;
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.login-message p {
-    margin: 0;
-    color: red;
-    font-size: 0.95em;
-}
-
 .review-header-right {
     display: flex;
     align-items: center;
@@ -310,10 +268,10 @@
 }
 
 .delete-button {
-    background: none;  /* Убираем фон */
+    background: none;
     border: none;
     cursor: pointer;
-    color: #ff4444;  /* Сразу делаем красным */
+    color: #ff4444;
     padding: 4px;
     border-radius: 4px;
     display: flex;
