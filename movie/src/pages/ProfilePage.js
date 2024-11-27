@@ -101,19 +101,19 @@ const ProfilePage = () => {
 
     // Reviews Section Component
     const ReviewsSection = () => (
-        <div className="favorites-section">
+        <div className="profile-reviews-section">
             <h2>My Reviews</h2>
-            <div className="reviews-content">
+            <div className="profile-reviews-content">
                 {userReviews.length === 0 ? (
                     <p>No reviews yet</p>
                 ) : (
-                    <div className="reviews-grid">
+                    <div className="profile-reviews-grid">
                         {userReviews.map((review) => (
-                            <div key={review.id} className="review-card">
+                            <div key={review.id} className="profile-review-card">
                                 <h3>{review.movie_title}</h3>
-                                <p className="review-rating">Rating: {review.rating}/5</p>
-                                <p className="review-text">{review.review}</p>
-                                <p className="review-date">
+                                <p className="profile-review-rating">Rating: {review.rating}/5</p>
+                                <p className="profile-review-text">{review.review}</p>
+                                <p className="profile-review-date">
                                     {new Date(review.created_at).toLocaleDateString()}
                                 </p>
                             </div>
