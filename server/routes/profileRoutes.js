@@ -1,5 +1,5 @@
 import express from 'express';
-import { shareProfile, getProfile } from '../controllers/profileController.js';
+import { shareProfile, getProfile, getSharedFavorites } from '../controllers/profileController.js';
 import { authenticateToken } from '../config/middleware.js';
 
 const router = express.Router();
@@ -9,5 +9,8 @@ router.post('/share', authenticateToken, shareProfile);
 
 // Get shared profile data
 router.get('/:userId', getProfile);
+
+// Add new route for shared favorites
+router.get('/favorites/:userId', getSharedFavorites);
 
 export default router; 

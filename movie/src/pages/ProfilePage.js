@@ -124,9 +124,9 @@ const ProfilePage = () => {
         </div>
     );
 
-    // Add share button component (only show on own profile)
-    const ShareButton = () => {
-        const handleShare = () => {
+    // Profile sharing component
+    const ShareProfile = () => {
+        const handleShareProfile = () => {
             const userId = localStorage.getItem('userId');
             const shareUrl = `${window.location.origin}/profile/${userId}`;
             navigator.clipboard.writeText(shareUrl);
@@ -134,8 +134,24 @@ const ProfilePage = () => {
         };
 
         return isOwnProfile ? (
-            <button className="share-button" onClick={handleShare}>
+            <button className="share-button" onClick={handleShareProfile}>
                 Share Profile
+            </button>
+        ) : null;
+    };
+
+    // Favorites sharing component
+    const ShareFavorites = () => {
+        const handleShareFavorites = () => {
+            const userId = localStorage.getItem('userId');
+            const shareUrl = `${window.location.origin}/favorites/${userId}`;
+            navigator.clipboard.writeText(shareUrl);
+            alert('Favorites list URL copied to clipboard!');
+        };
+
+        return isOwnProfile ? (
+            <button className="share-button" onClick={handleShareFavorites}>
+                Share Favorites
             </button>
         ) : null;
     };
@@ -153,7 +169,10 @@ const ProfilePage = () => {
                     {/* User Details Section */}
                     <div className="user-details">
                         <h1>Welcome, {userName}!</h1>
-                        <ShareButton />
+                        <div className="share-buttons">
+                            <ShareProfile />
+                            <ShareFavorites />
+                        </div>
                     </div>
                 </div>
                 
@@ -181,7 +200,9 @@ const ProfilePage = () => {
 
             {/* Favorites Section */}
             <div className="favorites-section">
-                <h2>My Favorites</h2>
+                <div className="section-header">
+                    <h2>My Favorites</h2>
+                </div>
                 <FavoritesList />
             </div>
 
