@@ -7,7 +7,8 @@ import tmdb from './routes/tmdb.js';
 import favoriteRoutes from './routes/favoriteRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js'; 
-
+import groupRoutes from './routes/groupRoutes.js';
+import movieRoutes from './routes/movieRoutes.js';
 
 dotenv.config();
 
@@ -24,6 +25,8 @@ app.use('/api', tmdb);
 app.use('/api', favoriteRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/reviews', reviewRoutes); 
+app.use('/api', groupRoutes); // This will prefix all routes in groupRoutes with /api
+app.use('/api', movieRoutes); // This will prefix all routes in movieRoutes with /api
 
 
 // Start server

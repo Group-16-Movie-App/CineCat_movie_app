@@ -3,11 +3,10 @@ import FavoritesList from '../components/FavoritesList';
 import Reviews from '../components/Reviews';
 import './ProfilePage.css';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom'; // Import Link for navigation
 import './ProfilePage.css';
 
-
-/* This component serves as the main profile page for logged-in users.It displays user information, statistics, and their favorite movies.*/
+/* This component serves as the main profile page for logged-in users. It displays user information, statistics, and their favorite movies. */
 const ProfilePage = () => {
     const [favoritesCount, setFavoritesCount] = useState(0);
     const [profileData, setProfileData] = useState(null);
@@ -176,7 +175,7 @@ const ProfilePage = () => {
                     </div>
                 </div>
                 
-                {/* This is the user Statistics Section on ther profile page */}
+                {/* This is the user Statistics Section on the profile page */}
                 <div className="profile-stats">
                     {/* Favorites Count */}
                     <div className="stat-card">
@@ -213,12 +212,11 @@ const ProfilePage = () => {
             <div className="favorites-section">
                 <h2>My Groups</h2>
                 <div className="groups-content">
-                    {/* I have hard-coded groups for now */}
-                    <p>Groups...</p>
+                    <Link to="/groups" className="button">View My Groups</Link> {/* Link to the groups page */}
                 </div>
             </div>
         </div>
     );
 };
 
-export default ProfilePage; 
+export default ProfilePage;
