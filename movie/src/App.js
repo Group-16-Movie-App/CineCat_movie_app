@@ -11,7 +11,9 @@ import Footer from './components/Footer';
 import ReviewsPage from './pages/ReviewsPage';
 import TrendingMovies from './components/TrendingMovies';
 import SharedFavorites from './components/SharedFavorites';
-
+import GroupList from './components/GroupList';
+import GroupPage from './pages/GroupPage';
+import CreateGroup from './components/CreateGroup';
 
 // PrivateRoute is a wrapper component that protects routes from unauthorized access, you have to be logged in to access the profile page   
 const PrivateRoute = ({ children }) => {
@@ -44,6 +46,9 @@ function App() {
                     </PrivateRoute>
                 } />
                 <Route path="/favorites/:userId" element={<SharedFavorites />} />
+                <Route path="/groups" element={<GroupList />} />
+                <Route path="/group/:id" element={<GroupPage />} />
+                <Route path="/create-group" element={<CreateGroup />} />
             </Routes>
             <Footer />
         </>

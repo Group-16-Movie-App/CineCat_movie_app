@@ -157,6 +157,7 @@ const Navbar = () => {
           {isLoggedIn && (
             <Link to="/profile" className="nav-link"> My Profile </Link>
           )}
+          <Link to="/groups">Groups</Link>
         </div>
         
         <div className="auth-buttons">
