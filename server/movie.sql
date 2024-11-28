@@ -8,12 +8,14 @@ drop table if exists groups;
 drop table if exists accounts;
 
 -- Account table to manage accounts and authentication
-create table accounts (
-    id serial primary key,
-    name varchar(100) unique not null,
-    email varchar(100) unique not null,
-    password varchar(255) not null,
-    refresh_token varchar(255)
+CREATE TABLE accounts (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    is_verified BOOLEAN DEFAULT FALSE, 
+    refresh_token TEXT, 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Group table for group functionality. 
