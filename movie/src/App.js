@@ -36,7 +36,7 @@ function App() {
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/filter" element={<FilterPage />} />
                 <Route path="/movie/:id" element={<MovieDetail />} />
-                <Route path="/verification-success" element={<EmailVerification />} />
+                <Route path="/verify-email" element={<EmailVerification />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/profile/:userId" element={<ProfilePage />} />
                 <Route path="/favorites" element={

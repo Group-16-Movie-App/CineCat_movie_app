@@ -31,9 +31,6 @@ export const SignUpForm = ({ onSubmit, onSuccess }) => {
       const success = await onSubmit(formData);
       if (success) {
         setIsSuccess(true);
-        setTimeout(() => {
-          onSuccess();
-        }, 1500);
       }
     } catch (error) {
       setError('Registration failed. Please try again.');

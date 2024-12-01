@@ -12,35 +12,37 @@ dotenv.config();
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendVerificationEmail = (email, token) => {
-    const verificationUrl = `http://localhost:5000/api/verify-email?token=${token}`;
+    const verificationUrl = `http://localhost:3000/verify-email?token=${token}`;
 
     const msg = {
         to: email,
         from: process.env.EMAIL_USER,
         subject: 'Email Verification',
         html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
-            <h1>Welcome to Our Platform!</h1>
-            <p>Thank you for registering. Please verify your email by clicking the button below:</p>
-            
-            <!-- Using a table for the button to ensure it works across email clients -->
-            <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 600px; margin: 0 auto; border: none;">
-                <tr>
-                    <td align="center" style="background-color: #007BFF; border-radius: 5px;">
-                        <a href="${verificationUrl}" style="display: inline-block; background-color: #007BFF; color: white; text-decoration: none; padding: 15px 30px; border-radius: 5px; font-size: 16px; font-weight: bold;">
-                            Verify Email
-                        </a>
-                    </td>
-                </tr>
-            </table>
-            
-            <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
-            <p><a href="${verificationUrl}" style="color: #007BFF; text-decoration: none;">${verificationUrl}</a></p>
-            
-            <p>Best regards,<br>YourProjectName Team</p>
-        </div>
+           <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+  <h1>Welcome to Our Platform!</h1>
+  <p>Thank you for registering. Please verify your email by clicking the button below:</p>
+  
+  <!-- Using a table for the button to ensure it works across email clients -->
+  <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 100px; margin: 60 ; border: none;">
+      <tr>
+          <td style="background-color: #007BFF; border-radius: 5px; text-align: left; padding: 10px 0;">
+              <a href="${verificationUrl}" style="display: inline-block; background-color: #007BFF; color: white; text-decoration: none; padding: 6px 12px; border-radius: 3px; font-size: 14px; font-weight: normal; text-align: center;">
+                  Verify Email
+              </a>
+          </td>
+      </tr>
+  </table>
+                
+                <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
+                <p><a href="${verificationUrl}" style="color: #007BFF; text-decoration: none;">${verificationUrl}</a></p>
+                
+                <p>Best regards,<br>Team 16!</p>
+            </div>
         `,
     };
+    
+    
 
     sgMail
         .send(msg)
@@ -203,22 +205,27 @@ export const deleteAccount = async (req, res) => {
 
 // <------------------VERIFY EMAIL ----------------------------------------->
 export const verifyEmail = async (req, res) => {
-    const { token } = req.query; 
+    const { token } = req.query;
+    console.log('Token received on server:', token); 
 
-    console.log('Token received:', token); 
+    if (!token) {
+        return res.status(400).json({ error: 'Token is required' });
+    }
 
     try {
         const result = await pool.query('SELECT * FROM accounts WHERE verification_token = $1', [token]);
+
         if (result.rows.length === 0) {
-            console.log('Invalid token');
             return res.status(400).json({ error: 'Invalid token' });
         }
 
-        
-        await pool.query('UPDATE accounts SET is_verified = $1, verification_token = NULL WHERE id = $2', [true, result.rows[0].id]);
+        await pool.query(
+            'UPDATE accounts SET is_verified = $1, verification_token = NULL WHERE id = $2',
+            [true, result.rows[0].id]
+        );
 
         console.log('Email successfully verified');
-        res.json({ message: 'Email verified successfully!' }); 
+        res.json({ message: 'Email verified successfully!' });
     } catch (error) {
         console.error('Error during email verification:', error);
         res.status(500).json({ error: 'Email verification failed. Please try again.' });
