@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './GroupStyles.css';
 
 const CreateGroup = () => {
     const [groupName, setGroupName] = useState('');
@@ -25,16 +26,26 @@ const CreateGroup = () => {
     };
 
     return (
-        <div>
-            <h2>Create Group</h2>
-            <input
-                type="text"
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-                placeholder="Group Name"
-            />
-            <button onClick={handleCreateGroup}>Create</button>
-            {error && <p>{error}</p>}
+        <div className="create-group-container">
+            <div className="create-group-card">
+                <h2 className="create-group-title">Create New Group</h2>
+                <div className="create-group-form">
+                    <input
+                        type="text"
+                        value={groupName}
+                        onChange={(e) => setGroupName(e.target.value)}
+                        placeholder="Enter Group Name"
+                        className="group-input"
+                    />
+                    <button 
+                        onClick={handleCreateGroup}
+                        className="create-group-button"
+                    >
+                        Create Group
+                    </button>
+                </div>
+                {error && <p className="error-message">{error}</p>}
+            </div>
         </div>
     );
 };
