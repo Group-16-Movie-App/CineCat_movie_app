@@ -37,13 +37,14 @@ export const getGroupById = async (req, res) => {
 
 export const createGroup = async (req, res) => {
     const { name } = req.body;
-    const ownerId = req.user.id; // Get the owner ID from the authenticated user
-
+    
     try {
+        // Insert the new group
         const result = await pool.query(
-            'INSERT INTO groups (name, owner) VALUES ($1, $2) RETURNING *',
-            [name, ownerId]
+            'INSERT INTO groups (name) VALUES ($1) RETURNING *',
+            [name]
         );
+
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Error creating group:', error);
