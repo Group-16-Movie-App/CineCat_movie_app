@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ModalWindow from './ModalWindow';
 import { SignUpForm, LoginForm } from './AuthForms';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'; 
 import './Navbar.css';
-
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
@@ -74,9 +74,7 @@ const Navbar = () => {
         if (data.name) {
           localStorage.setItem('userName', data.name);
         }
-        //set id 
         localStorage.setItem('userId', data.id);
-        //set email
         localStorage.setItem('userEmail', data.email);
         setIsLoggedIn(true);
         setIsLoginOpen(false);
@@ -146,79 +144,99 @@ const Navbar = () => {
     }
 };
 
+  const handleGoogleLoginSuccess = (response) => {
+    console.log("Google login success:", response);
+    
+    const token = response.credential; 
+    localStorage.setItem('token', token);
+    setIsLoggedIn(true);
+  };
+
+  const handleGoogleLoginError = (error) => {
+    console.error("Google login failed:", error);
+  };
+
   return (
-    <div>
-      <nav className="navbar">
-        <div className="nav-links">
-          <Link to="/" className="nav-link">Home</Link>
-          <Link to="/showtime" className="nav-link">Showtime</Link>
-          <Link to="/search" className="nav-link">Search</Link>
-          <Link to="/filter" className="nav-link">Discovery</Link>
-          {isLoggedIn && (
-            <Link to="/profile" className="nav-link"> My Profile </Link>
-          )}
+    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+  <nav className="navbar">
+    <div className="nav-links">
+      <Link to="/" className="nav-link">Home</Link>
+      <Link to="/showtime" className="nav-link">Showtime</Link>
+      <Link to="/search" className="nav-link">Search</Link>
+      <Link to="/filter" className="nav-link">Discovery</Link>
+      {isLoggedIn && (
+        <Link to="/profile" className="nav-link"> My Profile </Link>
+      )}
+    </div>
+
+    <div className="auth-buttons">
+      {!isLoggedIn ? (
+        <div className="auth-buttons-container">
+          <button onClick={() => setIsSignUpOpen(true)} className="auth-button">
+            Sign Up
+          </button>
+          <button onClick={() => setIsLoginOpen(true)} className="auth-button primary">
+            Sign In
+          </button>
+
+          {/* Google login button */}
+          <GoogleLogin
+            onSuccess={handleGoogleLoginSuccess}
+            onError={handleGoogleLoginError}
+            useOneTap
+          />
         </div>
-        
-        <div className="auth-buttons">
-          {!isLoggedIn ? (
-            <div className="auth-buttons-container">
-              <button onClick={() => setIsSignUpOpen(true)} className="auth-button">
-                Sign Up
-              </button>
-              <button onClick={() => setIsLoginOpen(true)} className="auth-button primary">
-                Sign In
-              </button>
-            </div>
-          ) : (
-            <div className="auth-buttons-container">
-              <button onClick={() => setShowDeleteConfirm(true)} className="auth-button danger">
-                Delete Account
-              </button>
-              <button onClick={handleLogout} className="auth-button">
-                Sign Out
-              </button>
-            </div>
-          )}
+      ) : (
+        <div className="auth-buttons-container">
+          <button onClick={() => setShowDeleteConfirm(true)} className="auth-button danger">
+            Delete Account
+          </button>
+          <button onClick={handleLogout} className="auth-button">
+            Sign Out
+          </button>
         </div>
-      </nav>
+      )}
+    </div>
+  </nav>
 
-      <ModalWindow isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)}>
-        <SignUpForm 
-          onSubmit={handleSignUp}
-          onSuccess={handleSignUpSuccess}
-        />
-      </ModalWindow>
+  <ModalWindow isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)}>
+    <SignUpForm 
+      onSubmit={handleSignUp}
+      onSuccess={handleSignUpSuccess}
+    />
+  </ModalWindow>
 
-      <ModalWindow isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)}>
-        <LoginForm 
-          onSubmit={handleLogin}
-          initialEmail={registeredEmail}
-        />
-      </ModalWindow>
+  <ModalWindow isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)}>
+    <LoginForm 
+      onSubmit={handleLogin}
+      initialEmail={registeredEmail}
+    />
+  </ModalWindow>
 
-      <ModalWindow isOpen={showDeleteConfirm} onClose={() => setShowDeleteConfirm(false)}>
+  <ModalWindow isOpen={showDeleteConfirm} onClose={() => setShowDeleteConfirm(false)}>
     <div className="delete-confirmation">
-        <h2>Delete Account</h2>
-        <p>Are you sure you want to delete your account? This action cannot be undone.</p>
-        <div className="delete-confirmation-buttons">
-            <button 
-                onClick={() => setShowDeleteConfirm(false)} 
-                className="cancel-button"
-            >
-                Cancel
-            </button>
-            <button 
-                onClick={handleDeleteAccount} 
-                className="delete-button"
-            >
-                Delete Account
-            </button>
-        </div>
+      <h2>Delete Account</h2>
+      <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+      <div className="delete-confirmation-buttons">
+        <button 
+          onClick={() => setShowDeleteConfirm(false)} 
+          className="cancel-button"
+        >
+          Cancel
+        </button>
+        <button 
+          onClick={handleDeleteAccount} 
+          className="delete-button"
+        >
+          Delete Account
+        </button>
+      </div>
     </div>
-</ModalWindow>
-    </div>
-  );
+  </ModalWindow>
+
+</GoogleOAuthProvider>
+
+  )
 };
 
 export default Navbar;
-

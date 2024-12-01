@@ -56,13 +56,13 @@ export const SignUpForm = ({ onSubmit, onSuccess }) => {
     <form className="auth-form" onSubmit={handleSubmit}>
       <h2>Sign Up</h2>
       {error && <div className="auth-form-error">{error}</div>}
-      
+
       <div className="form-group">
         <input
           type="text"
           placeholder="Name"
           value={formData.name}
-          onChange={(e) => setFormData({...formData, name: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           className="form-input"
           required
         />
@@ -73,7 +73,7 @@ export const SignUpForm = ({ onSubmit, onSuccess }) => {
           type="email"
           placeholder="Email"
           value={formData.email}
-          onChange={(e) => setFormData({...formData, email: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           className="form-input"
           required
         />
@@ -85,7 +85,7 @@ export const SignUpForm = ({ onSubmit, onSuccess }) => {
           placeholder="Password"
           value={formData.password}
           onChange={(e) => {
-            setFormData({...formData, password: e.target.value});
+            setFormData({ ...formData, password: e.target.value });
             setError('');
           }}
           className="form-input"
@@ -99,6 +99,13 @@ export const SignUpForm = ({ onSubmit, onSuccess }) => {
       <button type="submit" className="submit-button">
         Sign Up
       </button>
+
+      {/* Google sign-in button */}
+      <a href="http://localhost:5000/api/auth/google" className="google-sign-in-btn">
+        <button type="button" className="auth-button google-btn">
+          Sign Up with Google
+        </button>
+      </a>
     </form>
   );
 };
@@ -135,7 +142,7 @@ export const LoginForm = ({ onSubmit, initialEmail = '' }) => {
           placeholder="Email"
           value={formData.email}
           onChange={(e) => {
-            setFormData({...formData, email: e.target.value});
+            setFormData({ ...formData, email: e.target.value });
             setError('');
           }}
           className="form-input"
@@ -149,7 +156,7 @@ export const LoginForm = ({ onSubmit, initialEmail = '' }) => {
           placeholder="Password"
           value={formData.password}
           onChange={(e) => {
-            setFormData({...formData, password: e.target.value});
+            setFormData({ ...formData, password: e.target.value });
             setError('');
           }}
           className="form-input"
@@ -160,6 +167,13 @@ export const LoginForm = ({ onSubmit, initialEmail = '' }) => {
       <button type="submit" className="submit-button">
         Sign In
       </button>
+
+      {/* Google sign-in button */}
+      <a href="http://localhost:5000/api/auth/google" className="google-sign-in-btn">
+        <button type="button" className="auth-button google-btn">
+          Sign In with Google
+        </button>
+      </a>
     </form>
   );
 };
