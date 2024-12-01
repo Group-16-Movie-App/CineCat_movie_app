@@ -71,7 +71,7 @@ CREATE TABLE favorites (
     account_id INT NOT NULL,
     movie_id INT NOT NULL,
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_favorite_account FOREIGN KEY (account_id) REFERENCES accounts(id),
+    CONSTRAINT fk_favorite_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,  -- Добавлен ON DELETE CASCADE
     CONSTRAINT unique_favorite_movie_per_account UNIQUE (account_id, movie_id)
 );
 
