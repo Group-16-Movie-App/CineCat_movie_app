@@ -23,6 +23,30 @@ const GroupList = () => {
         }
     };
 
+    const handleDeleteGroup = async (e, groupId) => {
+        e.preventDefault(); // Prevent navigation to group page
+        e.stopPropagation(); // Prevent event bubbling
+
+        if (!window.confirm('Are you sure you want to delete this group?')) {
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.delete(`http://localhost:5000/api/groups/${groupId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            
+            if (response.status === 200) {
+                // Remove the deleted group from state
+                setGroups(groups.filter(group => group.id !== groupId));
+            }
+        } catch (err) {
+            console.error('Error deleting group:', err);
+            alert('Failed to delete group. Please try again.');
+        }
+    };
+
     if (loading) return <div className="loading">Loading groups...</div>;
     if (error) return <div className="error-message">{error}</div>;
 
@@ -44,6 +68,13 @@ const GroupList = () => {
                     {groups.map(group => (
                         <Link to={`/group/${group._id}`} key={group._id} className="group-card-link">
                             <div className="group-card">
+                                <button 
+                                    className="delete-group-button"
+                                    onClick={(e) => handleDeleteGroup(e, group._id)}
+                                    title="Delete Group"
+                                >
+                                    ×
+                                </button>
                                 <h3 className="group-card-title">{group.name}</h3>
                                 <div className="group-card-info">
                                     <p>Members: {group.members?.length || 0}</p>

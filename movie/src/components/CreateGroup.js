@@ -39,12 +39,12 @@ const CreateGroup = () => {
                     />
                     <button 
                         onClick={handleCreateGroup}
-                        className="create-group-button"
+                        className="create-button"
                     >
                         Create Group
                     </button>
+                    {error && <p className="error-message">{error}</p>}
                 </div>
-                {error && <p className="error-message">{error}</p>}
             </div>
         </div>
     );

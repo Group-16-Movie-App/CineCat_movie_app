@@ -25,7 +25,7 @@ app.use('/api', tmdb);
 app.use('/api', favoriteRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/reviews', reviewRoutes); 
-app.use('/api', groupRoutes); // This will prefix all routes in groupRoutes with /api
+app.use('/api/groups', groupRoutes);
 app.use('/api', movieRoutes); // This will prefix all routes in movieRoutes with /api
 
 
