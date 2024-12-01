@@ -1,11 +1,11 @@
-drop table if exists posts;
-drop table if exists shared_urls;
-drop table if exists favorites;
-drop table if exists reviews;
--- drop table if exists ratings;
-drop table if exists members;
-drop table if exists groups;
-drop table if exists accounts;
+DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS shared_urls;
+DROP TABLE IF EXISTS favorites;
+DROP TABLE IF EXISTS reviews;
+-- DROP TABLE IF EXISTS ratings;
+DROP TABLE IF EXISTS members;
+DROP TABLE IF EXISTS groups;
+DROP TABLE IF EXISTS accounts;
 
 -- Account table to manage accounts and authentication
 CREATE TABLE accounts (
@@ -13,91 +13,92 @@ CREATE TABLE accounts (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    is_verified BOOLEAN DEFAULT FALSE, 
-    refresh_token TEXT, 
+    is_verified BOOLEAN DEFAULT FALSE,
+    refresh_token TEXT,
+    verification_token VARCHAR(255), -- Added verification_token
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Group table for group functionality. 
+-- Group table for group functionality.
 -- When the owner deletes their account, transfer the ownership to another group member, if available.
 -- If no other members exist, delete the group.
-create table groups (
-    id serial primary key,
-    name varchar(255) unique not null,
-    description text,
-    owner int not null,
-    created timestamp default current_timestamp,
-    constraint fk_owner foreign key (owner) references accounts(id) on delete cascade
+CREATE TABLE groups (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    description TEXT,
+    owner INT NOT NULL,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_owner FOREIGN KEY (owner) REFERENCES accounts(id) ON DELETE CASCADE
 );
 
--- Members table to track membership in groups. 
+-- Members table to track membership in groups.
 -- The Owner can assign who becomes an admin.
--- Admins and Owners can add or remove members, delete members'reviews.
-create table members (
-    id serial primary key,
-    group_id int not null,
-    account_id int not null,
-    role varchar(50) check (role in ('member', 'admin')) default 'member',
-    constraint fk_group foreign key (group_id) references groups(id),
-    constraint fk_account foreign key (account_id) references accounts(id)
+-- Admins and Owners can add or remove members, delete members' reviews.
+CREATE TABLE members (
+    id SERIAL PRIMARY KEY,
+    group_id INT NOT NULL,
+    account_id INT NOT NULL,
+    role VARCHAR(50) CHECK (role IN ('member', 'admin')) DEFAULT 'member',
+    CONSTRAINT fk_group FOREIGN KEY (group_id) REFERENCES groups(id),
+    CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES accounts(id)
 );
 
--- Reviews table to store account-created movie reviews. Movie_id is ID retrieved form IMDB API
-create table reviews (
-    id serial primary key,
-    movie_id int not null,
-    account_id int not null,
-    review text not null,
-    rating smallint check (rating between 1 and 5) not null,
-    created timestamp default current_timestamp,
-    constraint fk_account foreign key (account_id) references accounts(id) on delete cascade
+-- Reviews table to store account-created movie reviews. Movie_id is ID retrieved from IMDB API
+CREATE TABLE reviews (
+    id SERIAL PRIMARY KEY,
+    movie_id INT NOT NULL,
+    account_id INT NOT NULL,
+    review TEXT NOT NULL,
+    rating SMALLINT CHECK (rating BETWEEN 1 AND 5) NOT NULL,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
 );
 
 -- Ratings table to store account-created movie ratings. Movie ID is from TMDB
 -- If the accounts is deleted, its ratings are kept, and account_id field is null.
--- create table ratings (
-   -- id serial primary key,
-   -- movie_id int not null,
-   -- account_id int,
-   -- rating smallint check (rating between 1 and 5) not null,
-   -- created timestamp default current_timestamp,
-   -- constraint fk_account foreign key (account_id) references accounts(id) on delete set null
---);
+-- CREATE TABLE ratings (
+--     id SERIAL PRIMARY KEY,
+--     movie_id INT NOT NULL,
+--     account_id INT,
+--     rating SMALLINT CHECK (rating BETWEEN 1 AND 5) NOT NULL,
+--     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE SET NULL
+-- );
 
 -- Favorites table to manage account’s favorite movies or series
-create table favorites (
-    id serial primary key,
-    account_id int not null,
-    movie_id int not null,
-    created timestamp default current_timestamp,
-    constraint fk_favorite_account foreign key (account_id) references accounts(id),
-    constraint unique_favorite_movie_per_account unique (account_id, movie_id)
+CREATE TABLE favorites (
+    id SERIAL PRIMARY KEY,
+    account_id INT NOT NULL,
+    movie_id INT NOT NULL,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_favorite_account FOREIGN KEY (account_id) REFERENCES accounts(id),
+    CONSTRAINT unique_favorite_movie_per_account UNIQUE (account_id, movie_id)
 );
 
 -- Table to track shared URLs for favorite lists
-create table shared_urls (
-    id serial primary key,
-    account_id int not null,
-    url text unique not null,
-    created timestamp default current_timestamp,
-    constraint fk_shared_account foreign key (account_id) references accounts(id)
+CREATE TABLE shared_urls (
+    id SERIAL PRIMARY KEY,
+    account_id INT NOT NULL,
+    url TEXT UNIQUE NOT NULL,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_shared_account FOREIGN KEY (account_id) REFERENCES accounts(id)
 );
 
--- Table to manage group's post:
-create table posts (
-    id serial primary key,
-    account_id int not null,
-    group_id int not null,
-    tilte text not null,
-    description text not null,
-    movie_id int,
-    showtime_id int,
-    created timestamp default current_timestamp,
-    constraint fk_group foreign key (group_id) references groups(id) on delete cascade,
-    constraint fk_account foreign key (account_id) references accounts(id) on delete cascade
+-- Table to manage group's posts:
+CREATE TABLE posts (
+    id SERIAL PRIMARY KEY,
+    account_id INT NOT NULL,
+    group_id INT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    movie_id INT,
+    showtime_id INT,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_group FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
+    CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
     -- Ensure movie_id and showtime_id cannot be NON-NULL at a time
-    -- constraint chk_movie_or_showtime 
-        -- check (
-           -- (movie_id is distinct from showtime_id)
-        --)
+    -- CONSTRAINT chk_movie_or_showtime 
+    --     CHECK (
+    --         (movie_id IS DISTINCT FROM showtime_id)
+    --     )
 );

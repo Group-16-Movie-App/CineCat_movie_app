@@ -11,7 +11,7 @@ import Footer from './components/Footer';
 import ReviewsPage from './pages/ReviewsPage';
 import TrendingMovies from './components/TrendingMovies';
 import SharedFavorites from './components/SharedFavorites';
-
+import EmailVerification from './pages/EmailVerification'; 
 
 // PrivateRoute is a wrapper component that protects routes from unauthorized access, you have to be logged in to access the profile page   
 const PrivateRoute = ({ children }) => {
@@ -36,6 +36,7 @@ function App() {
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/filter" element={<FilterPage />} />
                 <Route path="/movie/:id" element={<MovieDetail />} />
+                <Route path="/verification-success" element={<EmailVerification />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/profile/:userId" element={<ProfilePage />} />
                 <Route path="/favorites" element={

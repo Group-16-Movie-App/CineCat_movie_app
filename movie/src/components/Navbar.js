@@ -8,6 +8,7 @@ import './Navbar.css';
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const [isSignUpSuccess, setIsSignUpSuccess] = useState(false); 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -30,27 +31,32 @@ const Navbar = () => {
 
   const handleSignUp = async (formData) => {
     try {
-      const response = await fetch('http://localhost:5000/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-      
-      const data = await response.json();
+        const response = await fetch('http://localhost:5000/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });
 
-      if (response.ok) {
-        setRegisteredEmail(formData.email);
-        return true;
-      } else {
-        throw new Error(data.error || 'Registration failed');
-      }
+        const data = await response.json();
+
+        if (response.ok) {        
+            setRegisteredEmail(formData.email);
+            setIsSignUpSuccess(true);
+            setTimeout(() => {
+              setIsSignUpSuccess(false); 
+            }, 8000);
+            return true;
+        } else {
+            throw new Error(data.error || 'Registration failed');
+        }
     } catch (error) {
-      console.error('Registration error:', error);
-      return false;
+        console.error('Registration error:', error);
+        alert(error.message || 'Registration failed. Please try again.');
+        return false;
     }
-  };
+};
 
   const handleSignUpSuccess = () => {
     setIsSignUpOpen(false);
@@ -216,6 +222,12 @@ const Navbar = () => {
         </div>
     </div>
 </ModalWindow>
+
+{isSignUpSuccess && ( //pop up
+        <div className="email-notification">
+          <p>Registration successful! Please check your email to verify your account.</p>
+        </div>
+      )}
     </div>
   );
 };
