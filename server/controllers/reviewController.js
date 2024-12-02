@@ -12,9 +12,16 @@ export const createReview = async (req, res) => {
     const email = req.user.email; // From auth middleware
 
     // Validate input
-    if (!movieId || !description || !rating || !email) {
+    if (!movieId || !description || !rating) {
       return res.status(400).json({
         message: "Movie ID, description, and rating are required",
+      });
+    }
+
+    // Validate email:
+    if (!email) {
+      return res.status(401).json({
+        message: "Invalid email",
       });
     }
 
