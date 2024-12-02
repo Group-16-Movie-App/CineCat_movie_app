@@ -137,7 +137,7 @@ export const deleteAccount = async (req, res) => {
         await client.query('DELETE FROM shared_urls WHERE account_id = $1', [req.user.id]);
         await client.query('DELETE FROM reviews WHERE account_id = $1', [req.user.id]);
         await client.query('DELETE FROM members WHERE account_id = $1', [req.user.id]);
-        await client.query('UPDATE ratings SET account_id = NULL WHERE account_id = $1', [req.user.id]);
+        //await client.query('UPDATE ratings SET account_id = NULL WHERE account_id = $1', [req.user.id]);
         
       
         const result = await client.query('DELETE FROM accounts WHERE id = $1', [req.user.id]);
@@ -148,7 +148,7 @@ export const deleteAccount = async (req, res) => {
         }
         
         await client.query('COMMIT'); 
-        res.json({ message: 'Account deleted successfully' });
+        res.status(200).json({ message: 'Account deleted successfully' });
         
     } catch (error) {
         await client.query('ROLLBACK');  
