@@ -54,7 +54,7 @@ export const register = async (req, res) => {
         // Create token for immediate login after registration
         const token = jwt.sign({ id: result.rows[0].id }, process.env.JWT_SECRET);
         
-        res.json({ 
+        res.status(201).json({ 
             token,
             id: result.rows[0].id,
             name,
@@ -109,7 +109,7 @@ export const login = async (req, res) => {
         
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
         
-        res.json({ 
+        res.status(200).json({ 
             token,
             id: user.id, 
             name: user.name, 
@@ -124,7 +124,7 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-    res.json({ message: 'Logged out successfully' });
+    res.status(200).json({ message: 'Logged out successfully' });
 };
 
 export const deleteAccount = async (req, res) => {
