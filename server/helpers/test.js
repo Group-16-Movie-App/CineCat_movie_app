@@ -4,6 +4,8 @@ import pool from '../config/database.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
+const { sign } = jwt;
+
 
 const __dirname = import.meta.dirname;
 
@@ -33,6 +35,25 @@ const insertTestReview = async (movie_id, account_id, review, rating) => {
     }
 };
 
+const getToken = async (email) => {
+    if (!process.env.JWT_SECRET) {
+        throw new Error("JWT_SECRET_KEY is not set in environment variables");
+    }
+
+    const result = await pool.query('SELECT id FROM accounts WHERE email = $1', [email]);
+    if (result.rows.length === 0) {
+        throw new Error('User not found');
+    }
+
+    const userId = result.rows[0].id;
+    return sign({ id: userId, email: email }, process.env.JWT_SECRET);
+};
+
+const findUserByEmail = async (email) => {
+    const result = await pool.query('SELECT * FROM accounts WHERE email = $1', [email]);
+    return result.rows[0] || null;
+};
+
 // const getLoginResponse = async (email, password) => {
 //     try {
 //         await fetch('http://localhost:5000/api/login', {
@@ -49,4 +70,4 @@ const insertTestReview = async (movie_id, account_id, review, rating) => {
 //     }
 // }
 
-export { initializeTestDb, insertTestUser, insertTestReview }
+export { initializeTestDb, insertTestUser, insertTestReview, getToken, findUserByEmail }

@@ -1,4 +1,4 @@
-import { initializeTestDb, insertTestUser, insertTestReview } from "./helpers/test.js";
+import { initializeTestDb, insertTestUser, insertTestReview, getToken, findUserByEmail } from "./helpers/test.js";
 import { expect } from "chai";
 
 const base_url = 'http://localhost:5000';
@@ -96,20 +96,22 @@ describe('POST /api/logout', () => {
 
         const data = await response.json();
         expect(response.status).to.equal(200);
+        console.log('Token after logout 1: ' + token);
         expect(data.message).to.equal('Logged out successfully');
     });
 
-    it('should prevent access to protected routes after logout', async () => {
+    it('should prevent from posting a review after logout', async () => {
         // Send request to a protected route after logout
         const response = await fetch('http://localhost:5000/api/reviews', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`, // Token should be invalid after logout
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                'movieId': 15121,
-                'description': "Try to send a review",
-                'rating': 4
+                movieId: 15121,
+                description: "Try to send a review",
+                rating: 4
             })
         });
 
@@ -118,6 +120,38 @@ describe('POST /api/logout', () => {
         console.log('Response status: ' + response.status);
         console.log('Response body:', data);
         expect(response.status).to.equal(401);
+    });
+});
+
+// Delete account
+describe('DELETE account', () => {
+    const name = 'delete';
+    const email = 'delete@foo.com';
+    const password = 'Delete123';
+    let token;
+
+    before(async () => {
+        await insertTestUser(name, email, password);
+        token = await getToken(email);
+    });
+
+    it('should delete an account', async () => {
+        const response = await fetch(base_url + '/api/auth/account', {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        const data = await response.json();
+        console.log('Response data:', data);
+
+        expect(response.status).to.equal(200);
+        expect(data.message).to.equal('Account deleted successfully');
+
+        // Confirm the account no longer exists in the database
+        const deletedUser = await findUserByEmail(email);
+        expect(deletedUser).to.be.null;
     });
 });
 
