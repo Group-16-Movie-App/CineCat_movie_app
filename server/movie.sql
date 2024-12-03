@@ -28,16 +28,17 @@ create table groups (
     constraint fk_owner foreign key (owner) references accounts(id) on delete cascade
 );
 
--- Members table to track membership in groups. 
--- The Owner can assign who becomes an admin.
--- Admins and Owners can add or remove members, delete members'reviews.
-create table members (
+-- First drop the existing members table
+DROP TABLE IF EXISTS members CASCADE;
+
+-- Then create the new members table with the updated schema
+CREATE TABLE members (
     id serial primary key,
-    group_id int not null,
-    account_id int not null,
-    role varchar(50) check (role in ('member', 'admin')) default 'member',
-    constraint fk_group foreign key (group_id) references groups(id),
-    constraint fk_account foreign key (account_id) references accounts(id)
+    group_id int references groups(id) on delete cascade,
+    account_id int references accounts(id) on delete cascade,
+    role varchar(20) default 'member',
+    created_at timestamp default current_timestamp,
+    unique(group_id, account_id)
 );
 
 -- Reviews table to store account-created movie reviews. Movie_id is ID retrieved form IMDB API
@@ -98,4 +99,33 @@ create table posts (
         -- check (
            -- (movie_id is distinct from showtime_id)
         --)
+);
+
+-- Membership requests table
+create table membership_requests (
+    id serial primary key,
+    group_id int references groups(id) on delete cascade,
+    account_id int references accounts(id) on delete cascade,
+    status varchar(20) default 'pending',
+    created_at timestamp default current_timestamp,
+    unique(group_id, account_id)
+);
+
+-- Group movies table
+create table group_movies (
+    id serial primary key,
+    group_id int references groups(id) on delete cascade,
+    title varchar(255) not null,
+    description text,
+    tmdb_id int,
+    created_at timestamp default current_timestamp
+);
+
+-- Group schedules table
+create table group_schedules (
+    id serial primary key,
+    group_id int references groups(id) on delete cascade,
+    movie_id int references group_movies(id) on delete cascade,
+    showtime timestamp not null,
+    created_at timestamp default current_timestamp
 );

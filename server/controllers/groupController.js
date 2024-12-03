@@ -22,12 +22,19 @@ export const getAllGroups = async (req, res) => {
 
 export const getGroupById = async (req, res) => {
     const { id } = req.params;
-
+    
     try {
-        const result = await pool.query('SELECT * FROM groups WHERE id = $1', [id]);
+        const result = await pool.query(
+            'SELECT g.*, a.name as owner_name FROM groups g ' +
+            'JOIN accounts a ON g.owner = a.id ' +
+            'WHERE g.id = $1',
+            [id]
+        );
+
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'Group not found' });
         }
+
         res.json(result.rows[0]);
     } catch (error) {
         console.error('Error fetching group:', error);
@@ -37,18 +44,60 @@ export const getGroupById = async (req, res) => {
 
 export const createGroup = async (req, res) => {
     const { name } = req.body;
+    const owner = req.user.id;
+    
+    console.log('Creating group with:', { name, owner });
     
     try {
+        // Start a transaction
+        await pool.query('BEGIN');
+        
         // Insert the new group
-        const result = await pool.query(
-            'INSERT INTO groups (name) VALUES ($1) RETURNING *',
-            [name]
+        const groupResult = await pool.query(
+            'INSERT INTO groups (name, owner) VALUES ($1, $2) RETURNING *',
+            [name, owner]
         );
-
-        res.status(201).json(result.rows[0]);
+        
+        console.log('Group created:', groupResult.rows[0]);
+        
+        const groupId = groupResult.rows[0].id;
+        
+        // Add owner as a member with 'owner' role
+        const memberResult = await pool.query(
+            'INSERT INTO members (group_id, account_id, role) VALUES ($1, $2, $3) RETURNING *',
+            [groupId, owner, 'owner']
+        );
+        
+        console.log('Member added:', memberResult.rows[0]);
+        
+        await pool.query('COMMIT');
+        
+        // Return complete group data
+        res.status(201).json({
+            id: groupId,
+            name,
+            owner,
+            members: [memberResult.rows[0]]
+        });
     } catch (error) {
-        console.error('Error creating group:', error);
-        res.status(500).json({ message: 'Failed to create group' });
+        await pool.query('ROLLBACK');
+        console.error('Detailed error creating group:', {
+            error: error.message,
+            stack: error.stack,
+            name: error.name
+        });
+        
+        // Send more specific error message
+        if (error.code === '23505') { // Unique violation
+            res.status(400).json({ message: 'A group with this name already exists' });
+        } else if (error.code === '23503') { // Foreign key violation
+            res.status(400).json({ message: 'Invalid owner ID' });
+        } else {
+            res.status(500).json({ 
+                message: 'Failed to create group',
+                details: error.message 
+            });
+        }
     }
 };
 
@@ -78,12 +127,11 @@ export const leaveGroup = async (req, res) => {
 };
 
 export const getGroupMembers = async (req, res) => {
-    const { groupId } = req.params;
-
+    const { id } = req.params;
     try {
         const result = await pool.query(
-            'SELECT a.id, a.email, m.role FROM members m JOIN accounts a ON m.account_id = a.id WHERE m.group_id = $1',
-            [groupId]
+            'SELECT * FROM members WHERE group_id = $1',
+            [id]
         );
         res.json(result.rows);
     } catch (error) {
@@ -124,12 +172,11 @@ export const removeMember = async (req, res) => {
 };
 
 export const getMembershipRequests = async (req, res) => {
-    const { groupId } = req.params;
-
+    const { id } = req.params;
     try {
         const result = await pool.query(
-            'SELECT a.id, a.email FROM membership_requests mr JOIN accounts a ON mr.account_id = a.id WHERE mr.group_id = $1',
-            [groupId]
+            'SELECT * FROM membership_requests WHERE group_id = $1',
+            [id]
         );
         res.json(result.rows);
     } catch (error) {
@@ -178,10 +225,12 @@ export const addMovieToGroup = async (req, res) => {
 };
 
 export const getGroupMovies = async (req, res) => {
-    const { groupId } = req.params;
-
+    const { id } = req.params;
     try {
-        const result = await pool.query('SELECT * FROM group_movies WHERE group_id = $1', [groupId]);
+        const result = await pool.query(
+            'SELECT * FROM group_movies WHERE group_id = $1',
+            [id]
+        );
         res.json(result.rows);
     } catch (error) {
         console.error('Error fetching group movies:', error);
@@ -203,13 +252,49 @@ export const addScheduleToGroup = async (req, res) => {
 };
 
 export const getGroupSchedules = async (req, res) => {
-    const { groupId } = req.params;
-
+    const { id } = req.params;
     try {
-        const result = await pool.query('SELECT * FROM group_schedules WHERE group_id = $1', [groupId]);
+        const result = await pool.query(
+            'SELECT * FROM group_schedules WHERE group_id = $1',
+            [id]
+        );
         res.json(result.rows);
     } catch (error) {
         console.error('Error fetching group schedules:', error);
         res.status(500).json({ message: 'Failed to fetch group schedules' });
+    }
+};
+
+export const getGroup = async (req, res) => {
+    const { id } = req.params;
+    
+    try {
+        const groupResult = await pool.query(
+            'SELECT g.*, a.email as owner_email FROM groups g ' +
+            'JOIN accounts a ON g.owner = a.id ' +
+            'WHERE g.id = $1',
+            [id]
+        );
+
+        if (groupResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Group not found' });
+        }
+
+        const membersResult = await pool.query(
+            'SELECT m.*, a.email FROM members m ' +
+            'JOIN accounts a ON m.account_id = a.id ' +
+            'WHERE m.group_id = $1',
+            [id]
+        );
+
+        const group = {
+            ...groupResult.rows[0],
+            members: membersResult.rows
+        };
+
+        res.json(group);
+    } catch (error) {
+        console.error('Error fetching group:', error);
+        res.status(500).json({ message: 'Failed to fetch group details' });
     }
 };

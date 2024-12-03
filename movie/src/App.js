@@ -47,8 +47,16 @@ function App() {
                 } />
                 <Route path="/favorites/:userId" element={<SharedFavorites />} />
                 <Route path="/groups" element={<GroupList />} />
-                <Route path="/group/:id" element={<GroupPage />} />
-                <Route path="/create-group" element={<CreateGroup />} />
+                <Route path="/group/:id" element={
+                    <PrivateRoute>
+                        <GroupPage />
+                    </PrivateRoute>
+                } />
+                <Route path="/create-group" element={
+                    <PrivateRoute>
+                        <CreateGroup />
+                    </PrivateRoute>
+                } />
             </Routes>
             <Footer />
         </>
