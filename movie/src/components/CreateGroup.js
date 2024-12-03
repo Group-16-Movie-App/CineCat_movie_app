@@ -20,8 +20,8 @@ const CreateGroup = () => {
             alert('Group created successfully!');
             setGroupName('');
         } catch (err) {
+            console.error('Error creating group:', err.response ? err.response.data : err.message);
             setError('Failed to create group. Please try again.');
-            console.error(err);
         }
     };
 
