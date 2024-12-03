@@ -1,27 +1,27 @@
-/* General Page Styling */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #121212;
-    color: #e0e0e0;
+/* Container for horizontally scrollable reviews */
+.review-list-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 10px 0;
+    margin: 20px 0;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 15px;
+/* Review list */
+.review-list {
+    display: flex;
+    gap: 20px;
 }
 
-/* Review Card Styling */
+/* Individual review item */
 .review-card {
+    flex: 0 0 300px; /* Fixed width for each card */
     background: #1e1e1e;
     border: 1px solid #333;
     border-radius: 8px;
     padding: 20px;
-    margin-bottom: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
     transition: transform 0.2s, box-shadow 0.2s;
+    white-space: normal; /* Allow text to wrap */
 }
 
 .review-card:hover {
@@ -38,18 +38,14 @@ body {
 }
 
 .review-card h3 {
-    font-size: 18px;
+    font-size: 16px;
     margin: 10px 0;
     color: #bb86fc;
+    white-space: normal;
 }
 
-.review-card h3:hover {
-    text-decoration: underline;
-}
-
-/* Image Styling */
 .review-card img {
-    width: 100px;
+    width: 100%;
     height: auto;
     border-radius: 4px;
     display: block;
@@ -57,35 +53,10 @@ body {
     border: 1px solid #333;
 }
 
-/* Link Styling */
-.review-card a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.review-card a:hover {
-    text-decoration: none;
-    color: #ffcc00;
-}
-
-/* Fallback for Poster Unavailable */
-.poster-unavailable {
-    font-size: 12px;
-    color: #757575;
-    margin: 10px 0;
-}
-
-/* Responsive Design */
+/* Responsive Design for smaller screens */
 @media (max-width: 768px) {
     .review-card {
+        flex: 0 0 250px; /* Adjust width for smaller devices */
         padding: 15px;
-    }
-
-    .review-card img {
-        width: 80px;
-    }
-
-    .review-card h3 {
-        font-size: 16px;
     }
 }

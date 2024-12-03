@@ -54,7 +54,7 @@ export const register = async (req, res) => {
         // Create token for immediate login after registration
         const token = jwt.sign({ id: result.rows[0].id }, process.env.JWT_SECRET);
         
-        res.json({ 
+        res.status(201).json({ 
             token,
             id: result.rows[0].id,
             name,
@@ -109,7 +109,7 @@ export const login = async (req, res) => {
         
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
         
-        res.json({ 
+        res.status(200).json({ 
             token,
             id: user.id, 
             name: user.name, 
@@ -124,7 +124,7 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-    res.json({ message: 'Logged out successfully' });
+    res.status(200).json({ message: 'Logged out successfully' });
 };
 
 export const deleteAccount = async (req, res) => {
@@ -137,7 +137,7 @@ export const deleteAccount = async (req, res) => {
         await client.query('DELETE FROM shared_urls WHERE account_id = $1', [req.user.id]);
         await client.query('DELETE FROM reviews WHERE account_id = $1', [req.user.id]);
         await client.query('DELETE FROM members WHERE account_id = $1', [req.user.id]);
-        await client.query('UPDATE ratings SET account_id = NULL WHERE account_id = $1', [req.user.id]);
+        //await client.query('UPDATE ratings SET account_id = NULL WHERE account_id = $1', [req.user.id]);
         
       
         const result = await client.query('DELETE FROM accounts WHERE id = $1', [req.user.id]);
@@ -148,7 +148,7 @@ export const deleteAccount = async (req, res) => {
         }
         
         await client.query('COMMIT'); 
-        res.json({ message: 'Account deleted successfully' });
+        res.status(200).json({ message: 'Account deleted successfully' });
         
     } catch (error) {
         await client.query('ROLLBACK');  
