@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './GroupStyles.css';
 
-const CreateGroup = () => {
+const CreateGroup = ({ onGroupCreated }) => {
     const [groupName, setGroupName] = useState('');
     const [error, setError] = useState('');
 
@@ -19,6 +19,7 @@ const CreateGroup = () => {
             });
             alert('Group created successfully!');
             setGroupName('');
+            onGroupCreated(response.data);
         } catch (err) {
             console.error('Error creating group:', err.response ? err.response.data : err.message);
             setError('Failed to create group. Please try again.');
