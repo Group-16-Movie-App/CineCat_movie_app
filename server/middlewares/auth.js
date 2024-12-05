@@ -32,4 +32,4 @@ export const auth = async (req, res, next) => {
   }
 };
 
-export default auth; // Add this line for default export
+export default auth;

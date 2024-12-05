@@ -35,6 +35,25 @@ const insertTestReview = async (movie_id, account_id, review, rating) => {
     }
 };
 
+const insertTestGroup = async (name, description, account_id) => {
+    try {
+        await pool.query('INSERT INTO groups (name, description, owner) VALUES ($1, $2, $3)', 
+            [name, description, account_id]);
+    } catch (error) {
+        console.error('Error inserting test group:', error);
+        throw error;
+    }
+}
+const getGroupId = async (name) => {
+    try {
+        const result = await pool.query('SELECT id FROM groups WHERE name=$1', [name]);
+        return result.rows[0].id || null
+    } catch (error) {
+        console.error('Error getting group id:', error);
+        throw error;
+    }
+}
+
 const getToken = async (email) => {
     if (!process.env.JWT_SECRET) {
         throw new Error("JWT_SECRET_KEY is not set in environment variables");
@@ -70,4 +89,4 @@ const findUserByEmail = async (email) => {
 //     }
 // }
 
-export { initializeTestDb, insertTestUser, insertTestReview, getToken, findUserByEmail }
+export { initializeTestDb, insertTestUser, insertTestReview, insertTestGroup, getGroupId, getToken, findUserByEmail }
