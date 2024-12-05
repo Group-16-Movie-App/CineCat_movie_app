@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 const GroupMovies = ({ groupId }) => {
@@ -8,7 +8,7 @@ const GroupMovies = ({ groupId }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    const fetchMovies = async () => {
+    const fetchMovies = useCallback(async () => {
         try {
             const response = await axios.get(`http://localhost:5000/api/groups/${groupId}/movies`);
             setMovies(response.data);
@@ -18,11 +18,11 @@ const GroupMovies = ({ groupId }) => {
             console.error('Error fetching group movies:', error);
             setLoading(false);
         }
-    };
+    }, [groupId]);
 
     useEffect(() => {
         fetchMovies();
-    }, [groupId, fetchMovies]);
+    }, [fetchMovies]);
 
     const handleAddMovie = async () => {
         try {

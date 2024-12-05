@@ -6,6 +6,7 @@ import MembershipRequests from '../components/MembershipRequests';
 import GroupMovies from '../components/GroupMovies';
 import GroupSchedules from '../components/GroupSchedules';
 import DeleteGroup from '../components/DeleteGroup';
+import GroupComments from '../components/GroupComments';
 import '../components/GroupStyles.css';
 
 const GroupPage = () => {
@@ -56,6 +57,7 @@ const GroupPage = () => {
                     <div className="content-section">
                         <GroupSchedules groupId={id} />
                     </div>
+                    <GroupComments groupId={id} />
                 </div>
             </div>
         </div>
