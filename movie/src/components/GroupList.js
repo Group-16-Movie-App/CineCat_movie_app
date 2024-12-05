@@ -42,7 +42,7 @@ const GroupList = () => {
         }
     };
 
-    const handleGroupCreated = (newGroup) => {
+        const handleGroupCreated = (newGroup) => {
         setGroups([...groups, newGroup]);
     };
 
@@ -102,7 +102,7 @@ const GroupList = () => {
                                     <p>Movies: {group.movies?.length || 0}</p>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             )}
