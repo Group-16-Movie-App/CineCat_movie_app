@@ -14,7 +14,9 @@ import {
     addMember,
     removeMember,
     getGroupComments,
-    addGroupComment
+    addGroupComment,
+    likeComment,
+    getCommentLikes
 } from '../controllers/groupController.js';
 import auth from '../middleware/auth.js';
 
@@ -41,6 +43,8 @@ router.delete('/:groupId/members/:memberId', auth, removeMember);
 // New routes for comments
 router.get('/:groupId/comments', auth, getGroupComments);
 router.post('/:groupId/comments', auth, addGroupComment);
+router.post('/:groupId/comments/:commentId/like', auth, likeComment);
+router.get('/:groupId/comments/:commentId/likes', auth, getCommentLikes);
 
 export default router;
 

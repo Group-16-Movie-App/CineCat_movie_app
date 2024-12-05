@@ -1,3 +1,4 @@
+drop table if exists comment_likes;
 drop table if exists comments;
 drop table if exists posts;
 drop table if exists shared_urls;
@@ -138,8 +139,15 @@ CREATE TABLE comments (
     group_id INT NOT NULL,                -- Foreign key referencing the groups table
     account_id INT NOT NULL,                 -- Foreign key referencing the account table 
     text TEXT NOT NULL,                   -- The comment text
+    likes INT DEFAULT 0,                  -- Number of likes the comment has received
     created_at TIMESTAMP DEFAULT NOW(),   -- Timestamp for when the comment was created
     updated_at TIMESTAMP DEFAULT NOW(),   -- Timestamp for when the comment was last updated
     FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,  -- Ensures referential integrity
     FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE   -- Ensures referential integrity
+);
+CREATE TABLE comment_likes (
+    id SERIAL PRIMARY KEY,
+    comment_id INT REFERENCES comments(id),
+    user_id INT REFERENCES users(id),
+    UNIQUE (comment_id, user_id) -- Prevent multiple likes from the same user on the same comment
 );

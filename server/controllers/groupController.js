@@ -340,3 +340,37 @@ export const addGroupComment = async (req, res) => {
         res.status(500).json({ message: 'Failed to add comment' , error: error.message});
     }
 };
+
+export const likeComment = async (req, res) => {
+    const { commentId } = req.params;
+    const userId = req.user.id; // Assuming you have user authentication
+
+    try {
+        // Check if the user has already liked the comment
+        const existingLike = await pool.query('SELECT * FROM comment_likes WHERE comment_id = $1 AND account_id = $2', [commentId, userId]);
+        
+        if (existingLike.rows.length > 0) {
+            return res.status(400).json({ message: 'You have already liked this comment' });
+        }
+
+        // Insert a new like
+        await pool.query('INSERT INTO comment_likes (comment_id, account_id) VALUES ($1, $2)', [commentId, userId]);
+        
+        res.status(200).json({ message: 'Comment liked successfully' });
+    } catch (error) {
+        console.error('Error liking comment:', error);
+        res.status(500).json({ message: 'Failed to like comment' });
+    }
+};
+
+export const getCommentLikes = async (req, res) => {
+    const { commentId } = req.params;
+
+    try {
+        const result = await pool.query('SELECT COUNT(*) AS likes FROM comment_likes WHERE comment_id = $1', [commentId]);
+        res.status(200).json({ likes: parseInt(result.rows[0].likes) });
+    } catch (error) {
+        console.error('Error fetching like count:', error);
+        res.status(500).json({ message: 'Failed to fetch like count' });
+    }
+};

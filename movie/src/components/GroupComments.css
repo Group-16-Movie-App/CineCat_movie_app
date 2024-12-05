@@ -1,0 +1,25 @@
+.comments-container {
+    margin: 20px;
+}
+
+.comment-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.comment-actions {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.comment-actions button {
+    margin-right: 10px;
+}
+
+.comment-actions span {
+    margin-right: 10px;
+    font-weight: bold;
+} 
