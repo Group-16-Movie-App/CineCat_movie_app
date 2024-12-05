@@ -39,7 +39,8 @@ CREATE TABLE members (
     account_id int references accounts(id) on delete cascade,
     role varchar(20) default 'member',
     created_at timestamp default current_timestamp,
-    unique(group_id, account_id)
+    unique(group_id, account_id),
+    CHECK (role IN ('owner', 'member'))
 );
 
 -- Reviews table to store account-created movie reviews. Movie_id is ID retrieved form IMDB API

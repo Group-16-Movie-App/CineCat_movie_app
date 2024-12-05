@@ -1,4 +1,3 @@
-import GroupDiscussion from '../../movie/src/components/GroupDiscussion.js';
 import pool from '../config/database.js';
 
 
@@ -60,10 +59,6 @@ export const createGroup = async (req, res) => {
         const groupResult = await pool.query(
             'INSERT INTO groups (name, owner) VALUES ($1, $2) RETURNING *',
             [name, owner]
-        // Insert the new group with the owner ID
-        const result = await pool.query(
-            'INSERT INTO groups (name, owner) VALUES ($1, $2) RETURNING *',
-            [name, ownerId] // Include the owner ID in the query
         );
         
         console.log('Group created:', groupResult.rows[0]);

@@ -43,7 +43,7 @@ const CreateGroup = ({ onGroupCreated }) => {
             
             const newGroupId = groupResponse.data.id;
             navigate(`/group/${newGroupId}`);
-            onGroupCreated(response.data);
+            onGroupCreated(groupResponse.data);
         } catch (err) {
             console.error('Error creating group:', err.response || err);
             setError(err.response?.data?.message || 'Failed to create group. Please try again.');
