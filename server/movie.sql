@@ -1,3 +1,4 @@
+drop table if exists comments;
 drop table if exists posts;
 drop table if exists shared_urls;
 drop table if exists favorites;
@@ -86,7 +87,7 @@ create table posts (
     id serial primary key,
     account_id int not null,
     group_id int not null,
-    tilte text not null,
+    title text not null,
     description text not null,
     movie_id int,
     showtime_id int,
@@ -98,4 +99,16 @@ create table posts (
         -- check (
            -- (movie_id is distinct from showtime_id)
         --)
+);
+
+-- Table to manage group's post comments
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,                -- Unique identifier for each comment
+    group_id INT NOT NULL,                -- Foreign key referencing the groups table
+    account_id INT NOT NULL,                 -- Foreign key referencing the account table 
+    text TEXT NOT NULL,                   -- The comment text
+    created_at TIMESTAMP DEFAULT NOW(),   -- Timestamp for when the comment was created
+    updated_at TIMESTAMP DEFAULT NOW(),   -- Timestamp for when the comment was last updated
+    FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,  -- Ensures referential integrity
+    FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE   -- Ensures referential integrity
 );

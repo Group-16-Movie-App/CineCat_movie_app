@@ -1,0 +1,17 @@
+.discussion-container {
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.comments-section {
+    max-height: 300px; /* Limit height for scrolling */
+    overflow-y: auto;  /* Enable scrolling */
+    margin-bottom: 1rem;
+}
+
+.comment {
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+}

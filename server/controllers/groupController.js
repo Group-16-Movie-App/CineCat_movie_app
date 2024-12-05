@@ -1,4 +1,6 @@
+import GroupDiscussion from '../../movie/src/components/GroupDiscussion.js';
 import pool from '../config/database.js';
+
 
 export const getGroups = async (req, res) => {
     try {
@@ -212,5 +214,44 @@ export const getGroupSchedules = async (req, res) => {
     } catch (error) {
         console.error('Error fetching group schedules:', error);
         res.status(500).json({ message: 'Failed to fetch group schedules' });
+    }
+};
+
+//to get group discussions and comments
+export const getGroupComments = async (req, res) => {
+    const { groupId } = req.params;
+
+    try {
+        const result = await pool.query(
+            'SELECT c.id, c.text, c.created_at, a.name AS user_name FROM comments c JOIN accounts a ON c.account_id = a.id WHERE c.group_id = $1 ORDER BY c.created_at DESC',
+            [groupId]
+        );
+
+        // Check if any comments were found
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'No comments found for this group' });
+        }
+
+        res.json(result.rows); // Return the comments
+    } catch (error) {
+        console.error('Error fetching comments:', error); // Log the error details
+        res.status(500).json({ message: 'Failed to fetch comments', error: error.message }); // Return error message
+    }
+};
+
+export const addGroupComment = async (req, res) => {
+    const { groupId } = req.params;
+    const { text } = req.body; // Get the comment text from the request body
+    const userId = req.user.id; // Get the user ID from the authenticated user
+
+    try {
+        const result = await pool.query(
+            'INSERT INTO comments (group_id, account_id, text) VALUES ($1, $2, $3) RETURNING *',
+            [groupId, userId, text]
+        );
+        res.status(201).json(result.rows[0]); // Return the newly created comment
+    } catch (error) {
+        console.error('Error adding comment:', error);
+        res.status(500).json({ message: 'Failed to add comment' , error: error.message});
     }
 };
