@@ -3,11 +3,12 @@ import path from 'path';
 import pool from '../config/database.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { fileURLToPath } from 'url';
 
 const { sign } = jwt;
 
 
-const __dirname = import.meta.dirname;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const initializeTestDb = async() => {
     const sql = fs.readFileSync(path.resolve(__dirname,'../movie.sql'),'utf-8');
