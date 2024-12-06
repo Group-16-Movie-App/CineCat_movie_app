@@ -72,11 +72,7 @@ const GroupPage = () => {
                 <div className="group-main-content">
                     <GroupMovies groupId={id} />
                     <GroupSchedules groupId={id} />
-                    {isMember ? (
-                        <GroupComments groupId={id} userId={userId} />
-                    ) : (
-                        <p>You must be a member to view comments.</p>
-                    )}
+                    <GroupComments groupId={id} userId={userId} />
                 </div>
             </div>
             {group.owner === userId && (

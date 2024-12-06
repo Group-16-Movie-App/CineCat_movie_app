@@ -9,6 +9,8 @@ const GroupList = () => {
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const userData = localStorage.getItem('user');
+    const userId = userData ? JSON.parse(userData).id : null;
 
     useEffect(() => {
         fetchGroups();
@@ -30,8 +32,9 @@ const GroupList = () => {
 
     const handleJoinGroup = async (groupId) => {
         const token = localStorage.getItem('token');
+        const userName = JSON.parse(userData).name; // Get the user's name from local storage
         try {
-            const response = await axios.post(`http://localhost:5000/api/groups/${groupId}/join-request`, {}, {
+            const response = await axios.post(`http://localhost:5000/api/groups/${groupId}/join-request`, { userName }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             alert(response.data.message);
@@ -63,7 +66,10 @@ const GroupList = () => {
                     {groups.map(group => (
                         <div key={group.id} className="group-card">
                             <h3 className="group-card-title">{group.name}</h3>
-                            <button onClick={() => handleJoinGroup(group.id)}>Join group</button>
+                            {/* Hide the Join Group button for members and the owner */}
+                            {group.owner !== userId && !group.members?.some(member => member.id === userId) && (
+                                <button onClick={() => handleJoinGroup(group.id)}>Join Group</button>
+                            )}
                             <Link to={`/group/${group.id}`} className="group-card-link">View Group</Link>
                         </div>
                     ))}

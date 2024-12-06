@@ -39,7 +39,7 @@ const MembershipRequests = ({ groupId }) => {
             <ul>
                 {requests.map(request => (
                     <li key={request.id}>
-                        {request.email}
+                        {request.user_name}
                         <button onClick={() => handleRequest(request.account_id, 'accept')}>Accept</button>
                         <button onClick={() => handleRequest(request.account_id, 'reject')}>Reject</button>
                     </li>

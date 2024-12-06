@@ -126,11 +126,16 @@ export const leaveGroup = async (req, res) => {
 
 export const getGroupMembers = async (req, res) => {
     const { id } = req.params;
+
     try {
         const result = await pool.query(
-            'SELECT * FROM members WHERE group_id = $1',
+            'SELECT a.id, a.name, (a.id = g.owner) AS isOwner FROM members m ' +
+            'JOIN accounts a ON m.account_id = a.id ' +
+            'JOIN groups g ON m.group_id = g.id ' +
+            'WHERE m.group_id = $1',
             [id]
         );
+
         res.json(result.rows);
     } catch (error) {
         console.error('Error fetching group members:', error);
@@ -377,6 +382,7 @@ export const getCommentLikes = async (req, res) => {
 export const requestToJoinGroup = async (req, res) => {
     const { groupId } = req.params;
     const userId = req.user.id; // Get the user ID from the authenticated user
+    const { userName } = req.body; // Get the user's name from the request body
 
     try {
         const existingRequest = await pool.query(
@@ -389,8 +395,8 @@ export const requestToJoinGroup = async (req, res) => {
         }
 
         await pool.query(
-            'INSERT INTO membership_requests (group_id, account_id) VALUES ($1, $2)',
-            [groupId, userId]
+            'INSERT INTO membership_requests (group_id, account_id, user_name) VALUES ($1, $2, $3)',
+            [groupId, userId, userName] // Include the user's name in the request
         );
         res.status(201).json({ message: 'Join request sent successfully' });
     } catch (error) {
