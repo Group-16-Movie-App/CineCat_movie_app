@@ -13,6 +13,7 @@ create table accounts (
     name varchar(100) unique not null,
     email varchar(100) unique not null,
     password varchar(255) not null,
+    token_version int default 0,
     refresh_token varchar(255)
 );
 
@@ -25,7 +26,7 @@ create table groups (
     description text,
     owner int not null,
     created timestamp default current_timestamp,
-    constraint fk_owner foreign key (owner) references accounts(id) on delete cascade
+    constraint fk_owner foreign key (owner) references accounts(id)
 );
 
 -- Members table to track membership in groups. 
@@ -86,7 +87,7 @@ create table posts (
     id serial primary key,
     account_id int not null,
     group_id int not null,
-    tilte text not null,
+    title text not null,
     description text not null,
     movie_id int,
     showtime_id int,
