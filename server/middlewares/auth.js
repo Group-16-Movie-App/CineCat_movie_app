@@ -36,6 +36,10 @@ export const auth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    console.error("Token verification failed:", error);
+    if (error.name === 'TokenExpiredError') {
+      return res.status(403).json({ message: "Token has expired" });
+    }
     res.status(401).json({ message: "Token is not valid" });
   }
 };
