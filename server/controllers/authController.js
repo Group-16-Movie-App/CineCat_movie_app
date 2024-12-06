@@ -1,6 +1,79 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import pool from '../config/database.js';
+import crypto from 'crypto'; 
+import sgMail from '@sendgrid/mail'; 
+
+
+export const verifyEmail = async (req, res) => {
+    const { token } = req.query;  
+
+    try {
+        const result = await pool.query(
+            'SELECT * FROM accounts WHERE verification_token = $1',
+            [token]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(400).json({
+                error: 'Invalid or expired verification token'
+            });
+        }
+        await pool.query(
+            'UPDATE accounts SET is_verified = true, verification_token = null WHERE id = $1',
+            [result.rows[0].id]
+        );
+
+        res.status(200).json({
+            message: 'Email successfully verified!'
+        });
+
+    } catch (error) {
+        console.error('Error verifying email:', error);
+        res.status(500).json({ error: 'Verification failed. Please try again.' });
+    }
+};
+
+//validation
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+const sendVerificationEmail = (email, token) => {
+    const verificationUrl = `http://localhost:5000/api/verify-email?token=${token}`;  
+    const msg = {
+        to: email, 
+        from: process.env.EMAIL_USER, 
+        subject: 'Email Verification',
+        html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+            <h1>Welcome to Our Platform!</h1>
+            <p>Thank you for registering. Please verify your email by clicking the button below:</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 600px; margin: 0 auto; border: none;">
+                <tr>
+                    <td align="center" style="background-color: #007BFF; border-radius: 5px;">
+                        <a href="${verificationUrl}" style="display: inline-block; background-color: #007BFF; color: white; text-decoration: none; padding: 15px 30px; border-radius: 5px; font-size: 16px; font-weight: bold;">
+                            Verify Email
+                        </a>
+                    </td>
+                </tr>
+            </table>
+            <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
+            <p><a href="${verificationUrl}" style="color: #007BFF; text-decoration: none;">${verificationUrl}</a></p>
+            <p>Best regards,<br>YourProjectName Team</p>
+        </div>
+        `,
+    };
+
+    sgMail
+        .send(msg)
+        .then(() => {
+            console.log('Verification email sent successfully');
+        })
+        .catch((error) => {
+            console.error('Error sending verification email:', error);
+        });
+};
+
+
 
 export const register = async (req, res) => {
     try {
@@ -46,40 +119,44 @@ export const register = async (req, res) => {
         
         const hashedPassword = await bcrypt.hash(password, 10);
         
+        // generate a token for mail validation
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        
         const result = await pool.query(
-            'INSERT INTO accounts (name, email, password, token_version) VALUES ($1, $2, $3, $4) RETURNING *',
-            [name, email, hashedPassword, 0]
+            'INSERT INTO accounts (name, email, password, token_version, verification_token) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [name, email, hashedPassword, 0, verificationToken]
         );
+         // Send the verification email
+         sendVerificationEmail(email, verificationToken);
         
-        // Create token for immediate login after registration
-        const token = jwt.sign({ id: result.rows[0].id, 
-                                token_version: result.rows[0].token_version}, 
-                                process.env.JWT_SECRET, 
-                                { expiresIn: '15m'});
-        
-        res.status(201).json({ 
-            token,
-            token_version: result.rows[0].token_version,
-            id: result.rows[0].id,
-            name,
-            email,
-            message: 'Registration successful'
-        });
-
-    } catch (error) {
-        console.error('Registration error details:', error);
-
-        if (error.code === '23505' && error.constraint === 'accounts_email_key') {
-            return res.status(400).json({ 
-                error: 'Email already exists'
-            });
-        }
-
-        res.status(500).json({ 
-            error: 'Registration failed. Please try again.'
-        });
-    }
-};
+         // Create a JWT token for immediate login after registration
+         const token = jwt.sign({ id: result.rows[0].id, token_version: result.rows[0].token_version}, 
+                                 process.env.JWT_SECRET, 
+                                 { expiresIn: '15m' });
+         
+         res.status(201).json({ 
+             token,
+             token_version: result.rows[0].token_version,
+             id: result.rows[0].id,
+             name,
+             email,
+             message: 'Registration successful. Please verify your email address.'
+         });
+ 
+     } catch (error) {
+         console.error('Registration error details:', error);
+ 
+         if (error.code === '23505' && error.constraint === 'accounts_email_key') {
+             return res.status(400).json({ 
+                 error: 'Email already exists'
+             });
+         }
+ 
+         res.status(500).json({ 
+             error: 'Registration failed. Please try again.' 
+         });
+     }
+ };
 
 export const login = async (req, res) => {
     try {
