@@ -23,20 +23,15 @@ export const getAllGroups = async (req, res) => {
 
 export const getGroupById = async (req, res) => {
     const { id } = req.params;
-    
-    try {
-        const result = await pool.query(
-            'SELECT g.*, a.name as owner_name FROM groups g ' +
-            'JOIN accounts a ON g.owner = a.id ' +
-            'WHERE g.id = $1',
-            [id]
-        );
 
+    try {
+        const result = await pool.query('SELECT * FROM groups WHERE id = $1', [id]);
+        
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'Group not found' });
         }
 
-        res.json(result.rows[0]);
+        res.status(200).json(result.rows[0]);
     } catch (error) {
         console.error('Error fetching group:', error);
         res.status(500).json({ message: 'Failed to fetch group' });
@@ -273,7 +268,7 @@ export const getGroup = async (req, res) => {
     
     try {
         const groupResult = await pool.query(
-            'SELECT g.*, a.email as owner_email FROM groups g ' +
+            'SELECT g.*, a.name AS owner_name FROM groups g ' +
             'JOIN accounts a ON g.owner = a.id ' +
             'WHERE g.id = $1',
             [id]
@@ -344,7 +339,8 @@ export const addGroupComment = async (req, res) => {
 export const likeComment = async (req, res) => {
     const { commentId } = req.params;
     const userId = req.user.id; // Assuming you have user authentication
-
+    console.log('User ID:', userId);
+    console.log('Comment ID:', commentId);
     try {
         // Check if the user has already liked the comment
         const existingLike = await pool.query('SELECT * FROM comment_likes WHERE comment_id = $1 AND account_id = $2', [commentId, userId]);

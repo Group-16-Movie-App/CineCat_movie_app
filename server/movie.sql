@@ -148,6 +148,6 @@ CREATE TABLE comments (
 CREATE TABLE comment_likes (
     id SERIAL PRIMARY KEY,
     comment_id INT REFERENCES comments(id),
-    user_id INT REFERENCES users(id),
-    UNIQUE (comment_id, user_id) -- Prevent multiple likes from the same user on the same comment
+    account_id INT REFERENCES accounts(id),
+    UNIQUE (comment_id, account_id) -- Prevent multiple likes from the same user on the same comment
 );

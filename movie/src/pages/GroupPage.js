@@ -11,9 +11,15 @@ import '../components/GroupStyles.css';
 
 const GroupPage = () => {
     const { id } = useParams();
+    const userData = localStorage.getItem('user');
+    const userId = userData ? JSON.parse(userData).id : null;
+
     const [group, setGroup] = useState(null);
     const [error, setError] = useState(null);
 
+    console.log('User ID:', userId);
+    console.log('Group ID:', { id });
+    
     useEffect(() => {
         const fetchGroup = async () => {
             if (!id) {
@@ -23,6 +29,7 @@ const GroupPage = () => {
 
             try {
                 const response = await axios.get(`http://localhost:5000/api/groups/${id}`);
+                console.log('Group data:', response.data);
                 setGroup(response.data);
             } catch (error) {
                 console.error('Error fetching group:', error);
@@ -39,7 +46,7 @@ const GroupPage = () => {
     return (
         <div className="group-container">
             <h2 className="group-title">{group.name}</h2>
-            <p className="group-owner">Owner: {group.owner_name}</p>
+            <p className="group-owner">Owner: {group.owner_name || 'Unknown'}</p>
             
             <div className="group-layout">
                 <div className="group-sidebar">
@@ -57,7 +64,7 @@ const GroupPage = () => {
                     <div className="content-section">
                         <GroupSchedules groupId={id} />
                     </div>
-                    <GroupComments groupId={id} />
+                    <GroupComments groupId={id} userId={userId} />
                 </div>
             </div>
         </div>

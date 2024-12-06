@@ -17,9 +17,21 @@
 
 .comment-actions button {
     margin-right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.comment-actions button:focus {
+    outline: none;
 }
 
 .comment-actions span {
     margin-right: 10px;
     font-weight: bold;
+}
+
+.like-icon {
+    font-size: 24px;
+    transition: color 0.3s;
 } 

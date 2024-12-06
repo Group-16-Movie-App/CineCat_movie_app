@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import './GroupComments.css'; // Import your CSS file
 
-const GroupComments = ({ groupId }) => {
+const GroupComments = ({ groupId, userId }) => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [replies, setReplies] = useState({});
     const [likeCounts, setLikeCounts] = useState({}); // State for like counts
+    const [likedComments, setLikedComments] = useState({}); // Track liked comments
 
     const fetchComments = async () => {
         const token = localStorage.getItem('token');
@@ -48,10 +51,15 @@ const GroupComments = ({ groupId }) => {
     const handleLikeComment = async (commentId) => {
         const token = localStorage.getItem('token');
         try {
-            await axios.post(`http://localhost:5000/api/groups/${groupId}/comments/${commentId}/like`, {}, {
+            const response = await axios.post(`http://localhost:5000/api/groups/${groupId}/comments/${commentId}/like`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(`Liked comment with ID: ${commentId}`);
+            console.log('Like response:', response.data); // Log the response
+            // Update liked comments state
+            setLikedComments((prev) => ({
+                ...prev,
+                [commentId]: !prev[commentId] // Toggle the liked state
+            }));
             // Fetch updated like count
             fetchUpdatedLikes(commentId);
         } catch (error) {
@@ -90,6 +98,9 @@ const GroupComments = ({ groupId }) => {
         fetchComments();
     }, [groupId]);
 
+    console.log('Liked Comments:', likedComments);
+    console.log('Like Counts:', likeCounts);
+
     return (
         <div className="comments-container">
             <h3>Comments</h3>
@@ -98,7 +109,13 @@ const GroupComments = ({ groupId }) => {
                     <li key={comment.id} className="comment-item">
                         <p>{comment.text}</p>
                         <div className="comment-actions">
-                            <button onClick={() => handleLikeComment(comment.id)}>Like</button>
+                            <button onClick={() => handleLikeComment(comment.id)}>
+                                <FontAwesomeIcon 
+                                    icon={faThumbsUp} 
+                                    className="like-icon"
+                                    style={{ color: likedComments[comment.id] ? 'blue' : 'gray' }} // Change color based on like state
+                                />
+                            </button>
                             <span>{likeCounts[comment.id] || 0} Likes</span> {/* Display like count */}
                             <button onClick={() => handleReplyComment(comment.id)}>Reply</button>
                             {replies[comment.id] && replies[comment.id].length > 0 && (
