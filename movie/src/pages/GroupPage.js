@@ -16,6 +16,7 @@ const GroupPage = () => {
 
     const [group, setGroup] = useState(null);
     const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState('');
 
     console.log('User ID:', userId);
     console.log('Group ID:', { id });
@@ -40,6 +41,22 @@ const GroupPage = () => {
         fetchGroup();
     }, [id]);
 
+    const handleJoinGroup = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.post(`http://localhost:5000/api/groups/${id}/join-request`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            alert(response.data.message);
+        } catch (error) {
+            if (error.response && error.response.data) {
+                alert(error.response.data.message);
+            } else {
+                alert('An unexpected error occurred.');
+            }
+        }
+    };
+
     if (error) return <div className="error-message">{error}</div>;
     if (!group) return <div>Loading...</div>;
 
@@ -47,6 +64,8 @@ const GroupPage = () => {
         <div className="group-container">
             <h2 className="group-title">{group.name}</h2>
             <p className="group-owner">Owner: {group.owner_name || 'Unknown'}</p>
+            {successMessage && <div className="success-message">{successMessage}</div>}
+            {error && <div className="error-message">{error}</div>}
             <div className="group-layout">
                 <div className="group-sidebar">
                     <div className="sidebar-section">

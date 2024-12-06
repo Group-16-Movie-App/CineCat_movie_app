@@ -16,7 +16,9 @@ import {
     getGroupComments,
     addGroupComment,
     likeComment,
-    getCommentLikes
+    getCommentLikes,
+    requestToJoinGroup,
+    handleMembershipRequest
 } from '../controllers/groupController.js';
 import auth from '../middleware/auth.js';
 
@@ -45,6 +47,9 @@ router.get('/:groupId/comments', auth, getGroupComments);
 router.post('/:groupId/comments', auth, addGroupComment);
 router.post('/:groupId/comments/:commentId/like', auth, likeComment);
 router.get('/:groupId/comments/:commentId/likes', auth, getCommentLikes);
+
+router.post('/:groupId/join-request', auth, requestToJoinGroup);
+router.post('/:groupId/members/:memberId', auth, handleMembershipRequest);
 
 export default router;
 

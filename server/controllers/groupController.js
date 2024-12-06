@@ -265,7 +265,7 @@ export const getGroupSchedules = async (req, res) => {
 
 export const getGroup = async (req, res) => {
     const { id } = req.params;
-    
+
     try {
         const groupResult = await pool.query(
             'SELECT g.*, a.name AS owner_name FROM groups g ' +
@@ -273,6 +273,8 @@ export const getGroup = async (req, res) => {
             'WHERE g.id = $1',
             [id]
         );
+
+        console.log('Group Result:', groupResult.rows); // Log the result of the query
 
         if (groupResult.rows.length === 0) {
             return res.status(404).json({ message: 'Group not found' });
@@ -303,19 +305,20 @@ export const getGroupComments = async (req, res) => {
 
     try {
         const result = await pool.query(
-            'SELECT c.id, c.text, c.created_at, a.name AS user_name FROM comments c JOIN accounts a ON c.account_id = a.id WHERE c.group_id = $1 ORDER BY c.created_at DESC',
+            'SELECT c.id, c.text, c.created_at, a.name AS user_name FROM comments c ' +
+            'JOIN accounts a ON c.account_id = a.id ' +
+            'WHERE c.group_id = $1 ORDER BY c.created_at DESC',
             [groupId]
         );
 
-        // Check if any comments were found
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'No comments found for this group' });
         }
 
         res.json(result.rows); // Return the comments
     } catch (error) {
-        console.error('Error fetching comments:', error); // Log the error details
-        res.status(500).json({ message: 'Failed to fetch comments', error: error.message }); // Return error message
+        console.error('Error fetching comments:', error);
+        res.status(500).json({ message: 'Failed to fetch comments', error: error.message });
     }
 };
 
@@ -368,5 +371,60 @@ export const getCommentLikes = async (req, res) => {
     } catch (error) {
         console.error('Error fetching like count:', error);
         res.status(500).json({ message: 'Failed to fetch like count' });
+    }
+};
+
+export const requestToJoinGroup = async (req, res) => {
+    const { groupId } = req.params;
+    const userId = req.user.id; // Get the user ID from the authenticated user
+
+    try {
+        const existingRequest = await pool.query(
+            'SELECT * FROM membership_requests WHERE group_id = $1 AND account_id = $2',
+            [groupId, userId]
+        );
+
+        if (existingRequest.rows.length > 0) {
+            return res.status(400).json({ message: 'You have already sent a request to join this group.' });
+        }
+
+        await pool.query(
+            'INSERT INTO membership_requests (group_id, account_id) VALUES ($1, $2)',
+            [groupId, userId]
+        );
+        res.status(201).json({ message: 'Join request sent successfully' });
+    } catch (error) {
+        console.error('Error sending join request:', error);
+        res.status(500).json({ message: 'Failed to send join request' });
+    }
+};
+
+export const handleMembershipRequest = async (req, res) => {
+    const { groupId, memberId } = req.params;
+    const { action } = req.body; // 'accept' or 'reject'
+
+    try {
+        if (action === 'accept') {
+            await pool.query(
+                'INSERT INTO members (group_id, account_id) VALUES ($1, $2)',
+                [groupId, memberId]
+            );
+            await pool.query(
+                'DELETE FROM membership_requests WHERE group_id = $1 AND account_id = $2',
+                [groupId, memberId]
+            );
+            res.status(200).json({ message: 'Member accepted successfully' });
+        } else if (action === 'reject') {
+            await pool.query(
+                'DELETE FROM membership_requests WHERE group_id = $1 AND account_id = $2',
+                [groupId, memberId]
+            );
+            res.status(200).json({ message: 'Member rejected successfully' });
+        } else {
+            res.status(400).json({ message: 'Invalid action' });
+        }
+    } catch (error) {
+        console.error('Error handling membership request:', error);
+        res.status(500).json({ message: 'Failed to handle membership request' });
     }
 };
