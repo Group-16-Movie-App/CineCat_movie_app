@@ -16,11 +16,8 @@ const GroupPage = () => {
 
     const [group, setGroup] = useState(null);
     const [error, setError] = useState(null);
-    const [successMessage, setSuccessMessage] = useState('');
+    const [isMember, setIsMember] = useState(false);
 
-    console.log('User ID:', userId);
-    console.log('Group ID:', { id });
-    
     useEffect(() => {
         const fetchGroup = async () => {
             if (!id) {
@@ -32,6 +29,13 @@ const GroupPage = () => {
                 const response = await axios.get(`http://localhost:5000/api/groups/${id}`);
                 console.log('Group data:', response.data);
                 setGroup(response.data);
+                console.log('Group state set:', response.data);
+
+                // Check if the user is a member
+                const memberResponse = await axios.get(`http://localhost:5000/api/groups/${id}/members`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                });
+                setIsMember(memberResponse.data.some(member => member.id === userId));
             } catch (error) {
                 console.error('Error fetching group:', error);
                 setError('Failed to load group');
@@ -41,19 +45,17 @@ const GroupPage = () => {
         fetchGroup();
     }, [id]);
 
-    const handleJoinGroup = async () => {
+    const handleDeleteGroup = async () => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post(`http://localhost:5000/api/groups/${id}/join-request`, {}, {
+            await axios.delete(`http://localhost:5000/api/groups/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            alert(response.data.message);
+            alert('Group deleted successfully!');
+            // Redirect or refresh the group list
         } catch (error) {
-            if (error.response && error.response.data) {
-                alert(error.response.data.message);
-            } else {
-                alert('An unexpected error occurred.');
-            }
+            console.error('Error deleting group:', error);
+            alert('Failed to delete group.');
         }
     };
 
@@ -64,27 +66,24 @@ const GroupPage = () => {
         <div className="group-container">
             <h2 className="group-title">{group.name}</h2>
             <p className="group-owner">Owner: {group.owner_name || 'Unknown'}</p>
-            {successMessage && <div className="success-message">{successMessage}</div>}
-            {error && <div className="error-message">{error}</div>}
             <div className="group-layout">
                 <div className="group-sidebar">
-                    <div className="sidebar-section">
-                        <GroupMembers groupId={id} />
-                        <MembershipRequests groupId={id} />
-                    </div>
-                    <DeleteGroup groupId={id} />
+                    <GroupMembers groupId={id} />
+                    <MembershipRequests groupId={id} />
                 </div>
-                
                 <div className="group-main-content">
-                    <div className="content-section">
-                        <GroupMovies groupId={id} />
-                    </div>
-                    <div className="content-section">
-                        <GroupSchedules groupId={id} />
-                    </div>
-                    <GroupComments groupId={id} userId={userId} />
+                    <GroupMovies groupId={id} />
+                    <GroupSchedules groupId={id} />
+                    {isMember ? (
+                        <GroupComments groupId={id} userId={userId} />
+                    ) : (
+                        <p>You must be a member to view comments.</p>
+                    )}
                 </div>
             </div>
+            {group.owner === userId && (
+                <button onClick={handleDeleteGroup}>Delete Group</button>
+            )}
         </div>
     );
 };

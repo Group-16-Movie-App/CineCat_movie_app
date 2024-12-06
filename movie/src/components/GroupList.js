@@ -96,7 +96,7 @@ const GroupList = () => {
             ) : (
                 <div className="groups-grid">
                     {groups.map(group => (
-                        <Link to={`/group/${group.id}`} key={group.id} className="group-card-link">
+                        <Link to={`/group/${group._id}`} key={group._id} className="group-card-link">
                             <div className="group-card">
                                 <h3 className="group-card-title">{group.name}</h3>
                                 <div className="group-card-info">
