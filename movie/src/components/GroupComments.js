@@ -94,11 +94,10 @@ const GroupComments = ({ groupId, userId }) => {
     const handleReplyComment = (commentId) => {
         const replyText = prompt('Enter your reply:');
         if (replyText) {
-            const userName = "Your Name"; // Replace with actual user name logic
-            console.log(`Reply to comment ${commentId}: ${replyText} by ${userName}`);
+            console.log(`Reply to comment ${commentId}: ${replyText}`);
             setReplies((prev) => ({
                 ...prev,
-                [commentId]: [...(prev[commentId] || []), { text: replyText, userName }]
+                [commentId]: [...(prev[commentId] || []), replyText]
             }));
         }
     };
@@ -130,7 +129,7 @@ const GroupComments = ({ groupId, userId }) => {
                             {replies[comment.id] && replies[comment.id].length > 0 && (
                                 <ul>
                                     {replies[comment.id].map((reply, index) => (
-                                        <li key={index}>{reply.text} - <strong>{reply.userName}</strong></li>
+                                        <li key={index}>{reply}</li>
                                     ))}
                                 </ul>
                             )}

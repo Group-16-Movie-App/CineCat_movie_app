@@ -412,7 +412,7 @@ export const requestToJoinGroup = async (req, res) => {
 
         await pool.query(
             'INSERT INTO membership_requests (group_id, account_id, user_name) VALUES ($1, $2, $3)',
-            [groupId, userId, userName] // Include the user's name in the request
+            [groupId, userId, userName]
         );
         res.status(201).json({ message: 'Join request sent successfully' });
     } catch (error) {

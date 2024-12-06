@@ -672,3 +672,18 @@ input[type="datetime-local"].input-field::-webkit-calendar-picker-indicator {
     text-align: center;
     margin-top: 20px;
 }
+.groups-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.groups-header h1 {
+    font-size: 2rem;
+    margin: 0; /* Remove default margin */
+}
+
+.create-group-container {
+    margin-left: auto; /* Push the create group container to the left */
+}

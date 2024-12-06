@@ -16,7 +16,7 @@ const AddSchedule = ({ groupId, onClose }) => {
 
         try {
             await axios.post(`http://localhost:5000/api/groups/${groupId}/schedules`, {
-                movieId: selectedMovie.id, // Assuming the movie object has an id
+                movieId: selectedMovie.id,
                 showtime
             }, {
                 headers: { Authorization: `Bearer ${token}` }

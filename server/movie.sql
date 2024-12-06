@@ -109,6 +109,7 @@ create table membership_requests (
     id serial primary key,
     group_id int references groups(id) on delete cascade,
     account_id int references accounts(id) on delete cascade,
+    user_name VARCHAR(255),
     status varchar(20) default 'pending',
     created_at timestamp default current_timestamp,
     unique(group_id, account_id)
