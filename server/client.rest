@@ -20,12 +20,17 @@ Content-Type: application/json
 ###
 POST http://localhost:5000/api/logout/ HTTP/1.1 
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwidG9rZW5fdmVyc2lvbiI6MCwiaWF0IjoxNzMzNDQ4Mzg1fQ.AHXd0PrrT-0s_DtZVWZzKz-rNCeGqelXAXKrM3hlnCg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwidG9rZW5fdmVyc2lvbiI6MCwiaWF0IjoxNzMzNDUwNDg5LCJleHAiOjE3MzM0NTA1NDl9.YGt_85kNkLR04uKLX-TkUI0CBCQvuC68XvIvd1YWyRw
 
 {
 "email": "test@foo.com",
 "password": "A12345"
 }
+
+###
+DELETE http://localhost:5000/api/auth/account/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidG9rZW5fdmVyc2lvbiI6MCwiaWF0IjoxNzMzNDUxMTIwLCJleHAiOjE3MzM0NTExODB9.MFdcuaoWHNXCMDRJzRyiCuETVTmprvcyIupqqWLHtfk
 
 ###
 GET http://localhost:5000/api/groups/1 HTTP/1.1
@@ -51,8 +56,3 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxN
   "description": "Try to send a review",
   "rating": 4
 }
-
-###
-DELETE http://localhost:5000/api/auth/account/ HTTP/1.1
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwidG9rZW5fdmVyc2lvbiI6MSwiaWF0IjoxNzMzNDQ4NDk5fQ.nZFPB91T1aKaKqyHPhmYGncCiZRNDHYjAbYKNCnRKtM

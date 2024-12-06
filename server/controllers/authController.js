@@ -52,7 +52,10 @@ export const register = async (req, res) => {
         );
         
         // Create token for immediate login after registration
-        const token = jwt.sign({ id: result.rows[0].id, token_version: result.rows[0].token_version}, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: result.rows[0].id, 
+                                token_version: result.rows[0].token_version}, 
+                                process.env.JWT_SECRET, 
+                                { expiresIn: '15m'});
         
         res.status(201).json({ 
             token,
@@ -108,7 +111,9 @@ export const login = async (req, res) => {
             });
         }
         
-        const token = jwt.sign({ id: user.id, token_version: user.token_version }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: user.id, token_version: user.token_version },
+                                 process.env.JWT_SECRET, 
+                                 {expiresIn: '15m'});
         
         res.status(200).json({ 
             token,
