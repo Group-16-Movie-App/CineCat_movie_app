@@ -13,6 +13,7 @@ create table accounts (
     name varchar(100) unique not null,
     email varchar(100) unique not null,
     password varchar(255) not null,
+    token_version int default 0,
     refresh_token varchar(255)
 );
 

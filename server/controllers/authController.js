@@ -47,15 +47,16 @@ export const register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         
         const result = await pool.query(
-            'INSERT INTO accounts (name, email, password) VALUES ($1, $2, $3) RETURNING id',
-            [name, email, hashedPassword]
+            'INSERT INTO accounts (name, email, password, token_version) VALUES ($1, $2, $3, $4) RETURNING *',
+            [name, email, hashedPassword, 0]
         );
         
         // Create token for immediate login after registration
-        const token = jwt.sign({ id: result.rows[0].id }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: result.rows[0].id, token_version: result.rows[0].token_version}, process.env.JWT_SECRET);
         
         res.status(201).json({ 
             token,
+            token_version: result.rows[0].token_version,
             id: result.rows[0].id,
             name,
             email,
@@ -107,10 +108,11 @@ export const login = async (req, res) => {
             });
         }
         
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: user.id, token_version: user.token_version }, process.env.JWT_SECRET);
         
         res.status(200).json({ 
             token,
+            token_version: user.token_version,
             id: user.id, 
             name: user.name, 
             email: user.email 
@@ -123,8 +125,22 @@ export const login = async (req, res) => {
     }
 };
 
-export const logout = (req, res) => {
-    res.status(200).json({ message: 'Logged out successfully' });
+export const logout = async (req, res) => {
+    try {
+        const result = await pool.query(
+            'UPDATE accounts SET token_version = token_version + 1 WHERE id = $1',
+            [req.user.id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'Logged out successfully' });
+    } catch (error) {
+        console.error('Logout error:', error);
+        res.status(500).json({ error: 'Logout failed. Please try again.' });
+    }
 };
 
 export const deleteAccount = async (req, res) => {

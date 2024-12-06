@@ -60,7 +60,7 @@ describe('POST login', () => {
         const data = await response.json();
         expect(response.status).to.equal(200, `Expected status 200 but received ${response.status}`);
         expect(data).to.be.an('object');
-        expect(data).to.include.all.keys('token','id','name','email');
+        expect(data).to.include.all.keys('token', 'token_version','id','name','email');
         expect(data.name).to.equal(name);
         expect(data.email).to.equal(email);
         expect(data.token).to.be.a('string').that.is.not.empty;  // Validate token
@@ -82,6 +82,7 @@ describe('POST /api/logout', () => {
         });
         
         const loginData = await loginResponse.json();
+        console.log('token_version: '+ loginData.token_version);
         token = loginData.token;
     });
 

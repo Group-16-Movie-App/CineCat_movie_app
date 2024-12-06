@@ -17,8 +17,8 @@ const initializeTestDb = async() => {
 const insertTestUser = async (name, email, password) => {
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        await pool.query('INSERT INTO accounts (name, email, password) VALUES ($1, $2, $3)', 
-            [name, email, hashedPassword]);
+        await pool.query('INSERT INTO accounts (name, email, password, token_version) VALUES ($1, $2, $3, $4)', 
+            [name, email, hashedPassword, 0]);
     } catch (error) {
         console.error('Error inserting test user:', error);
         throw error;
@@ -59,13 +59,13 @@ const getToken = async (email) => {
         throw new Error("JWT_SECRET_KEY is not set in environment variables");
     }
 
-    const result = await pool.query('SELECT id FROM accounts WHERE email = $1', [email]);
+    const result = await pool.query('SELECT * FROM accounts WHERE email = $1', [email]);
     if (result.rows.length === 0) {
         throw new Error('User not found');
     }
 
     const userId = result.rows[0].id;
-    return sign({ id: userId, email: email }, process.env.JWT_SECRET);
+    return sign({ id: userId, email: email, token_version: result.rows[0].token_version }, process.env.JWT_SECRET);
 };
 
 const findUserByEmail = async (email) => {
