@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const GroupSchedules = ({ groupId }) => {
@@ -14,8 +14,8 @@ const GroupSchedules = ({ groupId }) => {
             setSchedules(response.data);
             setLoading(false);
         } catch (error) {
-            setError('Error fetching schedules');
             console.error('Error fetching schedules:', error);
+            setError('Failed to load schedules');
             setLoading(false);
         }
     };
@@ -25,14 +25,17 @@ const GroupSchedules = ({ groupId }) => {
     }, [groupId]);
 
     const handleAddSchedule = async () => {
+        const token = localStorage.getItem('token');
         try {
             await axios.post(`http://localhost:5000/api/groups/${groupId}/schedules`, {
                 movieId,
                 showtime
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
             });
-            // Reset form and refresh schedules list
             setMovieId('');
             setShowtime('');
+            // Refresh the schedule list
             fetchSchedules();
         } catch (error) {
             setError('Failed to add schedule');
@@ -40,9 +43,12 @@ const GroupSchedules = ({ groupId }) => {
         }
     };
 
+    if (loading) return <div>Loading schedules...</div>;
+    if (error) return <div className="error-message">{error}</div>;
+
     return (
-        <div className="section-content">
-            <h3 className="section-title">Group Schedules</h3>
+        <div>
+            <h3>Group Schedules</h3>
             <div className="input-container">
                 <input
                     type="text"
@@ -57,24 +63,13 @@ const GroupSchedules = ({ groupId }) => {
                     onChange={(e) => setShowtime(e.target.value)}
                     className="input-field"
                 />
-                <button 
-                    onClick={handleAddSchedule}
-                    className="action-button"
-                >
-                    Add Schedule
-                </button>
+                <button onClick={handleAddSchedule} className="action-button">Add Schedule</button>
             </div>
-
-            <div className="schedules-list">
+            <ul>
                 {schedules.map(schedule => (
-                    <div key={schedule.id} className="list-item">
-                        <div>
-                            <h4>Movie ID: {schedule.movie_id}</h4>
-                            <p>Showtime: {new Date(schedule.showtime).toLocaleString()}</p>
-                        </div>
-                    </div>
+                    <li key={schedule.id}>{schedule.showtime}</li>
                 ))}
-            </div>
+            </ul>
         </div>
     );
 };

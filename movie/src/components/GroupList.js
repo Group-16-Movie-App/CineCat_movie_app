@@ -32,7 +32,14 @@ const GroupList = () => {
 
     const handleJoinGroup = async (groupId) => {
         const token = localStorage.getItem('token');
-        const userName = JSON.parse(userData).name; // Get the user's name from local storage
+        const userData = localStorage.getItem('user');
+        const userName = userData ? JSON.parse(userData).name : null; // Safely parse user data
+
+        if (!userName) {
+            alert('User data is not available. Please log in again.');
+            return;
+        }
+
         try {
             const response = await axios.post(`http://localhost:5000/api/groups/${groupId}/join-request`, { userName }, {
                 headers: { Authorization: `Bearer ${token}` }

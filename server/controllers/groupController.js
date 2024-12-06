@@ -246,11 +246,17 @@ export const addScheduleToGroup = async (req, res) => {
     const { movieId, showtime } = req.body;
 
     try {
-        await pool.query('INSERT INTO group_schedules (group_id, movie_id, showtime) VALUES ($1, $2, $3)', [groupId, movieId, showtime]);
-        res.status(201).json({ message: 'Schedule added to group successfully' });
+        // Ensure movieId is an integer
+        const parsedMovieId = parseInt(movieId, 10);
+        if (isNaN(parsedMovieId)) {
+            return res.status(400).json({ message: 'Invalid movie ID' });
+        }
+
+        await pool.query('INSERT INTO group_schedules (group_id, movie_id, showtime) VALUES ($1, $2, $3)', [groupId, parsedMovieId, showtime]);
+        res.status(201).json({ message: 'Schedule added successfully' });
     } catch (error) {
         console.error('Error adding schedule to group:', error);
-        res.status(500).json({ message: 'Failed to add schedule to group' });
+        res.status(500).json({ message: 'Failed to add schedule' });
     }
 };
 
@@ -392,6 +398,16 @@ export const requestToJoinGroup = async (req, res) => {
 
         if (existingRequest.rows.length > 0) {
             return res.status(400).json({ message: 'You have already sent a request to join this group.' });
+        }
+
+        // Check if the user is already a member
+        const existingMember = await pool.query(
+            'SELECT * FROM members WHERE group_id = $1 AND account_id = $2',
+            [groupId, userId]
+        );
+
+        if (existingMember.rows.length > 0) {
+            return res.status(400).json({ message: 'You are already a member of this group.' });
         }
 
         await pool.query(

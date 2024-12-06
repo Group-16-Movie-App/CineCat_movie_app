@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const GroupMovies = ({ groupId }) => {
@@ -8,31 +8,34 @@ const GroupMovies = ({ groupId }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    const fetchMovies = useCallback(async () => {
+    const fetchMovies = async () => {
         try {
             const response = await axios.get(`http://localhost:5000/api/groups/${groupId}/movies`);
             setMovies(response.data);
             setLoading(false);
         } catch (error) {
-            setError('Error fetching group movies.');
-            console.error('Error fetching group movies:', error);
+            console.error('Error fetching movies:', error);
+            setError('Failed to load movies');
             setLoading(false);
         }
-    }, [groupId]);
+    };
 
     useEffect(() => {
         fetchMovies();
-    }, [fetchMovies]);
+    }, [groupId]);
 
     const handleAddMovie = async () => {
+        const token = localStorage.getItem('token');
         try {
             await axios.post(`http://localhost:5000/api/groups/${groupId}/movies`, {
                 title: movieTitle,
                 description: movieDescription
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
             });
-            // Reset form and refresh movies list
             setMovieTitle('');
             setMovieDescription('');
+            // Refresh the movie list
             fetchMovies();
         } catch (error) {
             setError('Failed to add movie');
@@ -40,48 +43,34 @@ const GroupMovies = ({ groupId }) => {
         }
     };
 
-    return (
-        <div className="section-content">
-            <h3 className="section-title">Group Movies</h3>
-            {loading ? (
-                <div>Loading movies...</div>
-            ) : error ? (
-                <div className="error-message">{error}</div>
-            ) : (
-                <div className="input-container">
-                    <input
-                        type="text"
-                        value={movieTitle}
-                        onChange={(e) => setMovieTitle(e.target.value)}
-                        placeholder="Movie Title"
-                        className="input-field"
-                    />
-                    <textarea
-                        value={movieDescription}
-                        onChange={(e) => setMovieDescription(e.target.value)}
-                        placeholder="Movie Description"
-                        className="input-field"
-                        rows="3"
-                    />
-                    <button 
-                        onClick={handleAddMovie}
-                        className="action-button"
-                    >
-                        Add Movie
-                    </button>
-                </div>
-            )}
+    if (loading) return <div>Loading movies...</div>;
+    if (error) return <div className="error-message">{error}</div>;
 
-            <div className="movies-list">
-                {movies.map(movie => (
-                    <div key={movie.id} className="list-item">
-                        <div>
-                            <h4>{movie.title}</h4>
-                            <p>{movie.description}</p>
-                        </div>
-                    </div>
-                ))}
+    return (
+        <div>
+            <h3>Group Movies</h3>
+            <div className="input-container">
+                <input
+                    type="text"
+                    value={movieTitle}
+                    onChange={(e) => setMovieTitle(e.target.value)}
+                    placeholder="Movie Title"
+                    className="input-field"
+                />
+                <textarea
+                    value={movieDescription}
+                    onChange={(e) => setMovieDescription(e.target.value)}
+                    placeholder="Movie Description"
+                    className="input-field"
+                    rows="3"
+                />
+                <button onClick={handleAddMovie} className="action-button">Add Movie</button>
             </div>
+            <ul>
+                {movies.map(movie => (
+                    <li key={movie.id}>{movie.title}</li>
+                ))}
+            </ul>
         </div>
     );
 };
