@@ -27,9 +27,7 @@ const GroupPage = () => {
 
             try {
                 const response = await axios.get(`http://localhost:5000/api/groups/${id}`);
-                console.log('Group data:', response.data);
                 setGroup(response.data);
-                console.log('Group state set:', response.data);
 
                 // Check if the user is a member
                 const memberResponse = await axios.get(`http://localhost:5000/api/groups/${id}/members`, {

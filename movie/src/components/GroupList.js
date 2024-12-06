@@ -3,15 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './GroupStyles.css';
 import CreateGroup from './CreateGroup';
-import GroupDiscussion from './GroupDiscussion';
 
 const GroupList = () => {
     const navigate = useNavigate();
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [selectedGroup, setSelectedGroup] = useState(null);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
         fetchGroups();
@@ -23,20 +20,7 @@ const GroupList = () => {
             const response = await axios.get('http://localhost:5000/api/groups', {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            
-            // Fetch member counts for each group
-            const groupsWithCounts = await Promise.all(response.data.map(async (group) => {
-                const membersResponse = await axios.get(
-                    `http://localhost:5000/api/groups/${group.id}/members`,
-                    { headers: { Authorization: `Bearer ${token}` }}
-                );
-                return {
-                    ...group,
-                    members: membersResponse.data
-                };
-            }));
-            
-            setGroups(groupsWithCounts);
+            setGroups(response.data);
             setLoading(false);
         } catch (err) {
             setError('Failed to fetch groups');
@@ -44,41 +28,22 @@ const GroupList = () => {
         }
     };
 
-        const handleGroupCreated = (newGroup) => {
-        setGroups([...groups, newGroup]);
-    };
-
-    const handleGroupClick = (group) => {
-        setSelectedGroup(group);
-    };
-
-    const handleCloseDiscussion = () => {
-        setSelectedGroup(null);
-    };
-    useEffect(() => {
+    const handleJoinGroup = async (groupId) => {
         const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-        setIsAuthenticated(true);
-        fetchGroups();
-    }, [navigate]);
-
-    const handleDeleteGroup = async (e, groupId) => {
-        e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:5000/api/groups/${groupId}`, {
+            const response = await axios.post(`http://localhost:5000/api/groups/${groupId}/join-request`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            fetchGroups(); // Refresh the list after deletion
+            alert(response.data.message);
         } catch (error) {
-            console.error('Error deleting group:', error);
+            if (error.response && error.response.data) {
+                alert(error.response.data.message);
+            } else {
+                alert('An unexpected error occurred.');
+            }
         }
     };
 
-    if (!isAuthenticated) return null;
     if (loading) return <div className="loading">Loading groups...</div>;
     if (error) return <div className="error-message">{error}</div>;
 
@@ -86,7 +51,7 @@ const GroupList = () => {
         <div className="groups-page">
             <div className="groups-header">
                 <h1>Movie Groups</h1>
-                <CreateGroup onGroupCreated={handleGroupCreated} />
+                <CreateGroup onGroupCreated={fetchGroups} />
             </div>
 
             {groups.length === 0 ? (
@@ -96,21 +61,13 @@ const GroupList = () => {
             ) : (
                 <div className="groups-grid">
                     {groups.map(group => (
-                        <Link to={`/group/${group._id}`} key={group._id} className="group-card-link">
-                            <div className="group-card">
-                                <h3 className="group-card-title">{group.name}</h3>
-                                <div className="group-card-info">
-                                    <p>Members: {group.members?.length || 0}</p>
-                                    <p>Movies: {group.movies?.length || 0}</p>
-                                </div>
-                            </div>
-                        </Link>
+                        <div key={group.id} className="group-card">
+                            <h3 className="group-card-title">{group.name}</h3>
+                            <button onClick={() => handleJoinGroup(group.id)}>Join group</button>
+                            <Link to={`/group/${group.id}`} className="group-card-link">View Group</Link>
+                        </div>
                     ))}
                 </div>
-            )}
-
-            {selectedGroup && (
-                <GroupDiscussion group={selectedGroup} onClose={handleCloseDiscussion} />
             )}
         </div>
     );
