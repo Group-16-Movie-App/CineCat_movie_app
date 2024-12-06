@@ -47,7 +47,6 @@ const GroupPage = () => {
         <div className="group-container">
             <h2 className="group-title">{group.name}</h2>
             <p className="group-owner">Owner: {group.owner_name || 'Unknown'}</p>
-            
             <div className="group-layout">
                 <div className="group-sidebar">
                     <div className="sidebar-section">

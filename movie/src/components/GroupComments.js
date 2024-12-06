@@ -51,15 +51,23 @@ const GroupComments = ({ groupId, userId }) => {
     const handleLikeComment = async (commentId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post(`http://localhost:5000/api/groups/${groupId}/comments/${commentId}/like`, {}, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            console.log('Like response:', response.data); // Log the response
+            const isLiked = likedComments[commentId]; // Check if the comment is already liked
+            const response = await axios.post(
+                `http://localhost:5000/api/groups/${groupId}/comments/${commentId}/like`,
+                {},
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }
+            );
+
+            console.log('Like response:', response.data);
+            
             // Update liked comments state
             setLikedComments((prev) => ({
                 ...prev,
-                [commentId]: !prev[commentId] // Toggle the liked state
+                [commentId]: !isLiked // Toggle the liked state
             }));
+
             // Fetch updated like count
             fetchUpdatedLikes(commentId);
         } catch (error) {
@@ -107,16 +115,16 @@ const GroupComments = ({ groupId, userId }) => {
             <ul>
                 {comments.map(comment => (
                     <li key={comment.id} className="comment-item">
-                        <p>{comment.text}</p>
+                        <p>{comment.text} - <strong>{comment.user_name}</strong></p>
                         <div className="comment-actions">
                             <button onClick={() => handleLikeComment(comment.id)}>
                                 <FontAwesomeIcon 
                                     icon={faThumbsUp} 
                                     className="like-icon"
-                                    style={{ color: likedComments[comment.id] ? 'blue' : 'gray' }} // Change color based on like state
+                                    style={{ color: likedComments[comment.id] ? 'blue' : 'gray' }}
                                 />
                             </button>
-                            <span>{likeCounts[comment.id] || 0} Likes</span> {/* Display like count */}
+                            <span>{likeCounts[comment.id] || 0} Likes</span>
                             <button onClick={() => handleReplyComment(comment.id)}>Reply</button>
                             {replies[comment.id] && replies[comment.id].length > 0 && (
                                 <ul>
