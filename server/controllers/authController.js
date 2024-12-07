@@ -138,7 +138,7 @@ export const register = async (req, res) => {
              id: result.rows[0].id,
              name,
              email,
-             message: 'Registration successful. Please verify your email address.'
+             message: 'Registration successful'
          });
  
      } catch (error) {

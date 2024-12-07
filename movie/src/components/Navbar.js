@@ -4,13 +4,13 @@ import ModalWindow from './ModalWindow';
 import { SignUpForm, LoginForm } from './AuthForms';
 import './Navbar.css';
 
-
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showLogoutMessage, setShowLogoutMessage] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,9 +35,9 @@ const Navbar = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
-      
+
       const data = await response.json();
 
       if (response.ok) {
@@ -64,9 +64,9 @@ const Navbar = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         console.log('Login successful:', data);
@@ -74,9 +74,7 @@ const Navbar = () => {
         if (data.name) {
           localStorage.setItem('userName', data.name);
         }
-        //set id 
         localStorage.setItem('userId', data.id);
-        //set email
         localStorage.setItem('userEmail', data.email);
         setIsLoggedIn(true);
         setIsLoginOpen(false);
@@ -95,56 +93,59 @@ const Navbar = () => {
     localStorage.removeItem('userName');
     localStorage.removeItem('userEmail');
     setIsLoggedIn(false);
+    setShowLogoutMessage(true);
+    setTimeout(() => {
+      navigate('/');
+    },); 
   };
 
   const handleDeleteAccount = async () => {
     try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            alert('You must be logged in');
-            navigate('/login');  
-            return;
-        }
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('You must be logged in');
+        navigate('/login');
+        return;
+      }
 
-        const response = await fetch('http://localhost:5000/api/auth/account', {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
+      const response = await fetch('http://localhost:5000/api/auth/account', {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-        if (response.status === 401) {
-            localStorage.removeItem('token');
-            alert('Session expired. Please login again.');
-            navigate('/login');  
-            return;
-        }
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        alert('Session expired. Please login again.');
+        navigate('/login');
+        return;
+      }
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.error || 'Failed to delete account');
-        }
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to delete account');
+      }
 
-        localStorage.clear();
-        setShowDeleteConfirm(false);
-        alert('Account successfully deleted');
-        navigate('/');  
-        window.location.reload(); 
-
+      localStorage.clear();
+      setShowDeleteConfirm(false);
+      alert('Account successfully deleted');
+      navigate('/');
+      window.location.reload();
     } catch (error) {
-        console.error('Error deleting account:', error);
-        
-        if (error.message.includes('Not authenticated')) {
-            alert('Please login first');
-            navigate('/login');  
-            return;
-        }
-        
-        alert(error.message || 'Failed to delete account. Please try again.');
+      console.error('Error deleting account:', error);
+
+      if (error.message.includes('Not authenticated')) {
+        alert('Please login first');
+        navigate('/login');
+        return;
+      }
+
+      alert(error.message || 'Failed to delete account. Please try again.');
     }
-};
+  };
 
   return (
     <div>
@@ -154,11 +155,9 @@ const Navbar = () => {
           <Link to="/showtime" className="nav-link">Showtime</Link>
           <Link to="/search" className="nav-link">Search</Link>
           <Link to="/filter" className="nav-link">Discovery</Link>
-          {isLoggedIn && (
-            <Link to="/profile" className="nav-link"> My Profile </Link>
-          )}
+          {isLoggedIn && <Link to="/profile" className="nav-link">My Profile</Link>}
         </div>
-        
+
         <div className="auth-buttons">
           {!isLoggedIn ? (
             <div className="auth-buttons-container">
@@ -183,42 +182,35 @@ const Navbar = () => {
       </nav>
 
       <ModalWindow isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)}>
-        <SignUpForm 
-          onSubmit={handleSignUp}
-          onSuccess={handleSignUpSuccess}
-        />
+        <SignUpForm onSubmit={handleSignUp} onSuccess={handleSignUpSuccess} />
       </ModalWindow>
 
       <ModalWindow isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)}>
-        <LoginForm 
-          onSubmit={handleLogin}
-          initialEmail={registeredEmail}
-        />
+        <LoginForm onSubmit={handleLogin} initialEmail={registeredEmail} />
       </ModalWindow>
 
       <ModalWindow isOpen={showDeleteConfirm} onClose={() => setShowDeleteConfirm(false)}>
-    <div className="delete-confirmation">
-        <h2>Delete Account</h2>
-        <p>Are you sure you want to delete your account? This action cannot be undone.</p>
-        <div className="delete-confirmation-buttons">
-            <button 
-                onClick={() => setShowDeleteConfirm(false)} 
-                className="cancel-button"
-            >
-                Cancel
+        <div className="delete-confirmation">
+          <h2>Delete Account</h2>
+          <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+          <div className="delete-confirmation-buttons">
+            <button onClick={() => setShowDeleteConfirm(false)} className="cancel-button">
+              Cancel
             </button>
-            <button 
-                onClick={handleDeleteAccount} 
-                className="delete-button"
-            >
-                Delete Account
+            <button onClick={handleDeleteAccount} className="delete-button">
+              Delete Account
             </button>
+          </div>
         </div>
-    </div>
-</ModalWindow>
+      </ModalWindow>
+
+      {showLogoutMessage && (
+        <div className="logout-message">
+          <p>You have been logged out!</p>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Navbar;
-
