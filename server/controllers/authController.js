@@ -24,10 +24,8 @@ export const verifyEmail = async (req, res) => {
             [result.rows[0].id]
         );
 
-        res.status(200).json({
-            message: 'Email successfully verified!'
-        });
-
+       
+        res.redirect('http://localhost:3000/verification-success');
     } catch (error) {
         console.error('Error verifying email:', error);
         res.status(500).json({ error: 'Verification failed. Please try again.' });
@@ -47,7 +45,7 @@ const sendVerificationEmail = (email, token) => {
         <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
             <h1>Welcome to Our Platform!</h1>
             <p>Thank you for registering. Please verify your email by clicking the button below:</p>
-            <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 600px; margin: 0 auto; border: none;">
+            <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 40%; border: none;">
                 <tr>
                     <td align="center" style="background-color: #007BFF; border-radius: 5px;">
                         <a href="${verificationUrl}" style="display: inline-block; background-color: #007BFF; color: white; text-decoration: none; padding: 15px 30px; border-radius: 5px; font-size: 16px; font-weight: bold;">
