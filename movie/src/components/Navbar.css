@@ -110,3 +110,44 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+
+
+
+
+
+.logout-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px;
+  background-color: #f44336;
+  color: white;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: slideIn 0.5s forwards, fadeOut 4.5s 4.5s forwards; 
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}

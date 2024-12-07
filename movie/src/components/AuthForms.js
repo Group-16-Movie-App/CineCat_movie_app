@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import '../components/AuthForm.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
+import ModalWindow from './ModalWindow';  
+import './AuthForm.css';  
 
 export const SignUpForm = ({ onSubmit, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -7,14 +10,15 @@ export const SignUpForm = ({ onSubmit, onSuccess }) => {
     email: '',
     password: ''
   });
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); 
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
-  
+
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters long');
       return;
@@ -32,83 +36,107 @@ export const SignUpForm = ({ onSubmit, onSuccess }) => {
       const success = await onSubmit(formData);
       if (success) {
         setIsSuccess(true);
-        setTimeout(() => {
-          onSuccess();
-        }, 1500);
+        setIsModalOpen(true); 
       }
     } catch (error) {
       setError('Registration failed. Please try again.');
+      setIsModalOpen(true); 
     }
   };
 
-  if (isSuccess) {
-    return (
-      <div className="success-message">
-        <h2>Successfully Registered!</h2>
-        <p>Your account has been created successfully.</p>
-        <button onClick={onSuccess} className="success-button">
-          Sign In
-        </button>
-      </div>
-    );
-  }
+  const closeModal = () => {
+    setIsModalOpen(false);
+    if (isSuccess) {
+      onSuccess();
+      setFormData({ name: '', email: '', password: '' }); 
+    }
+  };
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit}>
-      <h2>Sign Up</h2>
-      {error && <div className="auth-form-error">{error}</div>}
-      
-      <div className="form-group">
-        <input
-          type="text"
-          placeholder="Name"
-          value={formData.name}
-          onChange={(e) => setFormData({...formData, name: e.target.value})}
-          className="form-input"
-          required
-        />
-      </div>
+    <div className="auth-container">
+      {isModalOpen && (
+        <ModalWindow isOpen={isModalOpen} onClose={closeModal}>
+          {isSuccess ? (
+            <div className="success-message">
+              <h2>Registration Successful!</h2>
+              <p>You can now log in to your account.</p>
+              <button className="success-button" onClick={closeModal}>Sign in</button>
+            </div>
+          ) : (
+            <div className="auth-form-error">
+              {error}
+            </div>
+          )}
+        </ModalWindow>
+      )}
 
-      <div className="form-group">
-        <input
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={(e) => setFormData({...formData, email: e.target.value})}
-          className="form-input"
-          required
-        />
-      </div>
+      {!isModalOpen && !isSuccess && (
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <h2>Create Your Account</h2>
+          {error && <div className="auth-form-error">{error}</div>}
 
-      <div className="form-group">
-        <input
-          type="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={(e) => {
-            setFormData({...formData, password: e.target.value});
-            setError('');
-          }}
-          className="form-input"
-          required
-        />
-        <small className="password-hint">
-          Password must be at least 6 characters long, contain one uppercase letter and one number
-        </small>
-      </div>
+          <div className="form-group">
+            <input
+              type="text"
+              placeholder="Name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="form-input"
+              required
+            />
+          </div>
 
-      <button type="submit" className="submit-button">
-        Sign Up
-      </button>
-    </form>
+          <div className="form-group">
+            <input
+              type="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="form-input"
+              required
+            />
+          </div>
+
+          <div className="form-group password-group signup-form">
+            <input
+              type={isPasswordVisible ? "text" : "password"}  
+              placeholder="Password"
+              value={formData.password}
+              onChange={(e) => {
+                setFormData({ ...formData, password: e.target.value });
+                setError('');
+              }}
+              className="form-input"
+              required
+            />
+            <small className="password-hint">
+              Password must be at least 6 characters long, contain one uppercase letter and one number.
+            </small>
+            <button
+              type="button"
+              className="toggle-password-visibility"
+              onClick={() => setIsPasswordVisible(!isPasswordVisible)}  
+            >
+              <FontAwesomeIcon icon={isPasswordVisible ? faEye : faEyeSlash} />
+            </button>
+          </div>
+
+          <button type="submit" className="submit-button-signin">
+            SIGN UP
+          </button>
+        </form>
+      )}
+    </div>
   );
 };
+
 
 export const LoginForm = ({ onSubmit, initialEmail = '' }) => {
   const [formData, setFormData] = useState({
     email: initialEmail,
     password: ''
   });
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);  
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
@@ -126,41 +154,50 @@ export const LoginForm = ({ onSubmit, initialEmail = '' }) => {
   };
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit}>
-      <h2>Sign In</h2>
-      {error && <div className="auth-form-error">{error}</div>}
+    <div className="auth-container">
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <h2>Sign In</h2>
+        {error && <div className="auth-form-error">{error}</div>}
 
-      <div className="form-group">
-        <input
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={(e) => {
-            setFormData({...formData, email: e.target.value});
-            setError('');
-          }}
-          className="form-input"
-          required
-        />
-      </div>
+        <div className="form-group">
+          <input
+            type="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={(e) => {
+              setFormData({ ...formData, email: e.target.value });
+              setError(''); 
+            }}
+            className="form-input"
+            required
+          />
+        </div>
 
-      <div className="form-group">
-        <input
-          type="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={(e) => {
-            setFormData({...formData, password: e.target.value});
-            setError('');
-          }}
-          className="form-input"
-          required
-        />
-      </div>
+        <div className="form-group password-group login-form">
+          <input
+            type={isPasswordVisible ? "text" : "password"}  
+            placeholder="Password"
+            value={formData.password}
+            onChange={(e) => {
+              setFormData({ ...formData, password: e.target.value });
+              setError(''); 
+            }}
+            className="form-input"
+            required
+          />
+          <button
+            type="button"
+            className="toggle-password-visibility"
+            onClick={() => setIsPasswordVisible(!isPasswordVisible)} 
+          >
+            <FontAwesomeIcon icon={isPasswordVisible ? faEye : faEyeSlash} />
+          </button>
+        </div>
 
-      <button type="submit" className="submit-button">
-        Sign In
-      </button>
-    </form>
+        <button type="submit" className="submit-button-signin">
+          SIGN IN
+        </button>
+      </form>
+    </div>
   );
 };
