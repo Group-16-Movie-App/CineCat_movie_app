@@ -1,13 +1,18 @@
-drop table if exists comment_likes;
-drop table if exists comments;
-drop table if exists posts;
-drop table if exists shared_urls;
-drop table if exists favorites;
-drop table if exists reviews;
+
+drop table if exists comment_likes cascade;
+drop table if exists comments cascade;
+drop table if exists posts cascade;
+drop table if exists shared_urls cascade;
+drop table if exists favorites cascade;
+drop table if exists reviews cascade;
 -- drop table if exists ratings;
-drop table if exists members;
-drop table if exists groups;
-drop table if exists accounts;
+drop table if exists members cascade;
+drop table if exists membership_requests cascade;  
+drop table if exists group_movies cascade; 
+drop table if exists group_schedules cascade; 
+drop table if exists accounts cascade;
+
+
 
 -- Account table to manage accounts and authentication
 create table accounts (
@@ -22,8 +27,6 @@ create table accounts (
 );
 
 -- Group table for group functionality. 
--- When the owner deletes their account, transfer the ownership to another group member, if available.
--- If no other members exist, delete the group.
 create table groups (
     id serial primary key,
     name varchar(255) unique not null,
@@ -33,13 +36,8 @@ create table groups (
     constraint fk_owner foreign key (owner) references accounts(id)
 );
 
-
--- First drop the existing members table
-DROP TABLE IF EXISTS members CASCADE;
-
-
--- Then create the new members table with the updated schema
-CREATE TABLE members (
+-- Members table
+create table members (
     id serial primary key,
     group_id int references groups(id) on delete cascade,
     account_id int references accounts(id) on delete cascade,
@@ -49,7 +47,7 @@ CREATE TABLE members (
     CHECK (role IN ('owner', 'member'))
 );
 
--- Reviews table to store account-created movie reviews. Movie_id is ID retrieved form IMDB API
+-- Reviews table to store account-created movie reviews
 create table reviews (
     id serial primary key,
     movie_id int not null,
@@ -59,17 +57,6 @@ create table reviews (
     created timestamp default current_timestamp,
     constraint fk_account foreign key (account_id) references accounts(id) on delete cascade
 );
-
--- Ratings table to store account-created movie ratings. Movie ID is from TMDB
--- If the accounts is deleted, its ratings are kept, and account_id field is null.
--- create table ratings (
-   -- id serial primary key,
-   -- movie_id int not null,
-   -- account_id int,
-   -- rating smallint check (rating between 1 and 5) not null,
-   -- created timestamp default current_timestamp,
-   -- constraint fk_account foreign key (account_id) references accounts(id) on delete set null
---);
 
 -- Favorites table to manage account’s favorite movies or series
 create table favorites (
@@ -102,11 +89,6 @@ create table posts (
     created timestamp default current_timestamp,
     constraint fk_group foreign key (group_id) references groups(id) on delete cascade,
     constraint fk_account foreign key (account_id) references accounts(id) on delete cascade
-    -- Ensure movie_id and showtime_id cannot be NON-NULL at a time
-    -- constraint chk_movie_or_showtime 
-        -- check (
-           -- (movie_id is distinct from showtime_id)
-        --)
 );
 
 -- Membership requests table
@@ -140,18 +122,20 @@ create table group_schedules (
 );
 
 -- Table to manage group's post comments
-CREATE TABLE comments (
-    id SERIAL PRIMARY KEY,                -- Unique identifier for each comment
-    group_id INT NOT NULL,                -- Foreign key referencing the groups table
-    account_id INT NOT NULL,                 -- Foreign key referencing the account table 
-    text TEXT NOT NULL,                   -- The comment text
-    likes INT DEFAULT 0,                  -- Number of likes the comment has received
-    created_at TIMESTAMP DEFAULT NOW(),   -- Timestamp for when the comment was created
-    updated_at TIMESTAMP DEFAULT NOW(),   -- Timestamp for when the comment was last updated
-    FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,  -- Ensures referential integrity
-    FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE   -- Ensures referential integrity
+create table comments (
+    id SERIAL PRIMARY KEY,                
+    group_id INT,                         
+    account_id INT NOT NULL,               
+    text TEXT NOT NULL,                   
+    likes INT DEFAULT 0,                   
+    created_at TIMESTAMP DEFAULT NOW(),    
+    updated_at TIMESTAMP DEFAULT NOW(),   
+    FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE SET NULL, 
+    FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE 
 );
-CREATE TABLE comment_likes (
+
+-- Table to track comment likes
+create table comment_likes (
     id SERIAL PRIMARY KEY,
     comment_id INT REFERENCES comments(id),
     account_id INT REFERENCES accounts(id),
