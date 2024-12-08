@@ -156,6 +156,7 @@ const Navbar = () => {
           <Link to="/search" className="nav-link">Search</Link>
           <Link to="/filter" className="nav-link">Discovery</Link>
           {isLoggedIn && <Link to="/profile" className="nav-link">My Profile</Link>}
+          <Link to="/groups" className="nav-link">Groups</Link>
         </div>
 
         <div className="auth-buttons">
