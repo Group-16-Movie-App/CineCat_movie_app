@@ -110,3 +110,23 @@
     color: #121212;
     border-color: #ffcc00;
 }
+
+/* Add these styles to remove underlines from all movie links */
+.movie-card a,
+.movie-card a:hover,
+.movie-card a:visited,
+.movie-card a:active,
+.movie-link,
+.movie-link:hover,
+.movie-link:visited,
+.movie-link:active {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Also add this as a global style to catch any movie links we might have missed */
+a.movie-title,
+a .movie-title {
+    text-decoration: none !important;
+    color: inherit;
+}

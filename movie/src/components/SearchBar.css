@@ -70,7 +70,27 @@ input:focus {
 }
 
 .search-prompt {
-    color: #B22222;
+    background-color: #0066cc;
+    color: white !important;
     font-size: 1.2em;
     margin-top: 10px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+/* Add these styles to remove underlines from search results */
+.result-item a,
+.result-item a:hover,
+.result-item a:visited,
+.result-item a:active {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* If you want to add a hover effect for search results */
+.result-item:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
 }
