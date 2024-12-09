@@ -413,69 +413,72 @@ export const getCommentLikes = async (req, res) => {
     }
 };
 
+
 export const requestToJoinGroup = async (req, res) => {
     const { groupId } = req.params;
-    const userId = req.user.id; // Get the user ID from the authenticated user
-    const { userName } = req.body; // Get the user's name from the request body
+    const userId = req.user.id;  
+    const userName = req.body.userName;  
 
     try {
-        const existingRequest = await pool.query(
-            'SELECT * FROM membership_requests WHERE group_id = $1 AND account_id = $2',
-            [groupId, userId]
-        );
-
-        if (existingRequest.rows.length > 0) {
-            return res.status(400).json({ message: 'You have already sent a request to join this group.' });
+        const groupResult = await pool.query("SELECT * FROM groups WHERE id = $1", [groupId]);
+        if (groupResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Group not found' });
         }
 
-        // Check if the user is already a member
-        const existingMember = await pool.query(
-            'SELECT * FROM members WHERE group_id = $1 AND account_id = $2',
+        const group = groupResult.rows[0];
+
+        const isMemberResult = await pool.query(
+            "SELECT * FROM group_members WHERE group_id = $1 AND user_id = $2",
             [groupId, userId]
         );
-
-        if (existingMember.rows.length > 0) {
-            return res.status(400).json({ message: 'You are already a member of this group.' });
+        if (isMemberResult.rows.length > 0) {
+            return res.status(400).json({ message: 'You are already a member of this group' });
+        }
+        if (req.user.name !== userName) {
+            return res.status(400).json({ message: 'User name does not match the token' });
         }
 
         await pool.query(
-            'INSERT INTO membership_requests (group_id, account_id, user_name) VALUES ($1, $2, $3)',
+            "INSERT INTO join_requests (group_id, user_id, user_name) VALUES ($1, $2, $3)",
             [groupId, userId, userName]
         );
-        res.status(201).json({ message: 'Join request sent successfully' });
+
+        res.status(200).json({ message: 'Join request sent' });
     } catch (error) {
-        console.error('Error sending join request:', error);
-        res.status(500).json({ message: 'Failed to send join request' });
+        console.error('Error processing join request:', error);
+        res.status(500).json({ message: 'Error processing join request', error });
     }
 };
 
+
 export const handleMembershipRequest = async (req, res) => {
     const { groupId, memberId } = req.params;
-    const { action } = req.body; // 'accept' or 'reject'
+    const userId = req.user.id; 
 
     try {
-        if (action === 'accept') {
-            await pool.query(
-                'INSERT INTO members (group_id, account_id) VALUES ($1, $2)',
-                [groupId, memberId]
-            );
-            await pool.query(
-                'DELETE FROM membership_requests WHERE group_id = $1 AND account_id = $2',
-                [groupId, memberId]
-            );
-            res.status(200).json({ message: 'Member accepted successfully' });
-        } else if (action === 'reject') {
-            await pool.query(
-                'DELETE FROM membership_requests WHERE group_id = $1 AND account_id = $2',
-                [groupId, memberId]
-            );
-            res.status(200).json({ message: 'Member rejected successfully' });
-        } else {
-            res.status(400).json({ message: 'Invalid action' });
+        const group = await Group.findById(groupId);
+        if (!group) {
+            return res.status(404).json({ message: 'Group not found' });
         }
+
+      
+        if (group.owner !== userId) {
+            return res.status(403).json({ message: 'Only the owner can approve/reject requests' });
+        }
+
+        const requestIndex = group.requests.findIndex(req => req.userId === memberId);
+        if (requestIndex === -1) {
+            return res.status(404).json({ message: 'Request not found' });
+        }
+
+      
+        const request = group.requests.splice(requestIndex, 1); 
+        group.members.push(request[0]); 
+        await group.save();
+
+        res.status(200).json({ message: 'Membership request accepted' });
     } catch (error) {
-        console.error('Error handling membership request:', error);
-        res.status(500).json({ message: 'Failed to handle membership request' });
+        res.status(500).json({ message: 'Error handling membership request', error });
     }
 };
 
