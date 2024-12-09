@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import SearchPage from './pages/SearchPage';
@@ -25,30 +25,49 @@ const PrivateRoute = ({ children }) => {
 };
 
 function App() {
+    const [backgroundImage, setBackgroundImage] = useState('');
+
+    useEffect(() => {
+        console.log('Current background image:', backgroundImage);
+    }, [backgroundImage]);
+
     return (
-        <>
-            <Navbar />
-            <Routes>
-                <Route path="/" element={<>
-                                            <TrendingMovies/>
-                                            <ReviewsPage />
-                                        </>} />
-                <Route path="/showtime" element={<Schedules />} />
-                <Route path="/search" element={<SearchPage />} />
-                <Route path="/filter" element={<FilterPage />} />
-                <Route path="/movie/:id" element={<MovieDetail />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/verification-success" element={<EmailVerificationSuccess />} />
-                <Route path="/profile/:userId" element={<ProfilePage />} />
-                <Route path="/favorites" element={
-                    <PrivateRoute>
-                        <FavoritesList />
-                    </PrivateRoute>
-                } />
-                <Route path="/favorites/:userId" element={<SharedFavorites />} />
-            </Routes>
-            <Footer />
-        </>
+        <div className="App">
+            {backgroundImage && (
+                <div className="background-wrapper">
+                    <div 
+                        className="background-image" 
+                        style={{ 
+                            backgroundImage: `url("${backgroundImage}")`,
+                            opacity: 1
+                        }}
+                    />
+                </div>
+            )}
+            <div className="content-wrapper">
+                <Navbar />
+                <Routes>
+                    <Route path="/" element={<>
+                                                <TrendingMovies setBackgroundImage={setBackgroundImage}/>
+                                                <ReviewsPage />
+                                            </>} />
+                    <Route path="/showtime" element={<Schedules />} />
+                    <Route path="/search" element={<SearchPage />} />
+                    <Route path="/filter" element={<FilterPage />} />
+                    <Route path="/movie/:id" element={<MovieDetail />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/verification-success" element={<EmailVerificationSuccess />} />
+                    <Route path="/profile/:userId" element={<ProfilePage />} />
+                    <Route path="/favorites" element={
+                        <PrivateRoute>
+                            <FavoritesList />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/favorites/:userId" element={<SharedFavorites />} />
+                </Routes>
+                <Footer />
+            </div>
+        </div>
     );
 }
 

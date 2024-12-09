@@ -1,8 +1,9 @@
 .App {
   text-align: center;
-  background-color:white;
-  height:100vh;
-  width:vw;
+  min-height: 100vh;
+  width: 100vw;
+  position: relative;
+  background-color: #121212;
 }
 
 .search-bar-container{
@@ -124,5 +125,39 @@ a[href^="/movie/"],
 a[href*="movie"] {
     text-decoration: none;
     color: inherit;
+}
+
+.background-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+}
+
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(10px) grayscale(80%) brightness(0.3);
+    transform: scale(1.1);
+    transition: background-image 0.5s ease-in-out;
+}
+
+/* Make sure content stays above the background */
+.content-wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    width: 100%;
 }
 

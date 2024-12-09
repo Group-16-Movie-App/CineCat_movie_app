@@ -72,6 +72,9 @@ const SearchPage = () => {
                 <div style={{width:'100%', textAlign:'center', minHeight: '100vh'}}>
                     <h1 >Search Movies</h1>
                     <SearchForm onSearch={handleSearch} />
+                    <button type="submit" className="search-button">
+                        Search
+                    </button>
                     <MovieList 
                         movies={movies} 
                         genreNames={genreNames}
