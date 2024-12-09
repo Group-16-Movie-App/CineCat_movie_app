@@ -61,7 +61,7 @@ const SearchPage = () => {
         return <div style={{width:'100%', textAlign:'center', minHeight: '100vh'}}>
                     <h1 >Search Movies</h1>
                     <SearchForm onSearch={handleSearch} />
-                    <div style={{marginTop: '20px'}}>
+                    <div className="search-prompt">
                         What movie are you lookin for? Please enter a title movie
                     </div>
                 </div>
