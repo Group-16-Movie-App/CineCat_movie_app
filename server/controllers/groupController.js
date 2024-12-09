@@ -415,16 +415,16 @@ export const getCommentLikes = async (req, res) => {
 
 
 export const requestToJoinGroup = async (req, res) => {
-    const { groupId } = req.params;
+    const { groupId } = req.params; 
     const userId = req.user.id;  
     const userName = req.body.userName;  
 
     try {
+      
         const groupResult = await pool.query("SELECT * FROM groups WHERE id = $1", [groupId]);
         if (groupResult.rows.length === 0) {
             return res.status(404).json({ message: 'Group not found' });
         }
-
         const group = groupResult.rows[0];
 
         const isMemberResult = await pool.query(
@@ -434,6 +434,7 @@ export const requestToJoinGroup = async (req, res) => {
         if (isMemberResult.rows.length > 0) {
             return res.status(400).json({ message: 'You are already a member of this group' });
         }
+
         if (req.user.name !== userName) {
             return res.status(400).json({ message: 'User name does not match the token' });
         }
