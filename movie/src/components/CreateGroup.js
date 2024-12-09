@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './GroupStyles.css';
+import './GroupStyles.css'
 import { useNavigate } from 'react-router-dom';
 
 const CreateGroup = ({ onGroupCreated }) => {

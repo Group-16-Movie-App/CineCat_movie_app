@@ -92,11 +92,13 @@ const Navbar = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userName');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('userId');
+
     setIsLoggedIn(false);
     setShowLogoutMessage(true);
     setTimeout(() => {
       navigate('/');
-    },); 
+    },1000); 
   };
 
   const handleDeleteAccount = async () => {

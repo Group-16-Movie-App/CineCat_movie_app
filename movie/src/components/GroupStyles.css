@@ -1,6 +1,6 @@
 /* Groups Page Styles */
 .groups-page {
-    max-width: 1200px;
+    
     margin: 0 auto;
     padding: 2rem;
 }
@@ -33,7 +33,7 @@
 .create-group-link:hover {
     background-color: #004494; /* Darker blue for hover */
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 86, 179, 0.2);
+    box-shadow: 0 4px 8px rgba(98, 179, 0, 0.2);
 }
 
 .groups-grid {
@@ -88,32 +88,10 @@
 }
 
 /* Create Group Page Styles */
-.create-group-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
-    padding: 2rem;
-    background-color: #1a1a1a; /* Dark background */
-}
 
-.create-group-card {
-    background: #242424; /* Dark card background */
-    border-radius: 12px;
-    padding: 2.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    width: 100%;
-    max-width: 400px;
-    border: 1px solid #333; /* Subtle border */
-}
 
-.create-group-title {
-    color: #8B0000; /* Keep the royal red */
-    text-align: center;
-    margin-bottom: 2rem;
-    font-size: 2rem;
-    font-weight: 600;
-}
+
+
 
 .create-group-form {
     display: flex;
@@ -121,30 +99,10 @@
     gap: 1.5rem;
 }
 
-.group-input {
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid #444;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    background-color: #333; /* Dark input background */
-    color: white; /* Light text */
-}
-
-.group-input::placeholder {
-    color: #888; /* Lighter placeholder text */
-}
-
-.group-input:focus {
-    outline: none;
-    border-color: #0056b3;
-    box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.2);
-    background-color: #404040; /* Slightly lighter when focused */
-}
 
 .create-button {
     background-color: #0056b3;
+    width: 10%;
     color: white;
     border: none;
     padding: 1rem;
@@ -153,6 +111,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
+    margin-bottom: 2rem;
 }
 
 .create-button:hover {
@@ -285,7 +244,7 @@ button:hover {
     border: 1px solid #444;
     border-radius: 4px;
     background-color: #333;
-    color: #fff;
+    color: #ffffff;
     font-size: 1rem;
 }
 
@@ -310,6 +269,10 @@ textarea.input-field {
     margin-top: 0.5rem;
 }
 
+.group-input {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;  
+}
 .action-button:hover {
     background-color: #f40612;
 }
@@ -605,7 +568,7 @@ input[type="datetime-local"].input-field::-webkit-calendar-picker-indicator {
 
 .group-card-link {
     display: inline-block;
-    margin-top: 20px;
+    margin-top: px;
     padding: 10px 15px;
     background-color: #ff4757; /* Button color */
     color: #ffffff;
