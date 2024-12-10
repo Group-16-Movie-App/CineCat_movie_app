@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import GroupComments from './GroupComments';
 
-const GroupMovies = ({ groupId, onSelect }) => {
+const GroupMovies = ({ groupId }) => {
     const [movies, setMovies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    const fetchMovies = async () => {
-        try {
-            const response = await axios.get(`http://localhost:5000/api/groups/${groupId}/movies`);
-            setMovies(response.data);
-            setLoading(false);
-        } catch (error) {
-            console.error('Error fetching movies:', error);
-            setError('Failed to load movies');
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+        const fetchMovies = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/groups/${groupId}/movies`);
+                setMovies(response.data);
+                setLoading(false);
+            } catch (error) {
+                setError('Failed to load movies');
+                setLoading(false);
+            }
+        };
+
         fetchMovies();
     }, [groupId]);
 
@@ -26,15 +26,16 @@ const GroupMovies = ({ groupId, onSelect }) => {
     if (error) return <div className="error-message">{error}</div>;
 
     return (
-        <div>
-            <h3>Group Movies</h3>
-            <ul>
-                {movies.map(movie => (
-                    <li key={movie.id} onClick={() => onSelect(movie.id)}>
-                        {movie.title}
-                    </li>
-                ))}
-            </ul>
+        <div className="group-movies">
+            <h3>Movies in this Group</h3>
+            {movies.map(movie => (
+                <div key={movie.id} className="movie-card">
+                    <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} alt={movie.title} />
+                    <h4>{movie.title}</h4>
+                    <p>Rating: {movie.rating}</p>
+                    <GroupComments movieId={movie.id} />
+                </div>
+            ))}
         </div>
     );
 };
