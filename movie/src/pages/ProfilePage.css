@@ -230,3 +230,21 @@
     gap: 1rem;
     margin-top: 0.5rem;
 }
+
+/* Add consistent spacing between profile sections */
+.profile-section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px; /* Consistent spacing between sections */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for section headings */
+.section-title {
+    color: #2c3e50;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+}

@@ -102,7 +102,6 @@ const ProfilePage = () => {
     // Reviews Section Component
     const ReviewsSection = () => (
         <div className="profile-reviews-section">
-            <h2>My Reviews</h2>
             <div className="profile-reviews-content">
                 {userReviews.length === 0 ? (
                     <p>No reviews yet</p>
@@ -199,19 +198,20 @@ const ProfilePage = () => {
             </div>
 
             {/* Favorites Section */}
-            <div className="favorites-section">
-                <div className="section-header">
-                    <h2>My Favorites</h2>
-                </div>
+            <div className="profile-section">
+                <h2 className="section-title">My Favorites</h2>
                 <FavoritesList />
             </div>
 
             {/* Reviews Section */}
-            <ReviewsSection />
+            <div className="profile-section">
+                <h2 className="section-title">My Reviews</h2>
+                <ReviewsSection />
+            </div>
 
             {/* Groups Section */}
-            <div className="favorites-section">
-                <h2>My Groups</h2>
+            <div className="profile-section">
+                <h2 className="section-title">My Groups</h2>
                 <div className="groups-content">
                     {/* I have hard-coded groups for now */}
                     <p>Groups...</p>
