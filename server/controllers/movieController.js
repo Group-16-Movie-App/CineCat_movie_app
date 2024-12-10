@@ -43,3 +43,18 @@ export const getComments = async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch comments' });
     }
 };
+
+export const getGroupMovies = async (req, res) => {
+    const { groupId } = req.params;
+
+    try {
+        const result = await pool.query(
+            'SELECT id, title, description, poster_path, rating FROM movies WHERE group_id = $1',
+            [groupId]
+        );
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching group movies:', error);
+        res.status(500).json({ message: 'Failed to fetch group movies' });
+    }
+};

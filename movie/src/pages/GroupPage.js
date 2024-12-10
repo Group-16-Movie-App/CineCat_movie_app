@@ -102,17 +102,20 @@ const GroupPage = () => {
                    
                 </div>
                 <div className="group-main-content">
-                    <div> 
+                
                     <AddMovie groupId={id} onSelect={handleMovieSelect} />
-                     <GroupMovies groupId={id} />    
-                    </div>
-                    <GroupComments groupId={id} userId={userId} />
+                     <GroupMovies groupId={id} userId={userId} />    
+                    
                     {selectedMovie && (
                         <div className="selected-movie">
                             <h3>Selected Movie for Discussion</h3>
-                            <img src={`https://image.tmdb.org/t/p/w200${selectedMovie.poster_path}`} alt={selectedMovie.title} />
+                            <img 
+                                src={selectedMovie.poster_path ? `https://image.tmdb.org/t/p/w200${selectedMovie.poster_path}` : 'path/to/placeholder/image.jpg'} 
+                                alt={selectedMovie.title} 
+                            />
                             <p>Title: {selectedMovie.title}</p>
                             <p>Rating: {selectedMovie.vote_average}</p>
+                            <GroupComments groupId={id} userId={userId} />
                         </div>
                     )}
                 </div>
