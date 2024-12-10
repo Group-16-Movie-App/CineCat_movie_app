@@ -207,18 +207,20 @@ const ProfilePage = () => {
             {/* Groups Section */}
             <div className="groups-section">
                 <h2>My Created Groups</h2>
-                {myGroups.length > 0 ? (
-                    <div className="groups-grid">
-                        {myGroups.map((group) => (
-                            <div key={group.id} className="group-card">
-                                <h3>{group.name}</h3>
-                                <Link to={`/group/${group.id}`} className="group-card-link">View Group</Link>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <p>No groups created yet.</p>
-                )}
+                <div className="groups-container">
+                    {myGroups.length > 0 ? (
+                        <div className="groups-grid">
+                            {myGroups.map((group) => (
+                                <div key={group.id} className="group-card">
+                                    <h3>{group.name}</h3>
+                                    <Link to={`/group/${group.id}`} className="group-card-link">View Group</Link>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p>No groups created yet.</p>
+                    )}
+                </div>
             </div>
         </div>
     );
