@@ -72,7 +72,7 @@ const FilterPage = () => {
     return (  
         <>
             <div style={{width:'100%', textAlign:'center'}}>
-                <h1>Discovery Movies</h1>
+                <h1 className="discovery-title">Discovery Movies</h1>
                 <div className="filter-controls">
                     <div className="input-group">
                         <label className="filter-label">Year</label>

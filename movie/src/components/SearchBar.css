@@ -76,7 +76,7 @@ input:focus {
 }
 
 .search-prompt {
-    background-color: #0066cc;
+    background-color: #4A2748;
     color: white !important;
     font-size: 1.2em;
     margin-top: 10px;
@@ -84,6 +84,7 @@ input:focus {
     padding: 10px 20px;
     border-radius: 5px;
     display: inline-block;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Add these styles to remove underlines from search results */
@@ -119,4 +120,12 @@ input:focus {
     border-color: #666;
     transform: translateY(-2px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Add this style for the Search Movies heading */
+.search-title {
+    margin: 40px 0 30px 0;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
 }
