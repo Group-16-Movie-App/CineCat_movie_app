@@ -1,28 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import MovieSelector from './MovieSelector'; // Import the MovieSelector component
+import Schedules from './Schedules';
+
 
 const AddSchedule = ({ groupId, onClose }) => {
-    const [selectedMovie, setSelectedMovie] = useState(null);
-    const [showSelector, setShowSelector] = useState(false);
-    const [showtime, setShowtime] = useState('');
+    const [schedules, setSchedules] = useState([]);
+    const [selectedSchedule, setSelectedSchedule] = useState(null);
+
+    useEffect(() => {
+        const fetchSchedules = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/groups/${groupId}/schedules`);
+                setSchedules(response.data);
+            } catch (error) {
+                console.error('Error fetching schedules:', error);
+            }
+        };
+
+        fetchSchedules();
+    }, [groupId]);
 
     const handleAddSchedule = async () => {
         const token = localStorage.getItem('token');
-        if (!selectedMovie || !showtime) {
-            alert('Please select a movie and enter a showtime.');
+        if (!selectedSchedule) {
+            alert('Please select a schedule.');
             return;
         }
 
         try {
             await axios.post(`http://localhost:5000/api/groups/${groupId}/schedules`, {
-                movieId: selectedMovie.id,
-                showtime
+                movieId: selectedSchedule.movieId,
+                showtime: selectedSchedule.showtime
             }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             alert('Schedule added successfully!');
-            onClose(); // Close the modal
+            onClose();
         } catch (error) {
             console.error('Failed to add schedule:', error);
         }
@@ -30,26 +43,11 @@ const AddSchedule = ({ groupId, onClose }) => {
 
     return (
         <div className="modal">
-            <h3>Add Schedule</h3>
-            <button onClick={() => setShowSelector(true)}>Select Movie</button>
-            {selectedMovie && <p>Selected Movie: {selectedMovie.title}</p>}
-            <input
-                type="datetime-local"
-                value={showtime}
-                onChange={(e) => setShowtime(e.target.value)}
-            />
+            <h3>Select a Schedule</h3>
+            <Schedules schedules={schedules} onSelect={setSelectedSchedule} />
+            {selectedSchedule && <p>Selected Schedule: {selectedSchedule.title}</p>}
             <button onClick={handleAddSchedule}>Add Schedule</button>
             <button onClick={onClose}>Cancel</button>
-
-            {showSelector && (
-                <MovieSelector 
-                    onSelect={(movie) => {
-                        setSelectedMovie(movie);
-                        setShowSelector(false);
-                    }} 
-                    onClose={() => setShowSelector(false)} 
-                />
-            )}
         </div>
     );
 };

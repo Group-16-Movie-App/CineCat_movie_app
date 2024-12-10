@@ -20,12 +20,12 @@ import {
     requestToJoinGroup,
     handleMembershipRequest,
     deleteGroup,
-    getUserById
+    getUserById,
+    getCreatedGroups
 } from '../controllers/groupController.js';
 import auth from '../middleware/auth.js';
 
 const router = express.Router();
-
 
 router.get('/', getGroups);
 router.get('/:id', getGroupById);  
@@ -46,6 +46,6 @@ router.get('/:groupId/comments', auth, getGroupComments);
 router.get('/:groupId/comments/:commentId/likes', auth, getCommentLikes);   
 router.post('/:groupId/members/:memberId', auth, handleMembershipRequest);  
 router.get('/users/:id', getUserById);
-
+router.get('/created/:userId', getCreatedGroups);
 
 export default router;

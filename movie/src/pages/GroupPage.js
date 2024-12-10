@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import GroupMembers from '../components/GroupMembers';
 import MembershipRequests from '../components/MembershipRequests';
@@ -16,8 +16,7 @@ const GroupPage = () => {
     const [group, setGroup] = useState(null);
     const [error, setError] = useState(null);
     const [isMember, setIsMember] = useState(false);
-
-
+    const [selectedMovie, setSelectedMovie] = useState(null);
 
     useEffect(() => {
         const fetchGroup = async () => {
@@ -56,6 +55,14 @@ const GroupPage = () => {
         fetchGroup();
     }, [id, userId]);
     
+    const handleMovieSelect = async (movieId) => {
+        try {
+            const response = await axios.get(`http://localhost:5000/api/movies/${movieId}`);
+            setSelectedMovie(response.data);
+        } catch (error) {
+            console.error('Error fetching movie details:', error);
+        }
+    };
     
     const handleDeleteGroup = async () => {
         const token = localStorage.getItem('token');
@@ -96,11 +103,21 @@ const GroupPage = () => {
                 <div className="group-sidebar">
                     <GroupMembers groupId={id} />
                     <MembershipRequests groupId={id} />
+                    <Link to={`/groups/${id}/add-movie`} className="action-button">Add Movie</Link>
+                    <Link to={`/groups/${id}/add-schedule`} className="action-button">Add Schedule</Link>
                 </div>
                 <div className="group-main-content">
-                    <GroupMovies groupId={id} />
+                    <GroupMovies groupId={id} onSelect={handleMovieSelect} />
                     <GroupSchedules groupId={id} />
                     <GroupComments groupId={id} userId={userId} />
+                    {selectedMovie && (
+                        <div className="selected-movie">
+                            <h3>Selected Movie for Discussion</h3>
+                            <img src={`https://image.tmdb.org/t/p/w200${selectedMovie.poster_path}`} alt={selectedMovie.title} />
+                            <p>Title: {selectedMovie.title}</p>
+                            <p>Rating: {selectedMovie.vote_average}</p>
+                        </div>
+                    )}
                 </div>
             </div>
 
