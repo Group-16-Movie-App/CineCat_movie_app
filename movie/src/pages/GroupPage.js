@@ -6,6 +6,7 @@ import MembershipRequests from '../components/MembershipRequests';
 import GroupMovies from '../components/GroupMovies';
 import GroupSchedules from '../components/GroupSchedules';
 import GroupComments from '../components/GroupComments';
+import AddMovie from '../components/AddMovie';
 import '../components/GroupStyles.css';
 
 const GroupPage = () => {
@@ -55,13 +56,8 @@ const GroupPage = () => {
         fetchGroup();
     }, [id, userId]);
     
-    const handleMovieSelect = async (movieId) => {
-        try {
-            const response = await axios.get(`http://localhost:5000/api/movies/${movieId}`);
-            setSelectedMovie(response.data);
-        } catch (error) {
-            console.error('Error fetching movie details:', error);
-        }
+    const handleMovieSelect = (movie) => {
+        setSelectedMovie(movie);
     };
     
     const handleDeleteGroup = async () => {
@@ -103,12 +99,13 @@ const GroupPage = () => {
                 <div className="group-sidebar">
                     <GroupMembers groupId={id} />
                     <MembershipRequests groupId={id} />
-                    <Link to={`/groups/${id}/add-movie`} className="action-button">Add Movie</Link>
-                    <Link to={`/groups/${id}/add-schedule`} className="action-button">Add Schedule</Link>
+                   
                 </div>
                 <div className="group-main-content">
-                    <GroupMovies groupId={id} onSelect={handleMovieSelect} />
-                    <GroupSchedules groupId={id} />
+                    <div> 
+                    <AddMovie groupId={id} onSelect={handleMovieSelect} />
+                     <GroupMovies groupId={id} />    
+                    </div>
                     <GroupComments groupId={id} userId={userId} />
                     {selectedMovie && (
                         <div className="selected-movie">
