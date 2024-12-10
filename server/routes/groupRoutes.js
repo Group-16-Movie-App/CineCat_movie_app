@@ -9,8 +9,7 @@ import {
     addMovieToGroup,
     addScheduleToGroup,
     getMembershipRequests,
-    acceptMember,
-    rejectMember,
+    acceptOrRejectMember,
     addMember,
     removeMember,
     getGroupComments,
@@ -21,7 +20,8 @@ import {
     handleMembershipRequest,
     deleteGroup,
     getUserById,
-    getCreatedGroups
+    getCreatedGroups,
+    leaveGroup
 } from '../controllers/groupController.js';
 import auth from '../middleware/auth.js';
 
@@ -36,12 +36,13 @@ router.get('/:id/membership-requests', getMembershipRequests);
 router.post('/', auth, createGroup); 
 router.post('/:groupId/movies', auth, addMovieToGroup);  
 router.post('/:groupId/schedules', auth, addScheduleToGroup);  
-router.post('/:groupId/members', auth, addMember);  
+router.post('/:groupId/members/:memberId', auth, acceptOrRejectMember);
+router.delete('/:groupId/members/:memberId', auth, leaveGroup)
 router.post('/:groupId/join-request', auth, requestToJoinGroup);  
 router.post('/:groupId/comments', auth, addGroupComment);  
 router.post('/:groupId/comments/:commentId/like', auth, likeComment);  
 router.delete('/:groupId', auth, deleteGroup);  
-router.delete('/:groupId/members/:memberId', auth, removeMember);  
+router.delete('/:groupId/remove/:memberId', auth, removeMember);  
 router.get('/:groupId/comments', auth, getGroupComments); 
 router.get('/:groupId/comments/:commentId/likes', auth, getCommentLikes);   
 router.post('/:groupId/members/:memberId', auth, handleMembershipRequest);  

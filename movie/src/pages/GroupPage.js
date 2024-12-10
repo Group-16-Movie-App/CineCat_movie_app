@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import GroupMembers from '../components/GroupMembers';
 import MembershipRequests from '../components/MembershipRequests';
@@ -8,12 +8,15 @@ import GroupSchedules from '../components/GroupSchedules';
 import GroupComments from '../components/GroupComments';
 import AddMovie from '../components/AddMovie';
 import '../components/GroupStyles.css';
+import { handleLeaveGroup } from '../components/LeaveGroup';
+import { handleDeleteGroup } from '../components/DeleteGroup';
 
 const GroupPage = () => {
+    const navigate = useNavigate();
     const { id } = useParams();
     const userData = localStorage.getItem('user');
-    const userId = userData ? JSON.parse(userData).id : null;
-
+    const userId = Number(localStorage.getItem('userId'));
+    console.log('userId, ', userId )
     const [group, setGroup] = useState(null);
     const [error, setError] = useState(null);
     const [isMember, setIsMember] = useState(false);
@@ -41,6 +44,7 @@ const GroupPage = () => {
                 });
     
                 const members = memberResponse.data.members;
+                console.log(`data of members, `, members )
                 if (Array.isArray(members)) {
                     setIsMember(members.some(member => member.id === userId));
                 } else {
@@ -60,37 +64,9 @@ const GroupPage = () => {
         setSelectedMovie(movie);
     };
     
-    const handleDeleteGroup = async () => {
-        const token = localStorage.getItem('token');
-        try {
-            await axios.delete(`http://localhost:5000/api/groups/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            alert('Group deleted successfully!');
-            // Redirect or refresh the group list
-        } catch (error) {
-            console.error('Error deleting group:', error);
-            alert('Failed to delete group.');
-        }
-    };
      const handleAddMovie = (movie) => {
         setSelectedMovie(movie); 
     };
-
-    const handleLeaveGroup = async () => {
-        const token = localStorage.getItem('token');
-        try {
-            await axios.delete(`http://localhost:5000/api/groups/${id}/members/${userId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setIsMember(false);
-            alert('You have left the group');
-        } catch (error) {
-            console.error('Error leaving group:', error);
-            alert('Failed to leave the group.');
-        }
-    };
-
     if (error) return <div className="error-message">{error}</div>;
     if (!group) return <div>Loading...</div>;
 
@@ -127,13 +103,17 @@ const GroupPage = () => {
             </div>
 
             {isMember ? (
-                <button onClick={handleLeaveGroup}>Leave Group</button>
+                <button onClick={() => {handleLeaveGroup(group.id, userId)
+                                        navigate('/groups')
+                }}>Leave Group</button>
             ) : (
                 <button disabled>Not a member</button>
             )}
 
             {group.owner === userId && (
-                <button onClick={handleDeleteGroup}>Delete Group</button>
+                <button onClick={() => {handleDeleteGroup(group.id)
+                                        navigate('/groups')
+                }}>Delete Group</button>
             )}
         </div>
     );

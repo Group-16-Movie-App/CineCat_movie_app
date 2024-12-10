@@ -3,7 +3,12 @@ import pool from '../config/database.js';
 
 export const getGroups = async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM groups'); // Adjust the query based on your database schema
+        const result = await pool.query(`SELECT g.id, g.name, g.description, g.owner, g.created, 
+                                        ARRAY_AGG(m.account_id) FILTER (WHERE m.account_id IS NOT NULL) AS members,
+                                        COUNT(m.account_id) AS member_count
+                                        FROM groups g
+                                        LEFT JOIN members m ON g.id = m.group_id
+                                        GROUP BY g.id`);
         res.json(result.rows);
     } catch (error) {
         console.error('Error fetching groups:', error);
@@ -54,11 +59,9 @@ export const getGroupById = async (req, res) => {
 
 export const createGroup = async (req, res) => {
     const { name } = req.body;
-    const owner = req.user.id;
+    const ownerId = req.user.id;
     
-    console.log('Creating group with:', { name, owner });
-    
-    const ownerId = req.user.id; // Assuming you have user authentication and can get the user ID
+    console.log('Creating group with:', { name, ownerId });
 
     try {
         // Start a transaction
@@ -67,7 +70,7 @@ export const createGroup = async (req, res) => {
         // Insert the new group
         const groupResult = await pool.query(
             'INSERT INTO groups (name, owner) VALUES ($1, $2) RETURNING *',
-            [name, owner]
+            [name, ownerId]
         );
         
         console.log('Group created:', groupResult.rows[0]);
@@ -77,7 +80,7 @@ export const createGroup = async (req, res) => {
         // Add owner as a member with 'owner' role
         const memberResult = await pool.query(
             'INSERT INTO members (group_id, account_id, role) VALUES ($1, $2, $3) RETURNING *',
-            [groupId, owner, 'owner']
+            [groupId, ownerId, 'owner']
         );
         
         console.log('Member added:', memberResult.rows[0]);
@@ -88,7 +91,7 @@ export const createGroup = async (req, res) => {
         res.status(201).json({
             id: groupId,
             name,
-            owner,
+            ownerId,
             members: [memberResult.rows[0]]
         });
     } catch (error) {
@@ -127,16 +130,71 @@ export const deleteGroup = async (req, res) => {
 
 export const leaveGroup = async (req, res) => {
     const { groupId } = req.params;
-    const memberId = req.user.id; // Get the member ID from the authenticated user
+    const memberId = req.user.id;
 
     try {
-        await pool.query('DELETE FROM members WHERE group_id = $1 AND account_id = $2', [groupId, memberId]);
-        res.json({ message: 'You have left the group successfully' });
+        // Check if the user is the owner of the group
+        const isOwnerQuery = `SELECT owner FROM groups WHERE id = $1`;
+        const ownerResult = await pool.query(isOwnerQuery, [groupId]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Group not found' });
+        }
+
+        const currentOwnerId = ownerResult.rows[0].owner;
+
+        if (memberId === currentOwnerId) {
+            // If the user is the owner, check if there are other members to transfer ownership
+            const memberQuery = `
+                SELECT account_id 
+                FROM members 
+                WHERE group_id = $1 AND role = 'member' 
+                ORDER BY random() 
+                LIMIT 1`;
+            const memberResult = await pool.query(memberQuery, [groupId]);
+
+            if (memberResult.rows.length > 0) {
+                // Transfer ownership to another member
+                const newOwnerId = memberResult.rows[0].account_id;
+                const updateOwnerQuery = `UPDATE groups SET owner = $1 WHERE id = $2`;
+                await pool.query(updateOwnerQuery, [newOwnerId, groupId]);
+
+                // Update the new owner role in the members table
+                const updateMemberRoleQuery = `
+                    UPDATE members 
+                    SET role = 'owner' 
+                    WHERE group_id = $1 AND account_id = $2`;
+                await pool.query(updateMemberRoleQuery, [groupId, newOwnerId]);
+
+                // Remove the current owner from the members table
+                await pool.query('DELETE FROM members WHERE group_id = $1 AND account_id = $2', [groupId, memberId]);
+
+                return res.status(200).json({
+                    message: 'You have left the group successfully, and ownership has been transferred.',
+                    newOwnerId,
+                });
+            } else {
+                // No other members, delete the group
+                const deleteGroupQuery = `DELETE FROM groups WHERE id = $1`;
+                await pool.query(deleteGroupQuery, [groupId]);
+
+                return res.status(200).json({ message: 'You were the last member. The group has been deleted.' });
+            }
+        } else {
+            // If the user is not the owner, simply remove them from the members table
+            const deleteMemberQuery = `
+                DELETE FROM members 
+                WHERE group_id = $1 AND account_id = $2`;
+            await pool.query(deleteMemberQuery, [groupId, memberId]);
+
+            return res.status(200).json({ message: 'You have left the group successfully.' });
+        }
     } catch (error) {
         console.error('Error leaving group:', error);
-        res.status(500).json({ message: 'Failed to leave group' });
+        return res.status(500).json({ message: 'An error occurred while trying to leave the group' });
     }
 };
+
 
 export const getGroupMembers = async (req, res) => {
     const { id } = req.params;
@@ -160,7 +218,7 @@ export const getGroupMembers = async (req, res) => {
 
         const ownerName = groupOwnerResult.rows[0].name;
 
-        res.json({
+        res.status(200).json({
             members: result.rows,
             ownerName: ownerName,
         });
@@ -216,28 +274,26 @@ export const getMembershipRequests = async (req, res) => {
     }
 };
 
-export const acceptMember = async (req, res) => {
+export const acceptOrRejectMember = async (req, res) => {
     const { groupId, memberId } = req.params;
-
-    try {
-        await pool.query('DELETE FROM membership_requests WHERE group_id = $1 AND account_id = $2', [groupId, memberId]);
-        await pool.query('INSERT INTO members (group_id, account_id) VALUES ($1, $2)', [groupId, memberId]);
-        res.json({ message: 'Member accepted successfully' });
-    } catch (error) {
-        console.error('Error accepting member:', error);
-        res.status(500).json({ message: 'Failed to accept member' });
-    }
-};
-
-export const rejectMember = async (req, res) => {
-    const { groupId, memberId } = req.params;
-
-    try {
-        await pool.query('DELETE FROM membership_requests WHERE group_id = $1 AND account_id = $2', [groupId, memberId]);
-        res.json({ message: 'Member rejected successfully' });
-    } catch (error) {
-        console.error('Error rejecting member:', error);
-        res.status(500).json({ message: 'Failed to reject member' });
+    const { action } = req.body;
+    if (action === 'accept') {
+        try {
+            await pool.query('INSERT INTO members (group_id, account_id) VALUES ($1, $2)', [groupId, memberId]);
+            await pool.query('DELETE FROM membership_requests WHERE group_id = $1 AND account_id = $2', [groupId, memberId]);
+            res.json({ message: 'Member accepted successfully' });
+        } catch (error) {
+            console.error('Error accepting member:', error);
+            res.status(500).json({ message: 'Failed to accept member' });
+        }
+    } else if (action === 'reject') {
+        try {
+            await pool.query('DELETE FROM membership_requests WHERE group_id = $1 AND account_id = $2', [groupId, memberId]);
+            res.json({ message: 'Member rejected successfully' });
+        } catch (error) {
+            console.error('Error rejecting member:', error);
+            res.status(500).json({ message: 'Failed to reject member' });
+        }
     }
 };
 
@@ -417,7 +473,8 @@ export const getCommentLikes = async (req, res) => {
 export const requestToJoinGroup = async (req, res) => {
     const { groupId } = req.params; 
     const userId = req.user.id;  
-    const userName = req.body.userName;  
+    const userName = req.body.userName; 
+    console.log('userName: ', userName) 
 
     try {
       
@@ -428,19 +485,15 @@ export const requestToJoinGroup = async (req, res) => {
         const group = groupResult.rows[0];
 
         const isMemberResult = await pool.query(
-            "SELECT * FROM group_members WHERE group_id = $1 AND user_id = $2",
+            "SELECT * FROM members WHERE group_id = $1 AND account_id = $2",
             [groupId, userId]
         );
         if (isMemberResult.rows.length > 0) {
             return res.status(400).json({ message: 'You are already a member of this group' });
         }
 
-        if (req.user.name !== userName) {
-            return res.status(400).json({ message: 'User name does not match the token' });
-        }
-
         await pool.query(
-            "INSERT INTO join_requests (group_id, user_id, user_name) VALUES ($1, $2, $3)",
+            "INSERT INTO membership_requests (group_id, account_id, user_name) VALUES ($1, $2, $3)",
             [groupId, userId, userName]
         );
 

@@ -4,6 +4,7 @@ import axios from 'axios';
 import './GroupStyles.css';
 import CreateGroup from './CreateGroup';
 import { FaTrash } from 'react-icons/fa';
+import { handleLeaveGroup } from './LeaveGroup';
 
 const GroupList = () => {
     const [groups, setGroups] = useState([]);
@@ -47,7 +48,7 @@ const GroupList = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const userGroups = response.data.filter(
-                (group) => group.owner === userId || group.members?.some((member) => member.id === userId)
+                (group) => group.owner === userId || group.members?.includes(userId)
             );
             setMyGroups(userGroups);
             setMyGroupsCount(userGroups.length);
@@ -77,7 +78,24 @@ const GroupList = () => {
             alert(error.response?.data?.message || 'An unexpected error occurred.');
         }
     };
-
+    const handleLeaveGroup = async (groupId, userId) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('You must be logged in to leave the group.');
+            return;
+        }
+    
+        try {
+            await axios.delete(`http://localhost:5000/api/groups/${groupId}/members/${userId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            alert('You have left the group successfully!');
+            fetchGroups();
+            fetchGroupList();
+        } catch (error) {
+            console.error('Failed to leave group:', error);
+        }
+    };
     const handleDeleteGroup = async (groupId) => {
         const token = localStorage.getItem('token');
 
@@ -87,6 +105,7 @@ const GroupList = () => {
             });
             alert(response.data.message);
             fetchGroups();
+            fetchGroupList();
         } catch (err) {
             alert(err.response?.data?.message || 'Error deleting group');
         }
@@ -112,6 +131,16 @@ const GroupList = () => {
                             <div key={group.id} className="group-card">
                                 <h3 className="group-card-title">{group.name}</h3>
                                 <Link to={`/group/${group.id}`} className="group-card-link">View Group</Link>
+                                { (group.owner === userId || group.members?.includes(userId)) && (
+                                    <button onClick={() => handleLeaveGroup(group.id)}>
+                                        Leave Group
+                                    </button>
+                                )}
+                                {group.owner === userId && (
+                                    <button onClick={() => handleDeleteGroup(group.id)}>
+                                        <FaTrash />
+                                    </button>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -127,7 +156,7 @@ const GroupList = () => {
                                 <h3 className="group-card-title">{group.name}</h3>
 
                                 {group.owner !== userId &&
-                                    !group.members?.some((member) => member.id === userId) &&
+                                    !group.members?.includes(userId) &&
                                     !joinRequests.includes(group.id) && (
                                         <button onClick={() => handleJoinGroup(group.id)}>Join Group</button>
                                     )}
@@ -137,14 +166,23 @@ const GroupList = () => {
                                     <span>Request sent, waiting for approval...</span>
                                 )}
 
-                                {(group.owner === userId || group.members?.some((member) => member.id === userId)) ? (
+                                {(group.owner === userId || group.members?.includes(userId)) ? (
                                     <Link to={`/group/${group.id}`} className="group-card-link">View Group</Link>
                                 ) : (
                                     <span>You can't view this group until your request is approved</span>
                                 )}
-
+                                { (group.owner === userId || group.members?.includes(userId)) && (
+                                    <button 
+                                        onClick={() => {handleLeaveGroup(group.id, userId);
+                                                        navigate('/groups')
+                                    }}>
+                                        Leave Group
+                                    </button>
+                                )}
                                 {group.owner === userId && (
-                                    <button onClick={() => handleDeleteGroup(group.id)}>
+                                    <button onClick={() => {handleDeleteGroup(group.id)
+                                                            navigate('/groups')
+                                    }}>
                                         <FaTrash />
                                     </button>
                                 )}
