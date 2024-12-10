@@ -498,3 +498,19 @@ export const getUserById = async (req, res) => {
         res.status(500).json({ message: 'Error fetching user' });
     }
 };
+
+export const getCreatedGroups = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const result = await pool.query(
+            'SELECT * FROM groups WHERE owner = $1',
+            [userId]
+        );
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching created groups:', error);
+        res.status(500).json({ message: 'Failed to fetch created groups' });
+    }
+};

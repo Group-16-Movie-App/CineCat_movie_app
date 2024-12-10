@@ -22,6 +22,7 @@ const GroupList = () => {
             navigate('/groups');
         } else {
             fetchGroups();
+            fetchGroupList();
         }
     }, [navigate]); 
 
@@ -32,16 +33,26 @@ const GroupList = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setGroups(response.data);
+        } catch (err) {
+            setError('Failed to fetch groups');
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    const fetchGroupList = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get('http://localhost:5000/api/groups', {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             const userGroups = response.data.filter(
                 (group) => group.owner === userId || group.members?.some((member) => member.id === userId)
             );
             setMyGroups(userGroups);
             setMyGroupsCount(userGroups.length);
         } catch (err) {
-            setError('Failed to fetch groups');
-        } finally {
-            setLoading(false);
+            setError('Failed to fetch user groups');
         }
     };
 
@@ -55,9 +66,6 @@ const GroupList = () => {
         }
     
         try {
-            console.log("Sending request with token:", token);
-            console.log("Sending request with userName:", userName);
-    
             const response = await axios.post(
                 `http://localhost:5000/api/groups/${groupId}/join-request`,
                 { userName },
@@ -69,8 +77,6 @@ const GroupList = () => {
             alert(error.response?.data?.message || 'An unexpected error occurred.');
         }
     };
-    
-    
 
     const handleDeleteGroup = async (groupId) => {
         const token = localStorage.getItem('token');
@@ -126,11 +132,11 @@ const GroupList = () => {
                                         <button onClick={() => handleJoinGroup(group.id)}>Join Group</button>
                                     )}
               
+
                                 {joinRequests.includes(group.id) && (
                                     <span>Request sent, waiting for approval...</span>
                                 )}
 
-                               
                                 {(group.owner === userId || group.members?.some((member) => member.id === userId)) ? (
                                     <Link to={`/group/${group.id}`} className="group-card-link">View Group</Link>
                                 ) : (

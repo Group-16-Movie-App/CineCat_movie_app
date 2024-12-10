@@ -3,13 +3,14 @@ import FavoritesList from '../components/FavoritesList';
 import GroupList from '../components/GroupList'
 import './ProfilePage.css';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 
 const ProfilePage = () => {
     const [favoritesCount, setFavoritesCount] = useState(0);
     const [profileData, setProfileData] = useState(null);
     const [userReviews, setUserReviews] = useState([]);
-    const [groups, setGroups] = useState([]); 
+    const [myGroups, setMyGroups] = useState([]);
     const [groupsCount, setGroupsCount] = useState(0);
     const storedUserName = localStorage.getItem('userName');
     const userId = localStorage.getItem('userId');
@@ -56,28 +57,18 @@ const ProfilePage = () => {
                     }
                 }
 
-                // Fetch groups the user is part of
+                // Fetch groups created by the user
                 if (userId) {
                     try {
                         const groupsResponse = await axios.get(
-                            `http://localhost:5000/api/groups/users/${userId}`,
+                            `http://localhost:5000/api/groups/created/${userId}`,
                             { headers }
                         );
-                        console.log('Groups Response:', groupsResponse.data);
-                        
-                        // Check if the response is an object and convert it to an array if necessary
-                        if (Array.isArray(groupsResponse.data)) {
-                            setGroups(groupsResponse.data);
-                            setGroupsCount(groupsResponse.data.length);
-                        } else if (groupsResponse.data.name) {
-                            // If it's an object with a 'name' property, treat it as a single group
-                            setGroups([groupsResponse.data]);
-                            setGroupsCount(1);
-                        } else {
-                            console.error('Invalid data format for groups:', groupsResponse.data);
-                        }
+                        console.log('Created Groups Response:', groupsResponse.data);
+                        setMyGroups(groupsResponse.data);
+                        setGroupsCount(groupsResponse.data.length);
                     } catch (groupError) {
-                        console.error('Error fetching groups:', groupError);
+                        console.error('Error fetching created groups:', groupError);
                     }
                 }
     
@@ -197,7 +188,7 @@ const ProfilePage = () => {
                     </div>
                     <div className="stat-card">
                         <div className="stat-number">{groupsCount}</div>
-                        <div className="stat-label">Groups</div>
+                        <div className="stat-label">Groups Created</div>
                     </div>
                 </div>
             </div>
@@ -212,10 +203,22 @@ const ProfilePage = () => {
 
             {/* Reviews Section */}
             <ReviewsSection />
-
+            
             {/* Groups Section */}
-            <div className="favorites-section">
-                <h2>My Groups</h2>
+            <div className="groups-section">
+                <h2>My Created Groups</h2>
+                {myGroups.length > 0 ? (
+                    <div className="groups-grid">
+                        {myGroups.map((group) => (
+                            <div key={group.id} className="group-card">
+                                <h3>{group.name}</h3>
+                                <Link to={`/group/${group.id}`} className="group-card-link">View Group</Link>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p>No groups created yet.</p>
+                )}
             </div>
         </div>
     );
