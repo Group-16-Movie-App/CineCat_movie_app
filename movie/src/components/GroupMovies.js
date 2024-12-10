@@ -27,18 +27,9 @@ const GroupMovies = ({ groupId }) => {
 
     return (
         <div className="group-movies">
-            <h3>Movies in this Group</h3>
-            {movies.map(movie => (
-                <div key={movie.id} className="movie-card">
-                    <img 
-                        src={movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : 'path/to/placeholder/image.jpg'} 
-                        alt={movie.title} 
-                    />
-                    <h4>{movie.title}</h4>
-                    <p>Rating: {movie.rating}</p>
-                    <GroupComments movieId={movie.id} />
-                </div>
-            ))}
+           
+           
+        
         </div>
     );
 };

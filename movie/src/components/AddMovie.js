@@ -32,10 +32,10 @@ const AddMovie = ({ groupId, onClose, onSelect }) => {
 
     return (
         <div className="modal">
-            <h3>Add Movie</h3>
+           <button onClick={handleAddMovie}>Add Movie</button>
             <button onClick={() => setShowSelector(true)}>Select Movie</button>
             {selectedMovie && <p>Selected Movie: {selectedMovie.title}</p>}
-            <button onClick={handleAddMovie}>Add Movie</button>
+          
             <button onClick={onClose}>Cancel</button>
 
             {showSelector && (

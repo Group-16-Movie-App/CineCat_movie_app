@@ -73,6 +73,9 @@ const GroupPage = () => {
             alert('Failed to delete group.');
         }
     };
+     const handleAddMovie = (movie) => {
+        setSelectedMovie(movie); 
+    };
 
     const handleLeaveGroup = async () => {
         const token = localStorage.getItem('token');
@@ -102,12 +105,13 @@ const GroupPage = () => {
                    
                 </div>
                 <div className="group-main-content">
-                
-                    <AddMovie groupId={id} onSelect={handleMovieSelect} />
+                    <div></div>
+                    <AddMovie groupId={id} onSelect={handleAddMovie} />
                      <GroupMovies groupId={id} userId={userId} />    
-                    
                     {selectedMovie && (
+                        
                         <div className="selected-movie">
+                            <div className="selected-movie-container">
                             <h3>Selected Movie for Discussion</h3>
                             <img 
                                 src={selectedMovie.poster_path ? `https://image.tmdb.org/t/p/w200${selectedMovie.poster_path}` : 'path/to/placeholder/image.jpg'} 
@@ -116,6 +120,7 @@ const GroupPage = () => {
                             <p>Title: {selectedMovie.title}</p>
                             <p>Rating: {selectedMovie.vote_average}</p>
                             <GroupComments groupId={id} userId={userId} />
+                            </div>
                         </div>
                     )}
                 </div>
