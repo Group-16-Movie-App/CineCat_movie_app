@@ -1,18 +1,19 @@
 .App {
   text-align: center;
-  background-color:white;
-  height:100vh;
-  width:vw;
+  min-height: 100vh;
+  width: 100vw;
+  position: relative;
+  background-color: #121212;
 }
 
 .search-bar-container{
   padding-top:20vh;
-  width:40%;
+  width:70%;
   margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 200px;
+  min-width: 300px;
 }
 
 .App-logo {
@@ -48,5 +49,115 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.search-bar {
+    width: 90%;
+    margin: 20px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    width: 100%;
+}
+
+input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 1em;
+    color: #333;
+    padding: 8px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+/* Import Montserrat font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+/* Apply the font globally */
+* {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* For headings and important text */
+h1, h2, h3, .search-prompt, .nav-links {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* For buttons */
+button, .btn {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Add this new style for movie titles in trending section */
+.movie-title {
+    color: #FFD700; /* This is a golden yellow */
+    /* or you could use */
+    /* color: #FFEB3B; */ /* Material yellow */
+    /* color: #FFC107; */ /* Amber yellow */
+    font-weight: 500;
+    margin-top: 8px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* This adds a subtle shadow to make text more readable */
+}
+
+/* If you want to make it brighter on hover */
+.movie-title:hover {
+    color: #FFF176; /* Lighter yellow on hover */
+    transition: color 0.3s ease;
+}
+
+/* Add this to your global styles */
+a[href^="/movie/"],
+a[href*="movie"] {
+    text-decoration: none;
+    color: inherit;
+}
+
+.background-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+}
+
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(10px) grayscale(80%) brightness(0.3);
+    transform: scale(1.1);
+    transition: background-image 0.5s ease-in-out;
+}
+
+/* Make sure content stays above the background */
+.content-wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    width: 100%;
 }
 

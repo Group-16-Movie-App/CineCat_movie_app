@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MovieList from '../components/MovieList';
 import SearchForm from '../components/SearchForm';
+import '../components/SearchBar.css';
 
 
 const SearchPage = () => {
@@ -59,18 +60,21 @@ const SearchPage = () => {
 
     if (!query.trim()) {
         return <div style={{width:'100%', textAlign:'center', minHeight: '100vh'}}>
-                    <h1 >Search Movies</h1>
+                    <h1 className="search-title">Search Movies</h1>
                     <SearchForm onSearch={handleSearch} />
-                    <div style={{marginTop: '20px'}}>
-                        What movie are you looking for? Please enter a title movie
+                    <div className="search-prompt">
+                        What movie are you lookin for? Please enter a title movie
                     </div>
                 </div>
     } else {
         return (
             <>
                 <div style={{width:'100%', textAlign:'center', minHeight: '100vh'}}>
-                    <h1 >Search Movies</h1>
+                    <h1 className="search-title">Search Movies</h1>
                     <SearchForm onSearch={handleSearch} />
+                    <button type="submit" className="search-button">
+                        Search
+                    </button>
                     <MovieList 
                         movies={movies} 
                         genreNames={genreNames}
