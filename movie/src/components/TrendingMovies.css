@@ -16,7 +16,8 @@
 .time-label {
     font-size: 16px;
     font-weight: bold;
-    color: #333;
+    animation: rainbow 8s linear infinite;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* Dropdown select */
@@ -32,9 +33,22 @@
 .movies-label {
     font-size: 24px;
     font-weight: bold;
-    color: #333;
     margin: 20px 0;
     text-align: center;
+    animation: rainbow 8s linear infinite;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Rainbow animation for Movies of the Day */
+@keyframes rainbow {
+    0% { color: #ff0000; }  /* Red */
+    14% { color: #ff7f00; } /* Orange */
+    28% { color: #ffff00; } /* Yellow */
+    42% { color: #00ff00; } /* Green */
+    56% { color: #0000ff; } /* Blue */
+    70% { color: #4b0082; } /* Indigo */
+    84% { color: #8f00ff; } /* Violet */
+    100% { color: #ff0000; } /* Back to red */
 }
 
 /* Horizontally scrollable container */
@@ -76,8 +90,15 @@
 /* Movie title styling */
 .movie-title {
     font-size: 16px;
-    color: #333;
+    color: #FFD700;
     margin: 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Add hover effect */
+.movie-title:hover {
+    color: #FFF176;
+    transition: color 0.3s ease;
 }
 
 /* Loading message */
@@ -90,4 +111,18 @@
 .error-message {
     color: red;
     margin-top: 10px;
+}
+
+/* Add this style for the links */
+.movie-item a {
+    text-decoration: none; /* Removes the underline */
+    color: inherit; /* Inherits the color from parent */
+}
+
+/* You might also want to add this to ensure the link stays styled properly */
+.movie-item a:hover,
+.movie-item a:visited,
+.movie-item a:active {
+    text-decoration: none;
+    color: inherit;
 }

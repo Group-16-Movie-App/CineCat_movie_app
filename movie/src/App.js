@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import SearchPage from './pages/SearchPage';
@@ -32,12 +32,29 @@ const PrivateRoute = ({ children }) => {
 };
 
 function App() {
+    const [backgroundImage, setBackgroundImage] = useState('');
+    useEffect(() => {
+        console.log('Current background image:', backgroundImage);
+    }, [backgroundImage]);
+
     return (
-        <>
+        <div className="App">
+            {backgroundImage && (
+                <div className="background-wrapper">
+                    <div 
+                        className="background-image" 
+                        style={{ 
+                            backgroundImage: `url("${backgroundImage}")`,
+                            opacity: 1
+                        }}
+                    />
+                </div>
+            )}
+            <div className="content-wrapper"></div>
             <Navbar />
             <Routes>
                 <Route path="/" element={<>
-                                            <TrendingMovies/>
+                    <TrendingMovies setBackgroundImage={setBackgroundImage}/>
                                             <ReviewsPage />
                                         </>} />
                 <Route path="/showtime" element={<Schedules />} />
@@ -69,7 +86,7 @@ function App() {
                 <Route path="/movies" component={MovieListPage} />
             </Routes>
             <Footer />
-        </>
+        </div>
     );
 }
 

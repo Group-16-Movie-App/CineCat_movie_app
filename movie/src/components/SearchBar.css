@@ -122,7 +122,6 @@ input:focus {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Add this style for the Search Movies heading */
 .search-title {
     margin: 40px 0 30px 0;
     color: white;

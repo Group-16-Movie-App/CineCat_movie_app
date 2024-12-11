@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import "./TrendingMovies.css"; // Import the CSS file
 
-const TrendingMovies = () => {
+const TrendingMovies = ({ setBackgroundImage }) => {
     const [time, setTime] = useState("day"); // Default time is "day"
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState(null);
@@ -16,6 +16,16 @@ const TrendingMovies = () => {
                 // Fetch movies based on the selected time
                 const response = await axios.get(`http://localhost:5000/api/trending/movies/${time}`);
                 setMovies(response.data.results || []); // Adjust for API's actual response structure
+                
+                // Set random background image using the prop
+                if (response.data.results && response.data.results.length > 0) {
+                    const randomMovie = response.data.results[Math.floor(Math.random() * response.data.results.length)];
+                    if (randomMovie.backdrop_path) {
+                        const imageUrl = `https://image.tmdb.org/t/p/original${randomMovie.backdrop_path}`;
+                        console.log('Setting background image:', imageUrl);
+                        setBackgroundImage(imageUrl);
+                    }
+                }
             } catch (error) {
                 console.error("Error fetching trending movies:", error);
                 setError("Failed to fetch trending movies. Please try again later.");
@@ -23,7 +33,7 @@ const TrendingMovies = () => {
         };
 
         fetchTrending();
-    }, [time]);
+    }, [time, setBackgroundImage]);
 
     return (
         <div className="trending-movies">
