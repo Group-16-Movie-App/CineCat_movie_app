@@ -61,10 +61,10 @@
 .input-wrapper {
     display: flex;
     align-items: center;
-    border: 1px solid #ddd;
+    border: 1px solid #c13ca9;
     padding: 10px;
-    border-radius: 10px;
-    background-color: #f9f9f9;
+    border: 1px solid #ccc; 
+    background-color: transparent; 
     transition: border-color 0.3s, box-shadow 0.3s;
     width: 100%;
 }
@@ -73,7 +73,7 @@ input {
     width: 100%;
     border: none;
     outline: none;
-    background: none;
+    background-color: #fff;
     font-size: 1em;
     color: #333;
     padding: 8px;
@@ -81,6 +81,12 @@ input {
     transition: background-color 0.3s;
 }
 
+input:focus {
+  background-color: #fff; 
+  color: #333;
+  border: 1px solid #373939; 
+  outline: none;
+}
 /* Import Montserrat font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 

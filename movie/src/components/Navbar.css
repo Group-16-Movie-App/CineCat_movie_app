@@ -129,7 +129,7 @@
   z-index: 1000;
   opacity: 0;
   transform: translateY(-20px);
-  animation: slideIn 0.5s forwards, fadeOut 4.5s 4.5s forwards; 
+  animation: slideIn 0.5s forwards, fadeOut 3.5s 3.5s forwards; 
 }
 
 @keyframes slideIn {
@@ -139,7 +139,7 @@
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(70px);
   }
 }
 @keyframes fadeOut {
@@ -148,6 +148,6 @@
   }
   100% {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(100px);
   }
 }
