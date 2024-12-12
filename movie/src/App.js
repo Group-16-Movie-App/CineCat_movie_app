@@ -12,7 +12,7 @@ import ReviewsPage from './pages/ReviewsPage';
 import TrendingMovies from './components/TrendingMovies';
 import SharedFavorites from './components/SharedFavorites';
 import EmailVerificationSuccess from './pages/EmailVerificationSuccess';
-
+import MusicPlayer from './components/MusicPlayer';
 
 // PrivateRoute is a wrapper component that protects routes from unauthorized access, you have to be logged in to access the profile page   
 const PrivateRoute = ({ children }) => {
@@ -32,6 +32,7 @@ function App() {
                 <Route path="/" element={<>
                                             <TrendingMovies/>
                                             <ReviewsPage />
+                                            <MusicPlayer />
                                         </>} />
                 <Route path="/showtime" element={<Schedules />} />
                 <Route path="/search" element={<SearchPage />} />
