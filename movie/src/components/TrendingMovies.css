@@ -27,22 +27,21 @@
     font-size: 1rem;
     background: rgba(255, 255, 255, 0.1);
     color: white;
-    border: 3px solid rgba(245, 5, 5, 1);
     border-radius: 4px;
     margin-left: 1rem;
-    width: 200px;
+    width: 120px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 1);
+    
 }
 .time-select-wrapper {
     position: relative;
+    margin-left: 2px;
 }
 
 .time-select option {
     background-color: #1a1a1a;
     color: rgba(255, 255, 255, 0.5);
-    padding: 8px;
-    border: 3px solid rgba(245, 5, 5, 0.8) !important;
-   
+    padding: 8px;   
     outline: none;
 }
 
@@ -50,7 +49,6 @@
 .time-select:focus {
     outline: none;
     border: 3px solid rgba(245, 5, 5, 0.8);
-  
     box-shadow: 0 0 10px rgba(245, 5, 5, 0.8);
 }
 
@@ -59,6 +57,7 @@
     outline: none;
     border-radius: 4px;
     border: 3px solid rgba(245, 5, 5, 0.8);
+    margin-left: 2px;
 }
 
 

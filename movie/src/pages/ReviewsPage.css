@@ -86,7 +86,7 @@
     font-weight: bold;
     font-family: 'Open Sans', sans-serif;
     color: #ffffff;
-    font-size: 24px;
+    font-size: 18px;
 }
 
 /* Style for review timestamps */
@@ -99,7 +99,7 @@
 
 /* Style for review ratings */
 .review-card p:nth-child(3) {
-    font-size: 18px;
+    font-size: 16px;
     font-family: 'Open Sans', sans-serif;
     color: #e02121;
     font-weight: bold;

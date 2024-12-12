@@ -81,7 +81,8 @@ const FilterPage = () => {
                             value={filters.year}
                             onChange={(e) => handleFilter({ year: e.target.value })}
                             className="filter-input"
-                            placeholder="Enter year..."
+                            placeholder="Enter the year..."
+                            min="1900"
                         />
                     </div>
                     
@@ -92,8 +93,8 @@ const FilterPage = () => {
                             value={filters.rating}
                             onChange={(e) => handleFilter({ rating: e.target.value })}
                             className="filter-input"
-                            placeholder="Enter minimum rating..."
-                            step="0.1"
+                            placeholder="Enter the minimum rating..."
+                            step="1"
                             min="0"
                             max="10"
                         />

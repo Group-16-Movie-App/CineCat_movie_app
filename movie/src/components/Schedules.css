@@ -7,9 +7,31 @@
   min-height: 100vh;
 }
 
+@keyframes rainbow {
+  0% { color: #f6ebeb; }
+  14% { color: #fbd1d1; }
+  28% { color: #f99898; }
+  42% { color: #f16c6c; }
+  56% { color: #e02121; }
+  70% { color: #f92c2c; }
+  84% { color: #cd4d4d; }
+  100% { color: #fad2d2; }
+}
+
+.h2 {
+  animation: rainbow 8s linear infinite;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    font-family: 'Agu Display', 'Gowun Batang', sans-serif;
+    font-size: 50px;
+    text-align: center;
+    font-weight: lighter;
+    margin-bottom: 20px;
+}
 .theatre-select-container {
   margin-bottom: 2rem;
   text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 30px;
 }
 
 .theatre-select {
@@ -21,6 +43,8 @@
   border-radius: 4px;
   margin-left: 1rem;
   width: 200px;
+  font-family: 'Open Sans', sans-serif;
+  
 }
 
 .theatre-select option {
@@ -32,7 +56,7 @@
 /* Style for the dropdown when opened */
 .theatre-select:focus {
   outline: none;
-  border-color: #61dafb;
+  border: 2px solid rgba(245, 5, 5, 0.8);
 }
 
 .schedules-list {
@@ -43,7 +67,7 @@
 }
 
 .schedule-item {
-  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(245, 5, 5, 0.8);
   border-radius: 12px;
   overflow: hidden;
   transition: transform 0.3s ease;

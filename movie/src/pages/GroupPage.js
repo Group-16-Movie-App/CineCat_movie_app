@@ -4,7 +4,6 @@ import axios from 'axios';
 import GroupMembers from '../components/GroupMembers';
 import MembershipRequests from '../components/MembershipRequests';
 import GroupMovies from '../components/GroupMovies';
-import GroupSchedules from '../components/GroupSchedules';
 import GroupComments from '../components/GroupComments';
 import AddMovie from '../components/AddMovie';
 import '../components/GroupStyles.css';

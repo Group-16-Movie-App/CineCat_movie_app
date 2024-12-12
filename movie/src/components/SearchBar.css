@@ -1,130 +1,109 @@
-.search-bar {
+.search-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #1a1a1a;
+    color: white;
+    min-height: 100vh;
+    text-align: center;
+  }
+  
+  .search-title {
+    animation: rainbow 8s linear infinite;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    font-family: 'Agu Display', 'Gowun Batang', sans-serif;
+    font-size: 50px;
+    text-align: center;
+    font-weight: lighter;
+    margin-bottom: 20px;
+  }
+  
+  @keyframes rainbow {
+    0% { color: #f6ebeb; }
+    14% { color: #fbd1d1; }
+    28% { color: #f99898; }
+    42% { color: #f16c6c; }
+    56% { color: #e02121; }
+    70% { color: #f92c2c; }
+    84% { color: #cd4d4d; }
+    100% { color: #fad2d2; }
+  }
+  
+  .search-bar {
     width: 80%;
     margin: 20px auto;
     padding: 20px;
     text-align: center;
     display: flex;
     gap: 15px;
+    border: none;
     justify-content: center;
     align-items: center;
-}
-
-.input-wrapper {
+  }
+  
+  .input-wrapper {
     flex: 1;
     max-width: 300px;
     margin: 0 5px;
     display: flex;
     align-items: center;
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 10px;
-    background-color: white;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.input-wrapper:hover {
-    border-color: #00bcd4;
-    box-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
-}
-
-#search-icon {
-    margin-right: 10px;
-    color: #888;
-    font-size: 1.5em;
-}
-
-input {
+   
+  }
+  
+  .input-wrapper:hover {
+    border-radius: 4px;
+    border: 3px solid rgba(245, 5, 5, 0.8);
+  }
+  
+  input {
     width: 100%;
-    border: none;
     outline: none;
-    background-color: white !important;
+    background-color: white;
     font-size: 1em;
     color: #333;
     padding: 8px;
-    border-radius: 5px;
-}
-
-input::placeholder {
+    border: none;
+  }
+  
+  input::placeholder {
     color: #999;
-}
-
-input:focus {
-    background-color: white !important;
-}
-
-.results {
-    margin-top: 10px;
+  }
+  
+  input:focus {
     background-color: white;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
-    max-height: 300px;
-    margin-top: 1rem;
-    overflow-y: auto;
-    border-radius: 8px;
-}
-
-.result-item {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.result-item:hover {
-    background-color: #f1f1f1;
-}
-
-.search-prompt {
-    background-color: #4A2748;
-    color: white !important;
-    font-size: 1.2em;
-    margin-top: 10px;
-    font-weight: bold;
-    padding: 10px 20px;
-    border-radius: 5px;
-    display: inline-block;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-/* Add these styles to remove underlines from search results */
-.result-item a,
-.result-item a:hover,
-.result-item a:visited,
-.result-item a:active {
-    text-decoration: none;
-    color: inherit;
-}
-
-/* If you want to add a hover effect for search results */
-.result-item:hover {
-    background-color: #f1f1f1;
-    cursor: pointer;
-}
-
-.search-button {
+    box-shadow: none;
+  }
+  
+  .search-button {
     background-color: #1a1a1a;
     color: white;
-    border: 1px solid #333;
-    padding: 10px 20px;
-    border-radius: 5px;
+    border: none;
+    outline: none;
+    border-radius: 4px;
     cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    border: 3px solid rgb(255, 255, 255);
     transition: all 0.3s ease;
-    min-width: 80px;
-}
-
-.search-button:hover {
+    min-width: 90px;
+    min-height: 30px;
+  }
+  
+  .search-button:hover {
     background-color: #333;
-    border-color: #666;
+    border: 3px solid rgba(245, 5, 5, 0.8);
     transform: translateY(-2px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.search-title {
-    margin: 40px 0 30px 0;
-    color: white;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-}
+  }
+  
+  .search-prompt {
+    animation: rainbow 8s linear infinite;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    font-family: 'Agu Display', 'Gowun Batang', sans-serif;
+    font-size: 40px;
+    text-align: center;
+    font-weight: lighter;
+    margin-bottom: 0px;
+  }
+  

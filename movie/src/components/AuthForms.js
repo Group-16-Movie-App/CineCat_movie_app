@@ -71,7 +71,7 @@ export const SignUpForm = ({ onSubmit, onSuccess }) => {
       )}
 
       {!isModalOpen && !isSuccess && (
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form className="auth-form2" onSubmit={handleSubmit}>
           <h2>Create Your Account</h2>
           {error && <div className="auth-form-error">{error}</div>}
 

@@ -16,14 +16,15 @@
     border: 1px solid #333;
     border-radius: 5px;
     background-color: white;
-    color: #333;
+    color: #000000;
     font-family: 'Montserrat', sans-serif;
     margin: 5px 0;
+    font-size: 14px;
 }
 
 /* Style for input placeholder */
 .filter-input::placeholder {
-    color: #999;
+    color: #0c0c0c;
 }
 
 /* Style for input when focused */
@@ -36,9 +37,10 @@
 /* Label styling */
 .filter-label {
     color: white;
-    font-weight: 500;
-    margin-bottom: 5px;
-    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    margin-bottom: 0px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
 }
 
 /* Button styling to match site theme */
@@ -49,7 +51,7 @@
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-weight: 500;
     transition: all 0.3s ease;
     min-width: 120px;
@@ -73,6 +75,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    margin-bottom: 0px;
     width: 200px; /* Match input width */
 }
 
@@ -81,13 +84,26 @@
     display: flex;
     gap: 10px;
     margin-top: 20px;
+    margin-bottom: 0px;
 } 
-
+@keyframes rainbow {
+    0% { color: #f6ebeb; }
+    14% { color: #fbd1d1; }
+    28% { color: #f99898; }
+    42% { color: #f16c6c; }
+    56% { color: #e02121; }
+    70% { color: #f92c2c; }
+    84% { color: #cd4d4d; }
+    100% { color: #fad2d2; }
+  }
 .discovery-title {
-    margin: 40px 0 30px 0; /* Top, Right, Bottom, Left margins */
-    /* or you could use padding */
-    /* padding: 40px 0 30px 0; */
-    color: white;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
+    animation: rainbow 8s linear infinite;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    font-family: 'Agu Display', 'Gowun Batang', sans-serif;
+    font-size: 50px;
+    text-align: center;
+    font-weight: lighter;
+    margin-bottom: 10px;
+    margin-top: 30px;
+
 } 
