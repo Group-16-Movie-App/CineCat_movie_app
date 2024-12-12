@@ -13,14 +13,14 @@ const PostCreationModal = ({ groupId, movie, onClose }) => {
         e.preventDefault();
         setLoading(true);
         setError('');
+        console.log('group_id in post, ', groupId)
 
         try {
             if (!title || !description || !movie.id) {
                 setError('Please fill in all required fields: Title, Description, and Movie');
                 return;  // Exit early if required fields are missing
               }
-              const groupId = 22;
-              const response = await axios.post(`http://localhost:5000/api/groups/${groupId}/posts`, {
+              const response = await axios.post(`http://localhost:5000/api/groups/${groupId.groupId}/posts`, {
                 title,
                 description,
                 movieId: movie.id,

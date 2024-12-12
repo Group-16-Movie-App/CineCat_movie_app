@@ -5,7 +5,7 @@ import MovieListForPost from './MovieListForPost';
 import SearchForm from './SearchForm';
 import PostCreationModal from './PostCreationModal';
 
-export const SearchMovieForPost = () => {
+export const SearchMovieForPost = (groupId) => {
     const [movies, setMovies] = useState([]);
     const [query, setQuery] = useState('');
     const [year, setYear] = useState('');
@@ -96,6 +96,7 @@ export const SearchMovieForPost = () => {
             )}
             {selectedMovie && (
                 <PostCreationModal
+                    groupId={groupId}
                     movie={selectedMovie}
                     onClose={() => setSelectedMovie(null)}
                 />
