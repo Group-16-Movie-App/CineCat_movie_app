@@ -1,11 +1,18 @@
-drop table if exists posts;
-drop table if exists shared_urls;
-drop table if exists favorites;
-drop table if exists reviews;
+
+drop table if exists comment_likes cascade;
+drop table if exists comments cascade;
+drop table if exists posts cascade;
+drop table if exists shared_urls cascade;
+drop table if exists favorites cascade;
+drop table if exists reviews cascade;
 -- drop table if exists ratings;
-drop table if exists members;
-drop table if exists groups;
-drop table if exists accounts;
+drop table if exists members cascade;
+drop table if exists membership_requests cascade;  
+drop table if exists group_movies cascade; 
+drop table if exists group_schedules cascade; 
+drop table if exists accounts cascade;
+
+
 
 -- Account table to manage accounts and authentication
 create table accounts (
@@ -20,8 +27,6 @@ create table accounts (
 );
 
 -- Group table for group functionality. 
--- When the owner deletes their account, transfer the ownership to another group member, if available.
--- If no other members exist, delete the group.
 create table groups (
     id serial primary key,
     name varchar(255) unique not null,
@@ -31,19 +36,18 @@ create table groups (
     constraint fk_owner foreign key (owner) references accounts(id)
 );
 
--- Members table to track membership in groups. 
--- The Owner can assign who becomes an admin.
--- Admins and Owners can add or remove members, delete members'reviews.
+-- Members table
 create table members (
     id serial primary key,
-    group_id int not null,
-    account_id int not null,
-    role varchar(50) check (role in ('member', 'admin')) default 'member',
-    constraint fk_group foreign key (group_id) references groups(id),
-    constraint fk_account foreign key (account_id) references accounts(id)
+    group_id int references groups(id) on delete cascade,
+    account_id int references accounts(id) on delete cascade,
+    role varchar(20) default 'member',
+    created_at timestamp default current_timestamp,
+    unique(group_id, account_id),
+    CHECK (role IN ('owner', 'member'))
 );
 
--- Reviews table to store account-created movie reviews. Movie_id is ID retrieved form IMDB API
+-- Reviews table to store account-created movie reviews
 create table reviews (
     id serial primary key,
     movie_id int not null,
@@ -53,17 +57,6 @@ create table reviews (
     created timestamp default current_timestamp,
     constraint fk_account foreign key (account_id) references accounts(id) on delete cascade
 );
-
--- Ratings table to store account-created movie ratings. Movie ID is from TMDB
--- If the accounts is deleted, its ratings are kept, and account_id field is null.
--- create table ratings (
-   -- id serial primary key,
-   -- movie_id int not null,
-   -- account_id int,
-   -- rating smallint check (rating between 1 and 5) not null,
-   -- created timestamp default current_timestamp,
-   -- constraint fk_account foreign key (account_id) references accounts(id) on delete set null
---);
 
 -- Favorites table to manage account’s favorite movies or series
 create table favorites (
@@ -96,9 +89,55 @@ create table posts (
     created timestamp default current_timestamp,
     constraint fk_group foreign key (group_id) references groups(id) on delete cascade,
     constraint fk_account foreign key (account_id) references accounts(id) on delete cascade
-    -- Ensure movie_id and showtime_id cannot be NON-NULL at a time
-    -- constraint chk_movie_or_showtime 
-        -- check (
-           -- (movie_id is distinct from showtime_id)
-        --)
+);
+
+-- Membership requests table
+create table membership_requests (
+    id serial primary key,
+    group_id int references groups(id) on delete cascade,
+    account_id int references accounts(id) on delete cascade,
+    user_name VARCHAR(255),
+    status varchar(20) default 'pending',
+    created_at timestamp default current_timestamp,
+    unique(group_id, account_id)
+);
+
+-- Group movies table
+create table group_movies (
+    id serial primary key,
+    group_id int references groups(id) on delete cascade,
+    title varchar(255) not null,
+    description text,
+    tmdb_id int,
+    created_at timestamp default current_timestamp
+);
+
+-- Group schedules table
+create table group_schedules (
+    id serial primary key,
+    group_id int references groups(id) on delete cascade,
+    movie_id int references group_movies(id) on delete cascade,
+    showtime timestamp not null,
+    created_at timestamp default current_timestamp
+);
+
+-- Table to manage group's post comments
+create table comments (
+    id SERIAL PRIMARY KEY,                
+    group_id INT,                         
+    account_id INT NOT NULL,               
+    text TEXT NOT NULL,                   
+    likes INT DEFAULT 0,                   
+    created_at TIMESTAMP DEFAULT NOW(),    
+    updated_at TIMESTAMP DEFAULT NOW(),   
+    FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE SET NULL, 
+    FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE 
+);
+
+-- Table to track comment likes
+create table comment_likes (
+    id SERIAL PRIMARY KEY,
+    comment_id INT REFERENCES comments(id),
+    account_id INT REFERENCES accounts(id),
+    UNIQUE (comment_id, account_id) -- Prevent multiple likes from the same user on the same comment
 );

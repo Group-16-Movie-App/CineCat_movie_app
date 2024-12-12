@@ -1,31 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import FavoritesList from '../components/FavoritesList';
-import Reviews from '../components/Reviews';
+import GroupList from '../components/GroupList'
 import './ProfilePage.css';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import './ProfilePage.css';
+import { Link } from 'react-router-dom';
 
 
-/* This component serves as the main profile page for logged-in users.It displays user information, statistics, and their favorite movies.*/
 const ProfilePage = () => {
     const [favoritesCount, setFavoritesCount] = useState(0);
     const [profileData, setProfileData] = useState(null);
     const [userReviews, setUserReviews] = useState([]);
-    const [reviewsCount, setReviewsCount] = useState(0);
+    const [myGroups, setMyGroups] = useState([]);
+    const [groupsCount, setGroupsCount] = useState(0);
     const storedUserName = localStorage.getItem('userName');
     const userId = localStorage.getItem('userId');
+  
+  
     const isOwnProfile = !!userId;
 
-    console.log('User ID:', userId);
-    
     // Update userName logic to handle shared profiles
     const userName = isOwnProfile 
         ? (storedUserName && storedUserName !== 'null' ? storedUserName : 'User')
         : (profileData?.userName || 'User');
     const avatarLetter = userName.charAt(0).toUpperCase();
 
-    // Modified useEffect to fetch both profile and review data
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -38,7 +36,6 @@ const ProfilePage = () => {
                     : 'http://localhost:5000/api/favorites';
                 
                 const profileResponse = await axios.get(endpoint, { headers });
-                
                 if (userId) {
                     setProfileData(profileResponse.data);
                     setFavoritesCount(profileResponse.data.favorites?.length || 0);
@@ -49,37 +46,41 @@ const ProfilePage = () => {
                 // Fetch user reviews
                 if (userId) {
                     try {
-                        console.log('Fetching reviews for user:', userId);
                         const reviewsResponse = await axios.get(
-                            `http://localhost:5000/api/reviews/user/${userId}`
+                            `http://localhost:5000/api/reviews/user/${userId}`,
+                            { headers }
                         );
                         
-                        console.log('Reviews Response:', reviewsResponse.data);
-                        
                         setUserReviews(reviewsResponse.data);
-                        setReviewsCount(reviewsResponse.data.length);
                     } catch (reviewError) {
                         console.error('Error fetching reviews:', reviewError);
                     }
                 }
 
+                // Fetch groups created by the user
+                if (userId) {
+                    try {
+                        const groupsResponse = await axios.get(
+                            `http://localhost:5000/api/groups/created/${userId}`,
+                            { headers }
+                        );
+                        console.log('Created Groups Response:', groupsResponse.data);
+                        setMyGroups(groupsResponse.data);
+                        setGroupsCount(groupsResponse.data.length);
+                    } catch (groupError) {
+                        console.error('Error fetching created groups:', groupError);
+                    }
+                }
+    
             } catch (error) {
                 console.error('Error fetching data:', error);
-                if (error.response) {
-                    console.error('Error response:', error.response.data);
-                    console.error('Error status:', error.response.status);
-                } else if (error.request) {
-                    console.error('No response received:', error.request);
-                } else {
-                    console.error('Error message:', error.message);
-                }
             }
         };
-
+    
         if (userId) {
             fetchData();
         }
-        
+
         // Add event listener for favorites updates
         const handleFavoritesUpdate = () => {
             fetchData();
@@ -90,16 +91,22 @@ const ProfilePage = () => {
             fetchData();
         };
 
+        // Add event listener for group updates
+        const handleGroupsUpdate = () => {
+            fetchData();
+        };
+
         window.addEventListener('favoritesUpdated', handleFavoritesUpdate);
         window.addEventListener('reviewsUpdated', handleReviewsUpdate);
-        
+        window.addEventListener('groupsUpdated', handleGroupsUpdate);
+
         return () => {
             window.removeEventListener('favoritesUpdated', handleFavoritesUpdate);
             window.removeEventListener('reviewsUpdated', handleReviewsUpdate);
+            window.removeEventListener('groupsUpdated', handleGroupsUpdate);
         };
     }, [userId]);
 
-    // Reviews Section Component
     const ReviewsSection = () => (
         <div className="profile-reviews-section">
             <h2>My Reviews</h2>
@@ -124,7 +131,6 @@ const ProfilePage = () => {
         </div>
     );
 
-    // Profile sharing component
     const ShareProfile = () => {
         const handleShareProfile = () => {
             const userId = localStorage.getItem('userId');
@@ -140,7 +146,6 @@ const ProfilePage = () => {
         ) : null;
     };
 
-    // Favorites sharing component
     const ShareFavorites = () => {
         const handleShareFavorites = () => {
             const userId = localStorage.getItem('userId');
@@ -158,15 +163,11 @@ const ProfilePage = () => {
 
     return (
         <div className="profile-container">
-            {/* Profile Header Section */}
             <div className="profile-header">
-                {/* User Information Display */}
                 <div className="user-info">
-                    {/* User Avatar - displays first letter of username */}
                     <div className="avatar">
                         {avatarLetter}
                     </div>
-                    {/* User Details Section */}
                     <div className="user-details">
                         <h1>Welcome, {userName}!</h1>
                         <div className="share-buttons">
@@ -175,25 +176,19 @@ const ProfilePage = () => {
                         </div>
                     </div>
                 </div>
-                
-                {/* This is the user Statistics Section on ther profile page */}
+
                 <div className="profile-stats">
-                    {/* Favorites Count */}
                     <div className="stat-card">
-                        <div className="stat-number">
-                            {favoritesCount}
-                        </div>
+                        <div className="stat-number">{favoritesCount}</div>
                         <div className="stat-label">Favorite Movies</div>
                     </div>
-                    {/* Reviews Count */}
                     <div className="stat-card">
-                        <div className="stat-number">{reviewsCount}</div>
+                        <div className="stat-number">{userReviews.length}</div>
                         <div className="stat-label">Reviews</div>
                     </div>
-                    {/* Groups Count */}
                     <div className="stat-card">
-                        <div className="stat-number">3</div>
-                        <div className="stat-label">Groups</div>
+                        <div className="stat-number">{groupsCount}</div>
+                        <div className="stat-label">Groups Created</div>
                     </div>
                 </div>
             </div>
@@ -208,17 +203,27 @@ const ProfilePage = () => {
 
             {/* Reviews Section */}
             <ReviewsSection />
-
+            
             {/* Groups Section */}
-            <div className="favorites-section">
-                <h2>My Groups</h2>
-                <div className="groups-content">
-                    {/* I have hard-coded groups for now */}
-                    <p>Groups...</p>
+            <div className="groups-section">
+                <h2>My Created Groups</h2>
+                <div className="groups-container">
+                    {myGroups.length > 0 ? (
+                        <div className="groups-grid">
+                            {myGroups.map((group) => (
+                                <div key={group.id} className="group-card">
+                                    <h3>{group.name}</h3>
+                                    <Link to={`/group/${group.id}`} className="group-card-link">View Group</Link>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p>No groups created yet.</p>
+                    )}
                 </div>
             </div>
         </div>
     );
 };
 
-export default ProfilePage; 
+export default ProfilePage;

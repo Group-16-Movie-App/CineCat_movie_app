@@ -12,6 +12,15 @@ import ReviewsPage from './pages/ReviewsPage';
 import TrendingMovies from './components/TrendingMovies';
 import SharedFavorites from './components/SharedFavorites';
 import EmailVerificationSuccess from './pages/EmailVerificationSuccess';
+import GroupList from './components/GroupList';
+import GroupPage from './pages/GroupPage';
+import CreateGroup from './components/CreateGroup';
+import AddMovie from './components/AddMovie';
+import AddSchedule from './components/AddSchedule';
+import MovieListPage from './pages/MovieListPage';
+import SearchMovieForPost from './components/SearchMovieForPost';
+import Posts from './components/Posts';
+
 
 
 // PrivateRoute is a wrapper component that protects routes from unauthorized access, you have to be logged in to access the profile page   
@@ -29,6 +38,7 @@ function App() {
         <>
             <Navbar />
             <Routes>
+                <Route path="/t" element={<Posts/>}></Route>
                 <Route path="/" element={<>
                                             <TrendingMovies/>
                                             <ReviewsPage />
@@ -46,6 +56,20 @@ function App() {
                     </PrivateRoute>
                 } />
                 <Route path="/favorites/:userId" element={<SharedFavorites />} />
+                <Route path="/groups" element={<GroupList />} />
+                <Route path="/group/:id" element={
+                    <PrivateRoute>
+                        <GroupPage />
+                    </PrivateRoute>
+                } />
+                <Route path="/create-group" element={
+                    <PrivateRoute>
+                        <CreateGroup />
+                    </PrivateRoute>
+                } />
+                <Route path="/groups/:id/add-movie" element={<AddMovie />} />
+                <Route path="/groups/:id/add-schedule" element={<AddSchedule />} />
+                <Route path="/movies" component={MovieListPage} />
             </Routes>
             <Footer />
         </>

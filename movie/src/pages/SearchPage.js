@@ -4,7 +4,7 @@ import MovieList from '../components/MovieList';
 import SearchForm from '../components/SearchForm';
 
 
-const SearchPage = () => {
+export const SearchPage = () => {
     const [movies, setMovies] = useState([]);
     const [query, setQuery] = useState('');
     const [year, setYear] = useState('');
@@ -62,7 +62,7 @@ const SearchPage = () => {
                     <h1 >Search Movies</h1>
                     <SearchForm onSearch={handleSearch} />
                     <div style={{marginTop: '20px'}}>
-                        What movie are you lookin for? Please enter a title movie
+                        What movie are you looking for? Please enter a title movie
                     </div>
                 </div>
     } else {

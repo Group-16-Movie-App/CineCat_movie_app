@@ -92,11 +92,13 @@ const Navbar = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userName');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('userId');
+
     setIsLoggedIn(false);
     setShowLogoutMessage(true);
     setTimeout(() => {
       navigate('/');
-    },); 
+    },1000); 
   };
 
   const handleDeleteAccount = async () => {
@@ -156,6 +158,7 @@ const Navbar = () => {
           <Link to="/search" className="nav-link">Search</Link>
           <Link to="/filter" className="nav-link">Discovery</Link>
           {isLoggedIn && <Link to="/profile" className="nav-link">My Profile</Link>}
+          <Link to="/groups" className="nav-link">Groups</Link>
         </div>
 
         <div className="auth-buttons">

@@ -1,0 +1,71 @@
+/* GroupComments.css */
+
+.posts-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.post-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #ffffff;
+    transition: transform 0.2s;
+}
+
+.post-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.post-item h4 {
+    margin: 0 0 0.5rem;
+    color: #333;
+    font-size: 1.25rem;
+}
+
+.post-item p {
+    margin: 0.5rem 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.post-item .movie-poster-container {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.movie-poster {
+    width: 100px;
+    height: auto;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.movie-poster:hover {
+    transform: scale(1.1);
+}
+
+.post-date {
+    color: #999;
+    font-size: 0.8rem;
+}
+
+.movie-details {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+
