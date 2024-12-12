@@ -1,15 +1,14 @@
-
-drop table if exists comment_likes cascade;
-drop table if exists comments cascade;
+/*
+drop database if exists movie;
+create database movie; 
+use movie;
+*/
 drop table if exists posts cascade;
 drop table if exists shared_urls cascade;
 drop table if exists favorites cascade;
 drop table if exists reviews cascade;
--- drop table if exists ratings;
 drop table if exists members cascade;
 drop table if exists membership_requests cascade;  
-drop table if exists group_movies cascade; 
-drop table if exists group_schedules cascade;
 drop table if exists groups cascade;
 drop table if exists accounts cascade;
 
@@ -103,42 +102,4 @@ create table membership_requests (
     unique(group_id, account_id)
 );
 
--- Group movies table
-create table group_movies (
-    id serial primary key,
-    group_id int references groups(id) on delete cascade,
-    title varchar(255) not null,
-    description text,
-    tmdb_id int,
-    created_at timestamp default current_timestamp
-);
 
--- Group schedules table
-create table group_schedules (
-    id serial primary key,
-    group_id int references groups(id) on delete cascade,
-    movie_id int references group_movies(id) on delete cascade,
-    showtime timestamp not null,
-    created_at timestamp default current_timestamp
-);
-
--- Table to manage group's post comments
-create table comments (
-    id SERIAL PRIMARY KEY,                
-    group_id INT,                         
-    account_id INT NOT NULL,               
-    text TEXT NOT NULL,                   
-    likes INT DEFAULT 0,                   
-    created_at TIMESTAMP DEFAULT NOW(),    
-    updated_at TIMESTAMP DEFAULT NOW(),   
-    FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE SET NULL, 
-    FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE 
-);
-
--- Table to track comment likes
-create table comment_likes (
-    id SERIAL PRIMARY KEY,
-    comment_id INT REFERENCES comments(id),
-    account_id INT REFERENCES accounts(id),
-    UNIQUE (comment_id, account_id) -- Prevent multiple likes from the same user on the same comment
-);

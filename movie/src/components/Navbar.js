@@ -153,17 +153,18 @@ const Navbar = () => {
     <div>
       <nav className="navbar">
         <div className="logo-container">
-          <img src="/images/logo.png" alt="Logo" className="navbar-logo" />
-          <span className="navbar-site-name">CineCat</span> 
+          <Link to="/" className="nav-link">
+            <img src="/images/logo.png" alt="Logo" className="navbar-logo" />
+            <span className="navbar-site-name">CineCat</span>
+          </Link>
         </div>
 
         <div className="nav-links">
-          <Link to="/" className="nav-link">Home</Link>
           <Link to="/showtime" className="nav-link">Showtime</Link>
           <Link to="/search" className="nav-link">Search</Link>
           <Link to="/filter" className="nav-link">Discovery</Link>
           {isLoggedIn && <Link to="/profile" className="nav-link">My Profile</Link>}
-          <Link to="/groups" className="nav-link">Groups</Link>
+          <Link to="/groups" className="nav-link">Discussion</Link>
         </div>
 
         <div className="auth-buttons">
