@@ -18,6 +18,8 @@ import CreateGroup from './components/CreateGroup';
 import AddMovie from './components/AddMovie';
 import AddSchedule from './components/AddSchedule';
 import MovieListPage from './pages/MovieListPage';
+import SearchMovieForPost from './components/SearchMovieForPost';
+import Posts from './components/Posts';
 
 
 
@@ -36,6 +38,7 @@ function App() {
         <>
             <Navbar />
             <Routes>
+                <Route path="/t" element={<Posts/>}></Route>
                 <Route path="/" element={<>
                                             <TrendingMovies/>
                                             <ReviewsPage />

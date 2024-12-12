@@ -567,3 +567,94 @@ export const getCreatedGroups = async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch created groups' });
     }
 };
+
+export const getAllPosts = async (req, res) => {
+    const query = `SELECT p.*, a.name, g.name as group_name FROM posts p
+    JOIN accounts a ON p.account_id = a.id
+    JOIN groups g ON p.group_id = g.id
+    WHERE p.group_id = $1 ORDER BY created DESC`;
+    try {
+        const { groupId } = req.params;
+        if (!groupId) {
+            return res.status(400).json({
+                message: "Group ID is required"
+            });
+        }        
+        const getPost = await pool.query( query, [groupId]);
+        res.status(200).json({
+            message: "Fetching posts successfully",
+            posts: getPost.rows
+        })
+
+    } catch (error) {
+        console.error("Error fetching posts:", error);
+        res.status(500).json({
+          message: "Failed to fetch posts",
+          error: error.message,
+        });
+    }
+}
+
+export const createAMoviePost = async (req, res) => {
+    const query = `INSERT INTO posts (account_id, group_id, title, description, movie_id)
+    VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+    try {
+        const { title, description, movieId} = req.body;
+        const { groupId } = req.params;
+        const userId = req.user.id;
+        if (!title || !description ||!movieId) {
+            return res.status(400).json({
+                message: "Title, description and movieId are required"
+            })
+        }
+        if (!groupId) {
+            return res.status(400).json({
+                message: "Group ID is required"
+            });
+        }        
+        if (!userId) {
+            return res.status(401).json({
+                message: "User ID not found"
+            })
+        }
+        const newPost = await pool.query( query, [userId, groupId, title, description, movieId]);
+        if (!newPost.rows.length) {
+            return res.status(500).json({ message: "Failed to create post" });
+        }
+        res.status(201).json({
+            message: "New Post is created successfully",
+            postInfo: newPost
+        })
+    } catch (error) {
+        console.error("Error creating post:", error);
+        res.status(500).json({
+          message: "Failed to create post",
+          error: error.message,
+        });
+    }
+} 
+
+export const deleteAPost = async (req, res) => {
+    const query = `DELETE FROM posts WHERE id = $1 AND group_id = $2`;
+    try {
+        const { postId, groupId } = req.params; // Extract id and groupId from request parameters
+        
+        // Execute the query with both id and groupId
+        const result = await pool.query(query, [postId, groupId]);
+        
+        if (result.rowCount === 0) {
+            // If no rows are affected, the post wasn't found or doesn't belong to the group
+            return res.status(404).json({ message: "Post not found or you don't have access" });
+        }
+        
+        // Successfully deleted
+        res.status(200).json({ message: "Post deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting post:", error);
+        res.status(500).json({
+          message: "Failed to delete post",
+          error: error.message,
+        });
+    }
+};
+

@@ -5,11 +5,13 @@ import GroupMembers from '../components/GroupMembers';
 import MembershipRequests from '../components/MembershipRequests';
 import GroupMovies from '../components/GroupMovies';
 import GroupSchedules from '../components/GroupSchedules';
+import SearchMovieForPost from '../components/SearchMovieForPost';
 import GroupComments from '../components/GroupComments';
 import AddMovie from '../components/AddMovie';
 import '../components/GroupStyles.css';
 import { handleLeaveGroup } from '../components/LeaveGroup';
 import { handleDeleteGroup } from '../components/DeleteGroup';
+import Posts from '../components/Posts';
 
 const GroupPage = () => {
     const navigate = useNavigate();
@@ -21,6 +23,7 @@ const GroupPage = () => {
     const [error, setError] = useState(null);
     const [isMember, setIsMember] = useState(false);
     const [selectedMovie, setSelectedMovie] = useState(null);
+    const [showWritePost, setShowWritePost] = useState(false);
 
     useEffect(() => {
         const fetchGroup = async () => {
@@ -76,29 +79,34 @@ const GroupPage = () => {
             <p className="group-owner">Owner: {group.owner_name}</p>
             <div className="group-layout">
                 <div className="group-sidebar">
-                    <GroupMembers groupId={id} />
                     <MembershipRequests groupId={id} />
-                   
+                    <GroupMembers groupId={id} />   
                 </div>
                 <div className="group-main-content">
-                    <div></div>
-                    <AddMovie groupId={id} onSelect={handleAddMovie} />
-                     <GroupMovies groupId={id} userId={userId} />    
-                    {selectedMovie && (
-                        
-                        <div className="selected-movie">
-                            <div className="selected-movie-container">
-                            <h3>Selected Movie for Discussion</h3>
-                            <img 
-                                src={selectedMovie.poster_path ? `https://image.tmdb.org/t/p/w200${selectedMovie.poster_path}` : 'path/to/placeholder/image.jpg'} 
-                                alt={selectedMovie.title} 
-                            />
-                            <p>Title: {selectedMovie.title}</p>
-                            <p>Rating: {selectedMovie.vote_average}</p>
-                            <GroupComments groupId={id} userId={userId} />
+                <div className="options-container">
+                        <button 
+                            className={`option-button ${!showWritePost ? 'active' : ''}`}
+                            onClick={() => setShowWritePost(false)}
+                        >
+                            Group Posts
+                        </button>
+                        <button 
+                            className={`option-button ${showWritePost ? 'active' : ''}`}
+                            onClick={() => setShowWritePost(true)}
+                        >
+                            Write A Post
+                        </button>
+                    </div>
+                    <div className="content-container">
+                        {!showWritePost ? (
+                            <Posts groupId={id} />
+                        ) : (
+                            <div className="write-post-container">
+                                <h3>Write a New Post</h3>
+                                <SearchMovieForPost groupId={id} />
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
 

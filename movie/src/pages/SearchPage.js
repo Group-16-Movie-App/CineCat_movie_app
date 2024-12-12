@@ -4,7 +4,7 @@ import MovieList from '../components/MovieList';
 import SearchForm from '../components/SearchForm';
 
 
-const SearchPage = () => {
+export const SearchPage = () => {
     const [movies, setMovies] = useState([]);
     const [query, setQuery] = useState('');
     const [year, setYear] = useState('');
