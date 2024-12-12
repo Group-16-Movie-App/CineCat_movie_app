@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import './Posts.css'; // Import your CSS file
+import './Posts.css'; 
 
 const Posts = ({ groupId }) => {
     const [posts, setPosts] = useState([]);
