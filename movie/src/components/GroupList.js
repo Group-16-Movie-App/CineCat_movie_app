@@ -117,14 +117,15 @@ const GroupList = () => {
     return (
         <div className="groups-page">
             <div className="groups-header">
-                <h1>Movie Groups</h1>
+                <h2 className="groups-heading">Movie Groups</h2>
             </div>
             <CreateGroup onGroupCreated={fetchGroups} />
-            <h2>You are part of {myGroupsCount} group(s).</h2>
+            <h2>You are a part of {myGroupsCount} group(s).</h2>
+            
 
             {myGroups.length > 0 && (
                 <div className="my-groups">
-                    <h2>Your Groups</h2>
+                    <h2 className="groups-heading">Your Groups:</h2>
                     <div className="divider"></div>
                     <div className="groups-grid">
                         {myGroups.map((group) => (
@@ -132,14 +133,14 @@ const GroupList = () => {
                                 <h3 className="group-card-title">{group.name}</h3>
                                 <Link to={`/group/${group.id}`} className="group-card-link">View Group</Link>
                                 { (group.owner === userId || group.members?.includes(userId)) && (
-                                    <button onClick={() => handleLeaveGroup(group.id)}>
-                                        Leave Group
-                                    </button>
+                                    <button className="leave-group-button" onClick={() => handleLeaveGroup(group.id)}>
+                                    Leave Group
+                                </button>
                                 )}
                                 {group.owner === userId && (
-                                    <button onClick={() => handleDeleteGroup(group.id)}>
-                                        <FaTrash />
-                                    </button>
+                                   <button className="delete-group-button" onClick={() => handleDeleteGroup(group.id)}>
+                                   <FaTrash />
+                               </button>
                                 )}
                             </div>
                         ))}
@@ -149,7 +150,7 @@ const GroupList = () => {
 
             {groups.length > 0 && (
                 <div className="all-groups">
-                    <h2>All Groups</h2>
+                    <h2 className="groups-heading">All Groups</h2>
                     <div className="groups-grid">
                         {groups.map((group) => (
                             <div key={group.id} className="group-card">
@@ -158,7 +159,7 @@ const GroupList = () => {
                                 {group.owner !== userId &&
                                     !group.members?.includes(userId) &&
                                     !joinRequests.includes(group.id) && (
-                                        <button onClick={() => handleJoinGroup(group.id)}>Join Group</button>
+                                        <button className="delete-group-button"  onClick={() => handleJoinGroup(group.id)}>Join Group</button>
                                     )}
               
 
@@ -169,10 +170,10 @@ const GroupList = () => {
                                 {(group.owner === userId || group.members?.includes(userId)) ? (
                                     <Link to={`/group/${group.id}`} className="group-card-link">View Group</Link>
                                 ) : (
-                                    <span>You can't view this group until your request is approved</span>
+                                    <span className="approval-message">You can't view this group until your request is approved</span>
                                 )}
                                 { (group.owner === userId || group.members?.includes(userId)) && (
-                                    <button 
+                                    <button className="delete-group-button2"
                                         onClick={() => {handleLeaveGroup(group.id, userId);
                                                         navigate('/groups')
                                     }}>
@@ -180,7 +181,7 @@ const GroupList = () => {
                                     </button>
                                 )}
                                 {group.owner === userId && (
-                                    <button onClick={() => {handleDeleteGroup(group.id)
+                                    <button className="delete-group-button" onClick={() => {handleDeleteGroup(group.id)
                                                             navigate('/groups')
                                     }}>
                                         <FaTrash />

@@ -53,9 +53,9 @@ const CreateGroup = ({ onGroupCreated }) => {
     };
 
     return (
-        <div className="create-group-container">
+       
             <div className="create-group-card">
-                <h2 className="create-group-title">Create New Group</h2>
+                <h2 className="groups-heading">Create New Group</h2>
                 <div className="create-group-form">
                     <input
                         type="text"
@@ -75,7 +75,7 @@ const CreateGroup = ({ onGroupCreated }) => {
                     {error && <p className="error-message">{error}</p>}
                 </div>
             </div>
-        </div>
+   
     );
 };
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import '../components/GroupStyles.css';
 
 const MembershipRequests = ({ groupId }) => {
     const [requests, setRequests] = useState([]);
@@ -40,7 +41,7 @@ const MembershipRequests = ({ groupId }) => {
 
     return (
         <div>
-            <h3>Membership Requests</h3>
+            <h3 className="membership-heading">Membership Requests</h3>
             <ul>
                 {requests.map(request => (
                     <li key={request.id}>

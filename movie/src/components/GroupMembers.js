@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import '../components/GroupStyles.css';
 
 const GroupMembers = ({ groupId }) => {
     const [members, setMembers] = useState([]);
@@ -47,31 +48,32 @@ const GroupMembers = ({ groupId }) => {
 
     return (
         <div>
-            <h3>Members of Group ({members.length}):</h3>
-                {members.length > 0 ? (
-                    <ul>
-                        {members.map((member) => (
-                        <li key={member.id}>
-                            {member.isowner ? (
-                            <>
-                                {member.name} (Owner)
-                            </>
-                            ) : (
-                            <>
-                                {member.name} (Member)
-                                {isOwner && (
-                                <button onClick={() => handleRemoveMember(groupId, member.id)}>
-                                    Remove
-                                </button>
-                                )}
-                            </>
-                            )}
-                        </li>
-                        ))}
-                    </ul>
+            <h3 className="membership-heading">Group members ({members.length}):</h3>
+{members.length > 0 ? (
+    <ul>
+        {members.map((member) => (
+            <li key={member.id}>
+                {member.isowner ? (
+                    <>
+                        {member.name} (The owner)
+                    </>
                 ) : (
-                <p>No members found.</p>
+                    <>
+                        {member.name} (The member)
+                        {isOwner && (
+                            <button onClick={() => handleRemoveMember(groupId, member.id)}>
+                                Remove
+                            </button>
+                        )}
+                    </>
                 )}
+            </li>
+        ))}
+    </ul>
+) : (
+    <p>No members found.</p>
+)}
+
 
         </div>
     );

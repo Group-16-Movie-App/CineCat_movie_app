@@ -56,7 +56,7 @@ const sendVerificationEmail = (email, token) => {
             </table>
             <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
             <p><a href="${verificationUrl}" style="color: #007BFF; text-decoration: none;">${verificationUrl}</a></p>
-            <p>Best regards,<br>YourProjectName Team</p>
+            <p>Best regards,<br>CineCat Team</p>
         </div>
         `,
     };

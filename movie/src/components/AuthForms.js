@@ -81,7 +81,7 @@ export const SignUpForm = ({ onSubmit, onSuccess }) => {
               placeholder="Name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="form-input"
+              className="form-input2"
               required
             />
           </div>

@@ -43,7 +43,7 @@ body {
 }
 
 .modal-close-btn:hover {
-  color: rgb(252, 0, 0) !important;
+  color: white !important;
   font-weight: 100  !important;
   outline: none  !important;
 }

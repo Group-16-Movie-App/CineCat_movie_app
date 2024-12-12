@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import './Posts.css'; 
+import './Posts.css';
 
 const Posts = ({ groupId }) => {
     const userId = Number(localStorage.getItem('userId'));
     const [posts, setPosts] = useState([]);
-    const [group, setGroup] = useState({})
+    const [group, setGroup] = useState({});
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -17,7 +17,6 @@ const Posts = ({ groupId }) => {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
-                // Fetch movie details for posts with movie_id
                 const postsWithMovieDetails = await Promise.all(
                     response.data.posts.map(async (post) => {
                         if (post.movie_id) {
@@ -26,7 +25,7 @@ const Posts = ({ groupId }) => {
                                 return { ...post, movieDetails: movieResponse.data };
                             } catch (err) {
                                 console.error(`Failed to fetch movie details for movie_id: ${post.movie_id}`, err);
-                                return post; // Return post without movie details if error occurs
+                                return post; 
                             }
                         }
                         return post;
@@ -39,7 +38,7 @@ const Posts = ({ groupId }) => {
                 setError('Failed to fetch posts');
             }
         };
-        fetchGroup()
+        fetchGroup();
         fetchPosts();
     }, [groupId]);
 
@@ -51,12 +50,7 @@ const Posts = ({ groupId }) => {
 
         try {
             const response = await axios.get(`http://localhost:5000/api/groups/${groupId}`);
-            const groupData = response.data;
-
-            console.log('Group info:', groupData);
-            console.log('group owner = user? ', userId === groupData.owner) 
-
-            setGroup(groupData);
+            setGroup(response.data);
         } catch (error) {
             console.error('Error fetching group:', error);
             setError('Failed to load group');
@@ -70,7 +64,6 @@ const Posts = ({ groupId }) => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            // Remove the deleted post from the local state
             setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
             alert('Post deleted successfully.');
         } catch (err) {
@@ -109,12 +102,14 @@ const Posts = ({ groupId }) => {
                             <strong>Created:</strong> {new Date(post.created).toLocaleString()}
                         </p>
 
-                        {(userId === group.owner || userId === post.account_id) && (<button
-                            className="delete-button"
-                            onClick={() => deleteAPost(post.id)}
-                        >
-                            Delete Post
-                        </button>)}
+                        {(userId === group.owner || userId === post.account_id) && (
+                            <button
+                                className="delete-button"
+                                onClick={() => deleteAPost(post.id)}
+                            >
+                                Delete Post
+                            </button>
+                        )}
                     </div>
                 ))
             )}
