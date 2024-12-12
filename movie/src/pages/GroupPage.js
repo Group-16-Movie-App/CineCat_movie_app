@@ -103,7 +103,7 @@ const GroupPage = () => {
                         ) : (
                             <div className="write-post-container">
                                 <h3>Write a New Post</h3>
-                                <SearchMovieForPost groupId={id} />
+                                <SearchMovieForPost groupId={id} onSelectMovie={handleMovieSelect} />
                             </div>
                         )}
                     </div>
