@@ -4,7 +4,9 @@ import axios from 'axios';
 import './Posts.css'; 
 
 const Posts = ({ groupId }) => {
+    const userId = Number(localStorage.getItem('userId'));
     const [posts, setPosts] = useState([]);
+    const [group, setGroup] = useState({})
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -37,9 +39,28 @@ const Posts = ({ groupId }) => {
                 setError('Failed to fetch posts');
             }
         };
-
+        fetchGroup()
         fetchPosts();
     }, [groupId]);
+
+    const fetchGroup = async () => {
+        if (!groupId) {
+            setError('Invalid group ID');
+            return;
+        }
+
+        try {
+            const response = await axios.get(`http://localhost:5000/api/groups/${groupId}`);
+            const groupData = response.data;
+
+            console.log('Group info:', groupData); 
+
+            setGroup({ groupData });
+        } catch (error) {
+            console.error('Error fetching group:', error);
+            setError('Failed to load group');
+        }
+    };
 
     const deleteAPost = async (postId) => {
         const token = localStorage.getItem('token');
@@ -85,12 +106,13 @@ const Posts = ({ groupId }) => {
                         <p className="post-date">
                             <strong>Created:</strong> {new Date(post.created).toLocaleString()}
                         </p>
-                        <button
+
+                        {userId === group.owner || userId === post.account_id && (<button
                             className="delete-button"
                             onClick={() => deleteAPost(post.id)}
                         >
                             Delete Post
-                        </button>
+                        </button>)}
                     </div>
                 ))
             )}

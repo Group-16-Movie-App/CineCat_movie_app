@@ -40,7 +40,7 @@ router.post('/', auth, createGroup);
 router.post('/:groupId/movies', auth, addMovieToGroup);
 router.get('/:groupId/posts', getAllPosts); 
 router.post('/:groupId/posts', auth, createAMoviePost);
-router.post('/:groupId/posts/:postId', auth, deleteAPost)  
+router.delete('/:groupId/posts/:postId', auth, deleteAPost)  
 router.post('/:groupId/schedules', auth, addScheduleToGroup);  
 router.post('/:groupId/members/:memberId', auth, acceptOrRejectMember);
 router.delete('/:groupId/members/:memberId', auth, leaveGroup)

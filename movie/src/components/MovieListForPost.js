@@ -38,13 +38,11 @@ const MovieListForPost = ({
 
           return (
             <div key={movie.id} className="movie-card">
-              <Link to={`/movie/${movie.id}`}>
                 <img
                   src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
                   alt={movie.title}
                 />
                 <h3>{movie.title} ({releaseYear})</h3>
-              </Link>
               <p className="rating">TMDB Rating: {movie.vote_average.toFixed(2)}</p>
               <p className="genres">
                 Genres: {movie.genre_ids.map((id) => genreNames[id] || 'Unknown').join(', ')}
