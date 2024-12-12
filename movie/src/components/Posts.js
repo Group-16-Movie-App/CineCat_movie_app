@@ -53,9 +53,10 @@ const Posts = ({ groupId }) => {
             const response = await axios.get(`http://localhost:5000/api/groups/${groupId}`);
             const groupData = response.data;
 
-            console.log('Group info:', groupData); 
+            console.log('Group info:', groupData);
+            console.log('group owner = user? ', userId === groupData.owner) 
 
-            setGroup({ groupData });
+            setGroup(groupData);
         } catch (error) {
             console.error('Error fetching group:', error);
             setError('Failed to load group');
@@ -71,6 +72,7 @@ const Posts = ({ groupId }) => {
 
             // Remove the deleted post from the local state
             setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+            alert('Post deleted successfully.');
         } catch (err) {
             console.error('Error deleting post:', err);
             alert('Failed to delete the post. Please try again.');
@@ -107,7 +109,7 @@ const Posts = ({ groupId }) => {
                             <strong>Created:</strong> {new Date(post.created).toLocaleString()}
                         </p>
 
-                        {userId === group.owner || userId === post.account_id && (<button
+                        {(userId === group.owner || userId === post.account_id) && (<button
                             className="delete-button"
                             onClick={() => deleteAPost(post.id)}
                         >

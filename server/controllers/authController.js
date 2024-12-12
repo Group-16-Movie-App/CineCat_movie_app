@@ -149,6 +149,12 @@ export const register = async (req, res) => {
                  error: 'Email already exists'
              });
          }
+
+         if (error.code === '23505' && error.constraint === 'accounts_name_key') {
+            return res.status(400).json({ 
+                error: 'Username already exists'
+            });
+        }
  
          res.status(500).json({ 
              error: 'Registration failed. Please try again.' 
@@ -172,8 +178,8 @@ export const login = async (req, res) => {
         );
         
         if (result.rows.length === 0) {
-            return res.status(401).json({ 
-                error: 'Invalid email or password'
+            return res.status(404).json({ 
+                error: 'Account not found or does not exist'
             });
         }
         
@@ -231,8 +237,11 @@ export const deleteAccount = async (req, res) => {
       
         await client.query('DELETE FROM favorites WHERE account_id = $1', [req.user.id]);
         await client.query('DELETE FROM shared_urls WHERE account_id = $1', [req.user.id]);
-        await client.query('DELETE FROM reviews WHERE account_id = $1', [req.user.id]);
+        await client.query('DELETE FROM posts WHERE account_id = $1', [req.user.id]);
         await client.query('DELETE FROM members WHERE account_id = $1', [req.user.id]);
+        await client.query('DELETE FROM membership_requests WHERE account_id = $1', [req.user.id]);
+        await client.query('DELETE FROM groups WHERE owner=$1', [req.user.id]);
+        await client.query('DELETE FROM reviews WHERE account_id = $1', [req.user.id]);
         //await client.query('UPDATE ratings SET account_id = NULL WHERE account_id = $1', [req.user.id]);
         
       
@@ -242,7 +251,6 @@ export const deleteAccount = async (req, res) => {
             await client.query('ROLLBACK');
             return res.status(404).json({ error: 'Account not found' });
         }
-        
         await client.query('COMMIT'); 
         res.status(200).json({ message: 'Account deleted successfully' });
         
