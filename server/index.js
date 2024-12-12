@@ -9,10 +9,15 @@ import profileRoutes from './routes/profileRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import groupRoutes from './routes/groupRoutes.js';
 import userRoutes from './routes/groupRoutes.js'
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 dotenv.config();
 
-const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 5000;
 

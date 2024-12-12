@@ -11,7 +11,7 @@ const GroupMembers = ({ groupId }) => {
             fetchMembers();
             console.log('members lines, ', members.lenghth)
         }
-    }, [groupId]);
+    }, [groupId,fetchMembers]);
 
     const fetchMembers = async () => {
         const token = localStorage.getItem('token');

@@ -4,7 +4,7 @@ import axios from 'axios';
 import './GroupStyles.css';
 import CreateGroup from './CreateGroup';
 import { FaTrash } from 'react-icons/fa';
-import { handleLeaveGroup } from './LeaveGroup';
+//import { handleLeaveGroup } from './LeaveGroup';
 
 const GroupList = () => {
     const [groups, setGroups] = useState([]);
