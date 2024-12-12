@@ -9,7 +9,8 @@ drop table if exists reviews cascade;
 drop table if exists members cascade;
 drop table if exists membership_requests cascade;  
 drop table if exists group_movies cascade; 
-drop table if exists group_schedules cascade; 
+drop table if exists group_schedules cascade;
+drop table if exists groups cascade;
 drop table if exists accounts cascade;
 
 
