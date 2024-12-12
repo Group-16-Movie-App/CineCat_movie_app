@@ -98,7 +98,7 @@ const Navbar = () => {
     setShowLogoutMessage(true);
     setTimeout(() => {
       navigate('/');
-    },1000); 
+    }, 1000);
   };
 
   const handleDeleteAccount = async () => {
@@ -152,6 +152,11 @@ const Navbar = () => {
   return (
     <div>
       <nav className="navbar">
+        <div className="logo-container">
+          <img src="/images/logo.png" alt="Logo" className="navbar-logo" />
+          <span className="navbar-site-name">CineCat</span> 
+        </div>
+
         <div className="nav-links">
           <Link to="/" className="nav-link">Home</Link>
           <Link to="/showtime" className="nav-link">Showtime</Link>
