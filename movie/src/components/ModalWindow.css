@@ -1,31 +1,51 @@
+body {
+  background-color: rgba(44, 44, 44, 0.4);
+  color: #f5f5f5;
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+}
 .modal-background {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.9); 
+  background-color: rgba(0, 0, 0, 0.5); 
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
 }
 
+.modal-content {
+  position: relative;
+  background-color:rgba(46, 44, 44, 0.7);  
+  padding: 30px;
+  border-radius: 8px;
+  color: white!important;
+  width: 400px; 
+  max-width: 100%;
+  max-height: 80%;
+  min-height: 60%;
+}
 
 .modal-close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
   background: none;
   border: none;
-  font-size: 2.5rem;
-  color: #fff;
+  
+  color: red;
   cursor: pointer;
+  position: absolute;
+  top: 6px !important;
+  right: 6px !important;
   z-index: 1010;
 }
 
 .modal-close-btn:hover {
-  color: #a71f2f; 
+  color: rgb(252, 0, 0) !important;
+  font-weight: 100  !important;
+  outline: none  !important;
 }
 
 .password-group {
@@ -33,7 +53,8 @@
 }
 
 .password-group input {
-  padding-right: 40px; 
+  padding-right: 40px;
+  color: white;
 }
 
 .login-form .toggle-password-visibility {
@@ -50,7 +71,7 @@
 
 .signup-form .toggle-password-visibility {
   position: absolute;
-  top: 24%; 
+  top: 24%;
   right: 10px;
   transform: translateY(-50%);
   background: none;
@@ -60,26 +81,12 @@
   color: #333;
 }
 
-.toggle-password-visibility:hover {
-  color: #559fc6; 
-}
 
-.submit-button-signin {
-  background-color: #00bcd4; 
-  color: rgb(124, 232, 94); 
-  border: none; 
-  padding: 12px 25px; 
-  font-size: 16px; 
-  border-radius: 6px;
-  cursor: pointer; 
-  transition: background-color 0.3s ease;
-}
 
-.submit-button:hover {
-  background-color: #0097a7; 
-}
 
-.submit-button:focus {
-  outline: none;
-}
+
+
+
+
+
 

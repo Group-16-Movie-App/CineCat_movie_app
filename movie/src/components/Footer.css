@@ -1,0 +1,79 @@
+.footer {
+  background: rgba(101, 101, 101, 0.1);
+  color: white;
+  padding: 0.2rem 1rem;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
+@keyframes rainbow {
+  0% { color: #f6ebeb; }
+  14% { color: #fbd1d1; }
+  28% { color: #f99898; }
+  42% { color: #f16c6c; }
+  56% { color: #e78484; }
+  70% { color: #e88c8c; }
+  84% { color: #cd4d4d; }
+  100% { color: #fad2d2; }
+}
+
+.footer-title {
+  animation: rainbow 8s linear infinite;
+  font-family: 'Agu Display', 'Gowun Batang', sans-serif;
+  font-weight: 400;
+  font-size: 1.8rem; 
+  margin-bottom: 0.2rem; 
+}
+
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: Arial, sans-serif;
+  margin-bottom: 0;
+}
+
+.footer-logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-logo {
+  height: 77px;
+  width: 77px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: 10px;
+}
+
+.footer-link {
+  margin: 0 5px;
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #f16c6c;
+}
+
+.footer-social {
+  display: flex;
+  gap: 5px;
+  margin-top: 0.5rem;
+}
+
+.footer-icon {
+  color: white;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.footer-icon:hover {
+  color: #f16c6c;
+}

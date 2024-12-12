@@ -1,33 +1,39 @@
 import React, { useState } from 'react';
+import './SearchBar.css';
 
 const SearchForm = ({ onSearch }) => {
     const [query, setQuery] = useState('');
     const [year, setYear] = useState('');
 
-    const handleSearch = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
         onSearch({ query, year });
     };
 
     return (
-        <div style={{width:'fit-content', margin:'auto', padding: 8, display:'flex', flexDirection:'column'}}>
-            <div style={{display:'flex', justifyContent:'space-around'}}>
+        <form onSubmit={handleSubmit} className="search-bar">
+            <div className="input-wrapper">
                 <input
                     type="text"
-                    placeholder="Search movies..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search movies..."
                 />
+            </div>
+            
+            <div className="input-wrapper">
                 <input
-                    type="number"
-                    min="1900"
-                    max={new Date().getFullYear() + 5}
-                    placeholder="Year"
+                    type="text"
                     value={year}
                     onChange={(e) => setYear(e.target.value)}
+                    placeholder="Year"
                 />
-                <button onClick={handleSearch}>Search</button>
             </div>
-        </div>
+            
+            <button type="submit" className="search-button">
+                Search
+            </button>
+        </form>
     );
 };
 

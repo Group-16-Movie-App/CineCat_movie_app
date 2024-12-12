@@ -3,19 +3,17 @@ import axios from 'axios';
 import MovieList from '../components/MovieList';
 import SearchForm from '../components/SearchForm';
 
-
 export const SearchPage = () => {
     const [movies, setMovies] = useState([]);
     const [query, setQuery] = useState('');
     const [year, setYear] = useState('');
     const [genreNames, setGenreNames] = useState({});
-    // Paginate
     const [page, setPage] = useState(1);
-    const [pageCount, setPageCount] = useState(0)
+    const [pageCount, setPageCount] = useState(0);
 
     const handleSearch = ({ query, year }) => {
         if (!query.trim()) {
-            alert('Please enter a title');
+            alert('Please, enter a title');
             return;
         }
         setQuery(query);
@@ -39,13 +37,12 @@ export const SearchPage = () => {
         fetchMovies();
     }, [query, year, page]);
 
-    // Fetch genre data
     useEffect(() => {
         const fetchGenres = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/api/genre');
                 const genreMap = response.data.genres.reduce((map, genre) => {
-                    map[genre.id] = genre.name; // Map genre ID to name
+                    map[genre.id] = genre.name;
                     return map;
                 }, {});
                 setGenreNames(genreMap);
@@ -58,27 +55,30 @@ export const SearchPage = () => {
     }, []);
 
     if (!query.trim()) {
-        return <div style={{width:'100%', textAlign:'center', minHeight: '100vh'}}>
-                    <h1 >Search Movies</h1>
-                    <SearchForm onSearch={handleSearch} />
-                    <div style={{marginTop: '20px'}}>
-                        What movie are you looking for? Please enter a title movie
-                    </div>
+        return (
+            <div className="search-page-container">
+                <h2 className="search-title">Search Movies</h2>
+                <SearchForm onSearch={handleSearch} />
+                <div className="search-prompt">
+                What movie are you looking for? <br /> Please, write the title.
                 </div>
+            </div>
+        );
     } else {
         return (
-            <>
-                <div style={{width:'100%', textAlign:'center', minHeight: '100vh'}}>
-                    <h1 >Search Movies</h1>
-                    <SearchForm onSearch={handleSearch} />
-                    <MovieList 
-                        movies={movies} 
-                        genreNames={genreNames}
-                        pageCount={pageCount}
-                        setPage={setPage}
-                    />
-                </div>
-            </>
+            <div className="search-page-container">
+                <h2 className="search-title">Search Movies</h2>
+                <SearchForm onSearch={handleSearch} />
+                <button type="submit" className="search-button">
+                    Search
+                </button>
+                <MovieList 
+                    movies={movies} 
+                    genreNames={genreNames}
+                    pageCount={pageCount}
+                    setPage={setPage}
+                />
+            </div>
         );
     }
 };

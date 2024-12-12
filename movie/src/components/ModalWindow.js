@@ -1,6 +1,7 @@
 import React from 'react';
 import './ModalWindow.css';
 
+
 const ModalWindow = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
 

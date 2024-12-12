@@ -3,26 +3,45 @@
     max-width: 1200px;
     margin: 2rem auto;
     padding: 0 20px;
+    font-family: 'Open Sans', sans-serif;
+   
+    
 }
 
 /* Header section of the profile */
 .profile-header {
-    background: linear-gradient(to right, #502c46, #892082);
-    color: white;
+    background: linear-gradient(to right, rgba(99, 98, 98, 0.3), rgba(42, 42, 42, 0.6));
+    color: rgb(154, 154, 154);
     padding: 2rem;
     border-radius: 10px;
     margin-bottom: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
     display: flex;
     flex-direction: column;
     position: relative;
 }
 
 /* Main title in the profile header */
+
+@keyframes rainbow {
+    0% { color: #f6ebeb; }
+    14% { color: #fbd1d1; }
+    28% { color: #cb5c5c; }
+    42% { color: #da2424; }
+    56% { color: #e02121; }
+    70% { color: #f92c2c; }
+    84% { color: #cd4d4d; }
+    100% { color: #fad2d2; }
+}
+
 .profile-header h1 {
+    animation: rainbow 8s linear infinite;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    font-family: 'Agu Display', 'Gowun Batang', sans-serif;
+    font-weight: 400;
     margin: 0;
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
+    font-size: 3.5rem;
+   
 }
 
 /* User information layout */
@@ -31,6 +50,9 @@
     align-items: center;
     gap: 1rem;
     margin-bottom: 1.5rem;
+    font-family: 'Agu Display', 'Gowun Batang', sans-serif;
+    font-weight: 400;
+  
 }
 
 /* Avatar styling */
@@ -42,9 +64,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.5rem;
+    font-size: 4.5rem;
     color: #666;
     border: 3px solid white;
+    margin-right: 20px;
 }
 
 /* User details section */
@@ -62,17 +85,24 @@
 
 /* Section for user's favorite movies */
 .favorites-section {
-    background: white;
+    background: linear-gradient(to right, rgba(99, 98, 98, 0.3), rgba(42, 42, 42, 0.6));
+    color: rgb(154, 154, 154);
     padding: 2rem;
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
 /* Title in the favorites section */
 .favorites-section h2 {
-    color: #2c3e50;
+    color: #ffffff;
+    font-family: 'Agu Display', 'Gowun Batang', sans-serif;
+    font-weight: 400;
     margin-bottom: 1.5rem;
-    font-size: 2rem;
+    font-size: 2.8rem;
 }
 
 /* Stats section layout */
@@ -81,16 +111,21 @@
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin: 2rem 0;
+    font-family: 'Open Sans', sans-serif;
 }
 
 /* Individual stat card styling */
 .stat-card {
-    background: white;
+    background: rgb(255, 255, 255);
     padding: 1.5rem;
     border-radius: 8px;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 600;
+    color: #5a5a5a;
+    height: 20vh;
 }
 
 /* Hover effect for stat cards */
@@ -99,17 +134,19 @@
 }
 
 /* Styling for the number in stat cards */
-.stat-number {
+.stat-number {  
     font-size: 2rem;
-    font-weight: bold;
-    color: #3498db;
+    font-weight: 600;
+    color: #ff0000;
     margin-bottom: 0.5rem;
+    font-family: 'Open Sans', sans-serif;
 }
 
 /* Label styling in stat cards */
 .stat-label {
     color: #666;
     font-size: 1rem;
+    
 }
 
 /* Responsive design adjustments */
@@ -135,52 +172,65 @@
     position: absolute;
     top: 30px;
     right: 30px;
-    background-color: #5f0a33;
+    background-color: #dc3545;
     border: none;
     color: white;
     padding: 8px 16px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 14px;
+    font-size: 20px;
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.3s;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .share-button:hover {
-    background-color: #45a049;
+    background-color: #ffffff;
+    color: #dc3545;
+    font-size: 20px;
+    font-weight: 600;
 }
 
 /* Reviews section styling to match profile page */
 .profile-reviews-section {
-    background: white;
+    background: linear-gradient(to right, rgba(99, 98, 98, 0.3), rgba(42, 42, 42, 0.6));
+    color: rgb(154, 154, 154);
     padding: 2rem;
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
 .profile-reviews-section h2 {
-    color: #2c3e50;
+    color: #ffffff;
+    font-family: 'Agu Display', 'Gowun Batang', sans-serif;
+    font-weight: 400;
     margin-bottom: 1.5rem;
-    font-size: 2rem;
+    font-size: 2.8rem;
 }
 
 .profile-reviews-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
+    font-family: 'Open Sans', sans-serif;
     margin-top: 1.5rem;
 }
 
 .profile-review-card {
-    background: rgb(188, 78, 78);
+    background: rgb(255, 255, 255);
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
-    border: 1px solid #eee;
+    font-family: 'Open Sans', sans-serif;
+    color: #5a5a5a;
+    
 }
 
 .profile-review-card:hover {
@@ -189,13 +239,15 @@
 
 /* Add text wrapping styles */
 .profile-review-text {
-    color: #080a0c;
+    color: #ffffff;
+    font-size: 14px;
     word-wrap: break-word;      /* Ensures long words break */
     overflow-wrap: break-word;  /* Modern browsers */
     white-space: pre-wrap;      /* Preserves whitespace and line breaks */
     max-height: 150px;          /* Maximum height before truncation */
     overflow-y: auto;           /* Adds scroll if content exceeds max-height */
     line-height: 1.5;          /* Comfortable line spacing */
+    font-style: italic;
     margin: 0.5rem 0;
 }
 
@@ -233,7 +285,7 @@
 
 /*Profile group section*/
 .groups-section {
-    background-color: #ffffff;
+    background-color: rgb(41, 40, 40);
     padding: 2rem;
     border-radius: 10px;
     margin-top: 20px;
@@ -241,7 +293,22 @@
 }
 
 .groups-section h2 {
-    color: #2c3e50;
+    color: #ffffff;
+    font-family: 'Agu Display', 'Gowun Batang', sans-serif;
+    font-weight: 400;
     margin-bottom: 1.5rem;
-    font-size: 2rem;
+    font-size: 2.8rem;
+}
+
+.group-card{
+    background: linear-gradient(to right, rgba(99, 98, 98, 0.3), rgba(42, 42, 42, 0.6));
+    color: rgb(255, 255, 255);
+    font-family: 'Open Sans', sans-serif;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }

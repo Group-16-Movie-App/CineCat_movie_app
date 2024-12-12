@@ -6,7 +6,7 @@
 
 /* Dropdown container */
 .time-dropdown {
-    margin-bottom: 20px;
+   
     display: flex;
     align-items: center;
     gap: 10px;
@@ -14,47 +14,114 @@
 
 /* Label for dropdown */
 .time-label {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
+    font-size: 50px;
+    animation: rainbow 8s linear infinite;
+    font-family: 'Agu Display', 'Gowun Batang', sans-serif;
 }
 
+
 /* Dropdown select */
+
 .time-select {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
+    padding: 1rem 0.5rem;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-radius: 4px;
+    margin-left: 1rem;
+    width: 120px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 1);
+    
 }
+.time-select-wrapper {
+    position: relative;
+    margin-left: 2px;
+}
+
+.time-select option {
+    background-color: #1a1a1a;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 8px;   
+    outline: none;
+}
+
+/* Style for the select dropdown when focused */
+.time-select:focus {
+    outline: none;
+    border: 3px solid rgba(245, 5, 5, 0.8);
+    box-shadow: 0 0 10px rgba(245, 5, 5, 0.8);
+}
+
+/* Style for the option when focused */
+.time-select option:focus {
+    outline: none;
+    border-radius: 4px;
+    border: 3px solid rgba(245, 5, 5, 0.8);
+    margin-left: 2px;
+}
+
+
 
 /* Dynamic label for movies */
 .movies-label {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
+    font-size: 50px;
+    font-weight: 400;
     margin: 20px 0;
     text-align: center;
+    animation: rainbow 8s linear infinite;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    font-family: 'Agu Display', 'Gowun Batang', sans-serif;
+}
+
+/* Rainbow animation for Movies of the Day */
+@keyframes rainbow {
+    0% { color: #f6ebeb; }
+    14% { color: #fbd1d1; }
+    28% { color: #f99898; }
+    42% { color: #f16c6c; }
+    56% { color: #e02121; }
+    70% { color: #f92c2c; }
+    84% { color: #cd4d4d; }
+    100% { color: #fad2d2; }
 }
 
 /* Horizontally scrollable container */
 .movie-list-container {
-    overflow-x: auto;
-    white-space: nowrap;
+    overflow-x: hidden;
+    white-space: normal;
     padding: 10px 0;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 40px;
+    position: relative;
 }
 
 /* Movie list */
 .movie-list {
     display: flex;
-    gap: 20px;
+    gap: 10px;
+    animation: rotate-carousel 40s linear infinite; 
 }
 
 /* Individual movie item */
 .movie-item {
-    flex: 0 0 auto; /* Prevent shrinking */
-    width: 200px; /* Fixed width */
+    flex: 0 0 auto;
+    width: 220px;
     text-align: center;
+    margin-right: 15px;
+    margin-bottom: 0px;
+    transition: transform 0.6s ease;
+    word-wrap: break-word; 
+    word-break: break-word; 
+}
+
+/* Infinite scroll animation */
+@keyframes rotate-carousel {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%); /* Move items to the left */
+    }
 }
 
 /* Movie poster image */
@@ -64,6 +131,8 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 10px;
+    word-wrap: break-word; 
+    word-break: break-word; 
 }
 
 /* Fallback for unavailable poster */
@@ -75,9 +144,19 @@
 
 /* Movie title styling */
 .movie-title {
-    font-size: 16px;
-    color: #333;
+    font-size: 14px;
+    color: #FFD700;
     margin: 0;
+    font-family: 'Open Sans', sans-serif;
+    word-wrap: break-word; 
+    word-break: break-word; 
+}
+
+
+/* Add hover effect */
+.movie-title:hover {
+    color: #e02121;
+    transition: color 0.3s ease;
 }
 
 /* Loading message */
@@ -90,4 +169,74 @@
 .error-message {
     color: red;
     margin-top: 10px;
+}
+
+/* Add this style for the links */
+.movie-item a {
+    text-decoration: none; /* Removes the underline */
+    color: inherit; /* Inherits the color from parent */
+}
+
+/* Carousel control buttons */
+.carousel-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 30px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.carousel-control.left {
+    left: 10px;
+}
+
+.carousel-control.right {
+    right: 10px;
+}
+
+/* Custom range slider */
+.carousel-slider {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    z-index: 1;
+}
+
+/* For custom slider */
+.carousel-slider input[type="range"] {
+    width: 100%;
+    appearance: none;
+    height: 8px;
+    background: #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: background 0.3s;
+}
+
+.carousel-slider input[type="range"]:hover {
+    background: #ccc;
+}
+
+.carousel-slider input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #ffd700;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.carousel-slider input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #ffd700;
+    border-radius: 50%;
+    cursor: pointer;
 }
