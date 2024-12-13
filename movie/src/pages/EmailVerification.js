@@ -23,7 +23,7 @@ const EmailVerification = () => {
 
     const verifyEmail = async () => {
       try {
-        const response = await fetch(`https://cinecat-movie-app-d5t2.onrender.com/api/verify-email?token=${token}`);
+        const response = await fetch(`http://localhost:5000/api/verify-email?token=${token}`);
 
         if (!response.ok) {
             const errorData = await response.text(); 
