@@ -3,6 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
 import ModalWindow from './ModalWindow';  
 import './AuthForm.css';  
+import '../pages/EmailVerificationSuccess.js'
+import '../pages/EmailVerification.js'
+import '../pages/EmailVerification.css'
+import '../pages/EmailVerificationSuccess.css'
 
 export const SignUpForm = ({ onSubmit, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -53,13 +57,13 @@ export const SignUpForm = ({ onSubmit, onSuccess }) => {
   };
 
   return (
-    <div className="auth-container">
+    <div>
       {isModalOpen && (
         <ModalWindow isOpen={isModalOpen} onClose={closeModal}>
           {isSuccess ? (
             <div className="success-message">
               <h2>Registration Successful!</h2>
-              <p>You can now log in to your account.</p>
+              <p>Please check and confirm your email to complete the registration process.</p>
               <button className="success-button" onClick={closeModal}>Sign in</button>
             </div>
           ) : (
@@ -129,7 +133,6 @@ export const SignUpForm = ({ onSubmit, onSuccess }) => {
     </div>
   );
 };
-
 
 export const LoginForm = ({ onSubmit, initialEmail = '' }) => {
   const [formData, setFormData] = useState({
@@ -201,3 +204,6 @@ export const LoginForm = ({ onSubmit, initialEmail = '' }) => {
     </div>
   );
 };
+
+
+
