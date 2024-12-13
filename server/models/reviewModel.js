@@ -1,23 +1,29 @@
 import pool from "../config/database.js";
 import axios from 'axios';
 
+
 export const addReview = async (movieId, email, description, rating) => {
-  
-    const accountQuery = `
+  const accountQuery = `
         SELECT id FROM accounts WHERE email = $1
     `;
-    const accountResult = await pool.query(accountQuery, [email]);
-    const accountId = accountResult.rows[0].id;
+  const accountResult = await pool.query(accountQuery, [email]);
 
-    const query = `
-        INSERT INTO reviews (movie_id, account_id, review, rating)
-        VALUES ($1, $2, $3, $4)
+  if (accountResult.rows.length === 0) {
+    throw new Error(`No account found for email: ${email}`);
+  }
+
+  const accountId = accountResult.rows[0].id;
+
+  const query = `
+        INSERT INTO reviews (movie_id, account_id, review, rating, created)
+        VALUES ($1, $2, $3, $4, NOW())
         RETURNING *;
     `;
-    const values = [movieId, accountId, description, rating];
-    const result = await pool.query(query, values);
-    return result.rows[0];
+  const values = [movieId, accountId, description, rating];
+  const result = await pool.query(query, values);
+  return result.rows[0];
 };
+
 
 
 export const getAllReviews = async () => {

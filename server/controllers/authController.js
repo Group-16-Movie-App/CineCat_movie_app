@@ -5,14 +5,14 @@ import pool from '../config/database.js';
 export const register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
-        
+        console.log("Hi")
         // check if all fields are provided
         if (!name || !email || !password) {
             return res.status(400).json({ 
                 error: 'All fields are required'
             });
         }
-
+        console.log(req.body);
         // if email already exists
         const emailExists = await pool.query(
             'SELECT * FROM accounts WHERE email = $1',
