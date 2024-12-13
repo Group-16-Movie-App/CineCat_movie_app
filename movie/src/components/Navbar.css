@@ -7,6 +7,7 @@
   color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-right: 10px;
+  
 }
 
 .logo-container {
@@ -48,6 +49,7 @@
   padding: 0.5rem 1rem;
   border-radius: 4px;
   transition: background-color 0.3s;
+  margin-top: 0px;
 }
 
 .nav-link:hover {
@@ -57,6 +59,8 @@
 .auth-buttons {
   display: flex;
   align-items: center;
+  
+
 }
 
 .auth-buttons-container {
@@ -69,6 +73,7 @@
   border: 2px solid white;
   color: white;
   margin-left: 20px;
+  margin-top: 0px;
   font-size: 1.1rem;
   border-radius: 4px;
   cursor: pointer;

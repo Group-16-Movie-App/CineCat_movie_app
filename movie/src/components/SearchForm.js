@@ -12,28 +12,29 @@ const SearchForm = ({ onSearch }) => {
 
     return (
         <form onSubmit={handleSubmit} className="search-bar">
-            <div className="input-wrapper">
-                <input
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search movies..."
-                />
-            </div>
-            
-            <div className="input-wrapper">
-                <input
-                    type="text"
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                    placeholder="Year"
-                />
-            </div>
-            
-            <button type="submit" className="search-button">
-                Search
-            </button>
-        </form>
+        <div className="input-wrapper6">
+            <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search movies..."
+            />
+        </div>
+        
+        <div className="input-wrapper6">
+            <input
+                type="text"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                placeholder="Year"
+            />
+        </div>
+    
+        <button type="submit" className="search-button">
+            Search
+        </button>
+    </form>
+    
     );
 };
 
