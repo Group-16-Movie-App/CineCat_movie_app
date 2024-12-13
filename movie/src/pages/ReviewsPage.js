@@ -1,88 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import MovieList from '../components/MovieList';
-import SearchForm from '../components/SearchForm';
+import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
+import './ReviewsPage.css';
 
-export const SearchPage = () => {
-    const [movies, setMovies] = useState([]);
-    const [query, setQuery] = useState('');
-    const [year, setYear] = useState('');
-    const [genreNames, setGenreNames] = useState({});
-    const [page, setPage] = useState(1);
-    const [pageCount, setPageCount] = useState(0);
-
-    const handleSearch = ({ query, year }) => {
-        if (!query.trim()) {
-            alert('Please, enter a title');
-            return;
-        }
-        setQuery(query);
-        setYear(year);
-    };
-
+const ReviewsPage = () => {
+    const [reviews, setReviews] = useState([]);
     useEffect(() => {
-        const fetchMovies = async () => {
-            if (!query) return;
+        const fetchRecentReviews = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/search/movies', {
-                    params: { query, year: year || undefined, page },
-                });
-                setMovies(response.data.results || []);
-                setPageCount(response.data.total_pages)
-                console.log('movie Data from search',response.data.results)
+                const response = await axios.get('http://localhost:5000/api/reviews');
+                setReviews(response.data || []);
+                console.log('Review Data from database', response.data.results)
             } catch (error) {
                 console.error('Error fetching search results:', error);
             }
         };
-        fetchMovies();
-    }, [query, year, page]);
-
-    useEffect(() => {
-        const fetchGenres = async () => {
-            try {
-                const response = await axios.get('http://localhost:5000/api/genre');
-                const genreMap = response.data.genres.reduce((map, genre) => {
-                    map[genre.id] = genre.name;
-                    return map;
-                }, {});
-                setGenreNames(genreMap);
-                console.log('genreMap',genreMap);
-            } catch (error) {
-                console.error('Error fetching genres:', error);
-            }
-        };
-        fetchGenres();
+        fetchRecentReviews();
     }, []);
 
-    if (!query.trim()) {
-        return (
-            <div className="search-page-container">
-                <h2 className="search-title">Search Movies</h2>
-                <SearchForm onSearch={handleSearch} />
-                <div className="search-prompt">
-                What movie are you looking for? <br /> Please, write the title.
+    return (
+        <>
+            <div className="reviews-section">
+            <h2 className="reviews-label">Recent Reviews</h2>
+            <div className="review-list-container">
+                <div className="review-list">
+                    {reviews.map((review) => (
+                        <div key={review.id} className="review-card">
+                            <Link to={`/movie/${review.movie_id}`}>
+                                <p>{review.name}</p>
+                                <p>
+                                    just reviewed at {format(new Date(review.created), 'MMMM dd, yyyy, hh:mm a')}
+                                </p>
+                                <p>Rating: {review.rating}</p>
+                                <p>{review.review}</p>
+                                {review.poster_path ? (
+                                    <img
+                                        src={`https://image.tmdb.org/t/p/w200${review.poster_path}`}
+                                        alt={review.movie_title || "Movie Poster"}
+                                    />
+                                ) : (
+                                    <p>[Poster Unavailable]</p>
+                                )}
+                                <h3>
+                                    {review.movie_title}{" "}
+                                    {review.release_date ? `(${review.release_date.substring(0, 4)})` : ""}
+                                </h3>
+                            </Link>
+                        </div>
+                    ))}
                 </div>
             </div>
-        );
-    } else {
-        return (
-            <div className="search-page-container">
-                <h2 className="search-title">Search Movies</h2>
-                <SearchForm onSearch={handleSearch} />
-             
-                <MovieList 
-                    movies={movies} 
-                    genreNames={genreNames}
-                    pageCount={pageCount}
-                    setPage={setPage}
-                />
-            </div>
-        );
-    }
+        </div>
+        </>
+    )
 };
 
-export default SearchPage;
-
-
-
-
+export default ReviewsPage;
