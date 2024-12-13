@@ -13,7 +13,9 @@ const pool = new Pool({
   database: process.env.NODE_ENV === 'development' ? process.env.DB_NAME : process.env.TEST_DB_NAME,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
+  ssl: process.env.SSL
 });
+
 
 // Test the connection
 pool.connect((err, client, release) => {

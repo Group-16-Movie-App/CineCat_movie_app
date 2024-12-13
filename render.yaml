@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: frontend
+    env: static
+    buildCommand: npm install
+    publishDir: movie/build
+    autoDeploy: true
+  - type: web
+    name: backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm run devStart
+    autoDeploy: true
