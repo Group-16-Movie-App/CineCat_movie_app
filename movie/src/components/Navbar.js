@@ -30,7 +30,7 @@ const Navbar = () => {
 
   const handleSignUp = async (formData) => {
     try {
-      const response = await fetch('http://localhost:5000/api/register', {
+      const response = await fetch('https://cinecat-movie-app-d5t2.onrender.com/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ const Navbar = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/auth/account', {
+      const response = await fetch('https://cinecat-movie-app-d5t2.onrender.com//api/auth/account', {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

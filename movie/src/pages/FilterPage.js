@@ -33,7 +33,7 @@ const FilterPage = () => {
 
     const fetchMovies = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/filter/movies', {
+            const response = await axios.get('https://cinecat-movie-app-d5t2.onrender.com/api/filter/movies', {
                 params: {
                     rating: filters.rating,
                     genre: filters.genre,
@@ -56,7 +56,7 @@ const FilterPage = () => {
     useEffect(() => {
         const fetchGenres = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/genre');
+                const response = await axios.get('https://cinecat-movie-app-d5t2.onrender.com/api/genre');
                 const genreMap = response.data.genres.reduce((map, genre) => {
                     map[genre.id] = genre.name; // Map genre ID to name
                     return map;
